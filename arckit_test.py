@@ -42,9 +42,7 @@ firstTrainingInput = task.train[0][0]
 grid = vis.draw_grid(firstTrainingInput, xmax=3, ymax=3, padding=0.5, label="LoLoLorenz")
 vis.output_drawing(grid, "./grid_images/LoLoLorenz.png")
 
-grid2 = vis.draw_task(train_set[0], width=10, height=6, label="Problorenz")
-vis.output_drawing(grid2, "grid_images/whole_problorenz.png") 
+# this one does not work yet - It should visualize a whole problem. I am on it.
+# grid2 = vis.draw_task(train_set[0], width=10, height=6, label="Problorenz")
+# vis.output_drawing(grid2, "grid_images/whole_problorenz.png") 
 
-
-# grid = vis.draw_grid(task.train[0][0], xmax=3, ymax=3, padding=.5, label='Example')
-# vis.output_drawing(grid, "images/grid_example.png") # svg/pdf/png
