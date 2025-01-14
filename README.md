@@ -9,41 +9,41 @@ Our team's attempt to solve the ARC Challenge for the MoL Project in January 202
 
 *General:* With conda, you can create virtual environments. This means, you can group the exact packages and versions of them needed for a project separately from the rest. As a consequence, you can change them without affecting any other projects.
 
-# set up conda
+### set up conda
 
-# create new environment (here, arc is the environment name)
+#### create new environment (here, arc is the environment name)
 conda create --name arc
 
-# activate that environment
+#### activate that environment
 conda active arc
 
 
-## our packages
+### our packages
 
-# to make it easy, I included all the necessary packages in the requirements.txt file. All you have to do is run
+#### to make it easy, I included all the necessary packages in the requirements.txt file. All you have to do is run
 pip install -r requirements.txt
 
 
 
 
 
-# install the arckit library (pip is a python package manager)
+#### install the arckit library (pip is a python package manager)
 pip install -U arckit
 
 
-## other useful commands
+#### other useful commands
 
-# see your environments (and which one is active)
+#### see your environments (and which one is active)
 conda env list
 
-# see all packages in your current environment
+#### see all packages in your current environment
 conda list
 
 
 
-## our packages
+### our packages
 
- # in case cairo (needed to process the grid visualisations) does not work, you might need to install it another way. For instance on mac, you can use homebrew (which you need to set up first) to install it. Most helpful article: https://jonathansoma.com/everything/blog/2022/solution-to-no-library-called-cairo-2-was-found-error/
+#### in case cairo (needed to process the grid visualisations) does not work, you might need to install it another way. For instance on mac, you can use homebrew (which you need to set up first) to install it. Most helpful article: https://jonathansoma.com/everything/blog/2022/solution-to-no-library-called-cairo-2-was-found-error/
 brew install cairo
 
 
@@ -56,13 +56,13 @@ Lastly, each branch has a corresponding online (remote) and offline (local) vers
 
 
 
-# Clone the remote repo, add connection,…
+#### Clone the remote repo, add connection,…
 Lmk if you need it written down or we just do it together later
 
 
-# Make your own branch. Name it something like “Lorenz”
+#### Make your own branch. Name it something like “Lorenz”
 git branch <branchname>
 
-# Push your own branch to the remote repo
+#### Push your own branch to the remote repo
 git push origin <branchname>~
 
