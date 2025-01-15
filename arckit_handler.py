@@ -45,7 +45,7 @@ def main():
 
     # set parameters for task
     taskId = '5582e5ca'
-    problem_image_file_name = 'LoLaLi'
+    problem_image_file_name = str(taskId)
 
     # load task
     task = train_set[taskId]
@@ -61,10 +61,10 @@ def main():
     ## looking at specific grid
 
     # set paramters 
-    is_training = False
+    is_training = True
     which_example = 0
-    is_in = False
-    grid_image_file_name = 'LoLaLi'
+    is_in = True
+    grid_image_file_name = str(taskId) + '_' + str(int(is_training)) + '_' + str(which_example) + '_' + str(is_in)
 
     # retreive and draw grid
     grid = getGrid(task, is_training, which_example, is_in)
