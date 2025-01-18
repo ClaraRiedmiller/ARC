@@ -1,11 +1,5 @@
-import numpy as np
 from objects import *
-from scipy.ndimage import label, binary_fill_holes
-from scipy.ndimage import binary_dilation
 
-import arckit
-import arckit.vis as vis
-train_set, eval_set = arckit.load_data() # Load ARC1 train/eval
 
 
 def get_object_adjacency_scipy(labeled_array, mode="direct"):
