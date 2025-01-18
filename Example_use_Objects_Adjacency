@@ -1,5 +1,5 @@
-import objects
-import adjacency
+from objects import *
+from adjacency import *
 
 if __name__ == "__main__":
     # Example array with multiple "colors" (values)
