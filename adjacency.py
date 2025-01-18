@@ -1,5 +1,5 @@
 import numpy as np
-import objects
+from objects import *
 from scipy.ndimage import label, binary_fill_holes
 from scipy.ndimage import binary_dilation
 
