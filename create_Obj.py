@@ -81,6 +81,9 @@ def label_coordinates_dict(labeled_array, exclude_zero=True):
     
     return label_coords
 
+def get_quadrant(labeled_array): #Or other important metric for orientation to maybe use in group building process
+    return True
+
 
 def extract_object_shapes(grid):
 
@@ -110,3 +113,14 @@ def extract_object_shapes(grid):
         object_shapes[label] = binary_shape
     
     return object_shapes
+
+# Functions to find features on objects shapes:
+
+def max_height_and_width(object): #row-/column number of shape matrix
+    return True
+
+def number_of_elements(object): #Sum over Shape matrix
+    return True
+
+def find_centroid(object): #Better for all objects at once; grid as input?
+    return True

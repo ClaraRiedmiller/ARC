@@ -1,5 +1,6 @@
-from objects import *
+from create_Obj import *
 
+#Grid related relations:
 
 def get_object_adjacency_scipy(labeled_array, mode="direct"):
     # Define structuring elements for each mode:
@@ -51,4 +52,40 @@ def get_object_adjacency_scipy(labeled_array, mode="direct"):
     
     return adjacency
 
+# Functions between objects (independent of the grid):
+def same_color(object1, object2):
+    # label // 100
+    return True
+
+
+
+# We define functions to compare the objects through their shapes:
+
+def is_same_shape(arr1, arr2):
+
+    if arr1 is None or arr1.size == 0:
+        return arr2 is None or arr2.size == 0
+    if arr2 is None or arr2.size == 0:
+        return arr1 is None or arr1.size == 0
+
+    return (arr1.shape == arr2.shape) and np.array_equal(arr1, arr2)
+
+def size_mod_is_zero(shape1, shape2):
+    # Sum over all elements of the shape matrix; check for |shape1| mod |shape2| == 0
+    return True
     
+def is_scaled_quadratic(shape1, shape2): 
+    # Scales up each 1x1 block to 2x2
+    return True
+
+def is_rotation(shape1, shape2):
+    # Check whether Rot_x(shape1)==shape2 for x\in 90,180,270
+    return True
+
+def is_flip(shape1, shape):
+    # Check whether Flip_x(shape1)==shape2 for x symmetry axises
+    return True
+
+
+# Create Relations between objects on different grids:
+
