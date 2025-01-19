@@ -116,11 +116,24 @@ def extract_object_shapes(grid):
 
 # Functions to find features on objects shapes:
 
-def max_height_and_width(object): #row-/column number of shape matrix
-    return True
+def max_height_and_width(object_shape): 
+    #Basically unnecessary but maybe helpful for readability
+    return object_shape.shape
 
-def number_of_elements(object): #Sum over Shape matrix
-    return True
+def number_of_elements(object_shape): 
+    #Basically unnecessary but maybe helpful for readability
+    return np.count_nonzero(object_shape)
 
-def find_centroid(object): #Better for all objects at once; grid as input?
+def find_centroid(object_shape): # Finds the "center of mass"
+    coords = np.argwhere(object_shape == 1)
+    if coords.size == 0:
+        return (None, None)
+    
+    r_mean = coords[:, 0].mean()
+    c_mean = coords[:, 1].mean()
+
+    return (r_mean, c_mean)
+
+def find_holes(object_shape):
+    #We use flood-first algo to find holes
     return True

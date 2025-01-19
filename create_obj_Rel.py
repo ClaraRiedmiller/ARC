@@ -110,7 +110,7 @@ def is_scaled_quadratic(shape1, shape2):
     return True
 
 def is_rotation(shape1, shape2):
-    # 0° rotation (Identity excluded)
+    # 0° rotation (Identity excluded; excludes also squares)
     if shape1.shape == shape2.shape and np.array_equal(shape1, shape2):
         return False
     
@@ -124,6 +124,9 @@ def is_rotation(shape1, shape2):
 
 def is_flip(shape1, shape):
         # Horizontal flip (left-right)
+    if shape1.shape == shape2.shape and np.array_equal(shape1, shape2):
+        return False
+
     if np.array_equal(np.fliplr(shape1), shape2):
         return True
     
