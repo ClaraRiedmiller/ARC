@@ -122,7 +122,7 @@ def is_rotation(shape1, shape2):
     
     return False
 
-def is_flip(shape1, shape):
+def is_flip(shape1, shape2):
         # Horizontal flip (left-right)
     if shape1.shape == shape2.shape and np.array_equal(shape1, shape2):
         return False

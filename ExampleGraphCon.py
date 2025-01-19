@@ -13,7 +13,7 @@ from dgl import to_networkx
 if __name__ == "__main__":
     # Example array with multiple "colors"
     # Example usage
-    task = train_set[0]
+    task = train_set[4]
     drawProblem(task, "ForGraphTest")
         # For a single grid:
     grid = task.train[0][0]
