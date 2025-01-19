@@ -9,19 +9,8 @@ import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 
 from create_Obj import label_by_color, get_unique_labels, extract_object_shapes
-from create_Rel import get_object_adjacency_scipy
+from create_Rel import get_object_adjacency_scipy, is_same_shape
 
-def is_same_shape(arr1, arr2):
-    """
-    Return True if arr1 and arr2 have the same shape (dimensions)
-    and same pattern (values).
-    """
-    if arr1 is None or arr1.size == 0:
-        return arr2 is None or arr2.size == 0
-    if arr2 is None or arr2.size == 0:
-        return arr1 is None or arr1.size == 0
-
-    return (arr1.shape == arr2.shape) and np.array_equal(arr1, arr2)
 
 def create_heterograph_with_relations(grid, include_groups=False):
     """
@@ -158,21 +147,20 @@ def create_heterograph_with_relations(grid, include_groups=False):
 
     shape_arrays = []
     for lbl in unique_labels:
-        # Safely retrieve the array if it exists; otherwise use a 0×0 array
         arr = object_shapes.get(lbl, np.zeros((0, 0), dtype=np.uint8))
-        
-        # Optionally check if arr is None (in case object_shapes can store None)
-        # if arr is None:
-        #     arr = np.zeros((0, 0), dtype=np.uint8)
-        
+        if arr is None:
+            arr = np.zeros((0, 0), dtype=np.uint8)
         shape_arrays.append(arr)
 
-    # Find the largest dimension among the shape arrays
+    # Padding is questionable: blows up and we loose the shape correspondence;
+    # Seems to be necessary for a lot of GNN applications. 
+    # Finding shape correspondence could be done earlier and IDd by Integers.
+
     max_dim = 1
     if shape_arrays:
         max_dim = max((max(a.shape) if a.size > 0 else 1) for a in shape_arrays)
 
-    # Now you can proceed to pad each array to (max_dim x max_dim) and flatten
+
     padded_shapes = []
     for arr in shape_arrays:
         h, w = arr.shape if arr.size > 0 else (0, 0)
@@ -201,7 +189,6 @@ def create_heterograph_with_relations(grid, include_groups=False):
     # 9. (Optionally) add node features for 'group' nodes
     # ----------------------------------------------------------------------
     if include_groups:
-        # In a real scenario, you'd have group-level features. 
         # For demonstration, we’ll store a dummy 1D feature for each group node.
         group_feat = torch.zeros(num_group_nodes, 4)  # shape [num_group_nodes, 4]
         g.nodes["group"].data["group_feat"] = group_feat
