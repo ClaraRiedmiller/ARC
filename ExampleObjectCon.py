@@ -5,7 +5,7 @@ from scipy.ndimage import binary_dilation
 import arckit
 import arckit.vis as vis
 from create_Obj import *
-from create_Rel import get_object_adjacency_scipy
+from create_obj_Rel import get_object_adjacency_scipy
 from arckit_handler import drawProblem
 
 train_set, eval_set = arckit.load_data() # Load ARC1 train/eval
@@ -50,4 +50,3 @@ if __name__ == "__main__":
             converted_adj_diagonal = {int(key): [int(n) for n in neighbors] for key, neighbors in adj_diagonal.items()}
             print("\n Diagonally adjacent objects: \n", converted_adj_diagonal)
 
-            

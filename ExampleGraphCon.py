@@ -1,7 +1,7 @@
 from arckit_handler import drawProblem
 from create_Obj import *
 from create_KG import *
-from create_Rel import *
+from create_obj_Rel import *
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm

@@ -9,7 +9,7 @@ import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 
 from create_Obj import label_by_color, get_unique_labels, extract_object_shapes
-from create_Rel import get_object_adjacency_scipy, is_same_shape
+from create_obj_Rel import get_object_adjacency_scipy, is_same_shape
 
 
 def create_heterograph_with_relations(grid, include_groups=False):
@@ -154,7 +154,9 @@ def create_heterograph_with_relations(grid, include_groups=False):
 
     # Padding is questionable: blows up and we loose the shape correspondence;
     # Seems to be necessary for a lot of GNN applications. 
-    # Finding shape correspondence could be done earlier and IDd by Integers.
+    # Finding shape correspondence could be done earlier and IDd by Integers.We still have the original shapes
+    # Maybe just 
+
 
     max_dim = 1
     if shape_arrays:

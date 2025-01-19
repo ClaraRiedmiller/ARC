@@ -52,10 +52,14 @@ def get_object_adjacency_scipy(labeled_array, mode="direct"):
     
     return adjacency
 
-# Functions between objects (independent of the grid):
+###### Functions between objects (independent of the grid): #######
+
+
 def same_color(object1, object2):
-    # label // 100
-    return True
+    # Maybe it would be smarter to extract that information earlier
+    color1 = object1_label // 100
+    color2 = object2_label // 100
+    return color1 == color2
 
 
 
@@ -72,19 +76,71 @@ def is_same_shape(arr1, arr2):
 
 def size_mod_is_zero(shape1, shape2):
     # Sum over all elements of the shape matrix; check for |shape1| mod |shape2| == 0
-    return True
+    size1 = np.count_nonzero(shape1)
+    size2 = np.count_nonzero(shape2)
     
+    if size2 == 0:
+    # Nothing state is never related in size
+        return False
+    
+    return (size1 % size2) == 0
+
+
 def is_scaled_quadratic(shape1, shape2): 
-    # Scales up each 1x1 block to 2x2
+    r1, c1 = shape1.shape
+    r2, c2 = shape2.shape
+    
+    # Check dimension scaling
+    if r2 != 2 * r1 or c2 != 2 * c1:
+        return False
+    
+    # Check each cell
+    for i in range(r1):
+        for j in range(c1):
+            block = shape2[2*i : 2*i+2, 2*j : 2*j+2]
+            if shape1[i, j] == 1:
+                # Block should be all 1s
+                if not np.all(block == 1):
+                    return False
+            else:
+                # Block should be all 0s
+                if not np.all(block == 0):
+                    return False
+    
     return True
 
 def is_rotation(shape1, shape2):
-    # Check whether Rot_x(shape1)==shape2 for x\in 90,180,270
-    return True
+    # 0° rotation (Identity excluded)
+    if shape1.shape == shape2.shape and np.array_equal(shape1, shape2):
+        return False
+    
+    # Check 90°, 180°, 270° using np.rot90
+    for k in [1, 2, 3]:
+        rotated = np.rot90(shape1, k)
+        if rotated.shape == shape2.shape and np.array_equal(rotated, shape2):
+            return True
+    
+    return False
 
 def is_flip(shape1, shape):
-    # Check whether Flip_x(shape1)==shape2 for x symmetry axises
-    return True
+        # Horizontal flip (left-right)
+    if np.array_equal(np.fliplr(shape1), shape2):
+        return True
+    
+    # Vertical flip (up-down)
+    if np.array_equal(np.flipud(shape1), shape2):
+        return True
+    
+    # Flip across the main diagonal (transpose)
+    if np.array_equal(shape1.T, shape2):
+        return True
+    
+    # Flip across the secondary diagonal: rotate 180, then transpose
+    # or equivalently flip shape1 along both axes
+    if np.array_equal(np.flipud(np.fliplr(shape1)), shape2.T):
+        return True
+    
+    return False
 
 
 # Create Relations between objects on different grids:
