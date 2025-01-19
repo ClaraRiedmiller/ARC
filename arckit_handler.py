@@ -30,7 +30,7 @@ def drawProblem(task, file_name):
     vis.drawsvg.Group = GroupWithFont
 
    
-    graphic = vis.draw_task(task, width=10, height=6, label="Problorenz")
+    graphic = vis.draw_task(task, width=14, height=8, label="Problorenz")
     vis.output_drawing(graphic, './problem_images/' + file_name + '.png') 
 
 

@@ -1,7 +1,6 @@
 from objects import *
 
 
-
 def get_object_adjacency_scipy(labeled_array, mode="direct"):
     # Define structuring elements for each mode:
     # 1) direct (orthogonal neighbors only)
@@ -51,3 +50,5 @@ def get_object_adjacency_scipy(labeled_array, mode="direct"):
         adjacency[lbl] = set(neighbor_labels)
     
     return adjacency
+
+    

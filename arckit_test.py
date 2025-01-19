@@ -39,8 +39,8 @@ firstTrainingInput = task.train[0][0]
 
 
 # visualizations. Draw first, then save (this is often how it works in python). They will be saved to a folder. Format can be svg, png or pdf.
-grid = vis.draw_grid(firstTrainingInput, xmax=3, ymax=3, padding=0.5, label="LoLoLorenz")
-vis.output_drawing(grid, "./grid_images/LoLoLorenz.png")
+# grid = vis.draw_grid(firstTrainingInput, xmax=3, ymax=3, padding=0.5, label="LoLoLorenz")
+# vis.output_drawing(grid, "./grid_images/LoLoLorenz.png")
 
 # this one does not work yet - It should visualize a whole problem. I am on it.
 # grid2 = vis.draw_task(train_set[0], width=10, height=6, label="Problorenz")
