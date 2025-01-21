@@ -11,6 +11,12 @@ Dependencies are listed in *requirementes.txt*
 
 
 
+# Resources
+
+A collection of resources that inspired our approach: https://docs.google.com/document/d/1Vun0-QkvoiFlLQucCqk54E-_ZWlo65H7j77A2ixrk-o/edit?tab=t.0
+
+
+
 
 # Setup (Notes for my team)
 
