@@ -22,12 +22,12 @@ if __name__ == "__main__":
         g,
         node_attrs=["color", "shape"], 
         edge_attrs=[], 
-        plot_name="./kg_plots/Graph_Single.png"
+        plot_name="../images/kg_plots/Graph_Single.png"
     )
 
     # Or for multiple subplots (task with 4 known grids):
     visualize_multiple_heterographs(
         task,
         create_graph_func=create_heterograph_with_relations,
-        plot_name="./kg_plots/Graphs_Multiple.png"
+        plot_name="../images/kg_plots/Graphs_Multiple.png"
     )

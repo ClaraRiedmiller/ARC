@@ -17,7 +17,7 @@ def getGrid(task, is_training, which_example, is_in):
 def drawGrid(grid, file_name):
 
     graphic = vis.draw_grid(grid, xmax=3, ymax=3, padding=0.5, label="LoLoLorenz")
-    vis.output_drawing(graphic, './grid_images/' + file_name + '.png')
+    vis.output_drawing(graphic, './images/grid_images/' + file_name + '.png')
 
     
 
@@ -31,7 +31,7 @@ def drawProblem(task, file_name):
 
    
     graphic = vis.draw_task(task, width=14, height=8, label="Problorenz")
-    vis.output_drawing(graphic, './problem_images/' + file_name + '.png') 
+    vis.output_drawing(graphic, './images/problem_images/' + file_name + '.png') 
 
 
 
