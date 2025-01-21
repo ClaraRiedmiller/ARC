@@ -156,4 +156,3 @@ def move_up_edge(object: Object, gridsize: int) -> Object:
         newpixel = (pixel[0], pixel[1] + (gridsize - max_y_value), pixel[2])
         outcome.add(newpixel)
     return outcome 
-
