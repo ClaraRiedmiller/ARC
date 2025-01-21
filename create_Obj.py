@@ -4,11 +4,10 @@ from scipy.ndimage import binary_dilation
 
 import arckit
 import arckit.vis as vis
-train_set, eval_set = arckit.load_data() # Load ARC1 train/eval
+train_set, eval_set = arckit.load_data() 
 
 
 def label_by_color(color, mode="direct"):
-    # 4-connectivity structure (up, down, left, right)
     # Define structuring elements for each mode:
     # 1) direct (orthogonal neighbors only)
     direct_structure = np.array([[0, 1, 0],
@@ -51,7 +50,7 @@ def label_by_color(color, mode="direct"):
         # labeled_mask will have values in [0, 1, 2, ..., n_comp]
         # 0 means "not in the mask" or background, 1..n_comp are distinct objects.
         
-        # Assign final labels: color * 100 + component_id
+        # Assign final labels: color * 100 + component_id; Could fail but we don't want 100 objects anyway
         for comp_id in range(1, n_comp + 1):
             out[labeled_mask == comp_id] = val * 100 + comp_id
 
@@ -81,7 +80,7 @@ def label_coordinates_dict(labeled_array, exclude_zero=True):
     
     return label_coords
 
-def get_quadrant(labeled_array): #Or other important metric for orientation to maybe use in group building process
+def get_quadrant(labeled_array): #Or other orientation to maybe use in group building process
     return True
 
 
@@ -117,11 +116,11 @@ def extract_object_shapes(grid):
 # Functions to find features on objects shapes:
 
 def max_height_and_width(object_shape): 
-    #Basically unnecessary but maybe helpful for readability
+    #Basically unnecessary as function but we might want it as a feature for objects
     return object_shape.shape
 
 def number_of_elements(object_shape): 
-    #Basically unnecessary but maybe helpful for readability
+    #Basically unnecessary as function but we might want it as a feature for objects
     return np.count_nonzero(object_shape)
 
 def find_centroid(object_shape): # Finds the "center of mass"

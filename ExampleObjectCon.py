@@ -12,7 +12,7 @@ train_set, eval_set = arckit.load_data() # Load ARC1 train/eval
 
 if __name__ == "__main__":
     # Example array with multiple "colors" (values)
-    task = train_set[20]
+    task = train_set[100]
     drawProblem(task, "ForGraphTest")
 
     for j in range(len(task.train[0])):     
@@ -23,7 +23,7 @@ if __name__ == "__main__":
             else:
                 print("------Output------:\n")
             
-            labeled_array = label_by_color(example_grid, mode="diagonal")
+            labeled_array = label_by_color(example_grid, mode="direct")
             print("Labeled Object-Grid:\n", labeled_array)
             
             print("\n List of Objects: \n", [int(labeled_object) for labeled_object in get_unique_labels(labeled_array)])
