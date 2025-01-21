@@ -127,7 +127,7 @@ def move_down(object: Object, gridsize: int) -> Object:  #we want tot move the o
 
 def move_left_edge(object: Object, gridsize: int) -> Object:
     outcome = set()
-    min_x_value = min_x(object)
+    min_x_value = x_min(object)
     for pixel in object:
         newpixel = (pixel[0] - min_x_value + 1, pixel[1], pixel[2])
         outcome.add(newpixel)
@@ -135,7 +135,7 @@ def move_left_edge(object: Object, gridsize: int) -> Object:
 
 def move_right_edge(object: Object, gridsize: int) -> Object:
     outcome = set()
-    max_x_value = max_x(object)
+    max_x_value = x_max(object)
     for pixel in object:
         newpixel = (pixel[0] + (gridsize - max_x_value), pixel[1], pixel[2])
         outcome.add(newpixel)
@@ -143,7 +143,7 @@ def move_right_edge(object: Object, gridsize: int) -> Object:
 
 def move_down_edge(object: Object, gridsize: int) -> Object:
     outcome = set()
-    min_y_value = min_y(object)
+    min_y_value = y_min(object)
     for pixel in object:
         newpixel = (pixel[0], pixel[1] - min_y_value + 1, pixel[2])
         outcome.add(newpixel)
@@ -151,7 +151,7 @@ def move_down_edge(object: Object, gridsize: int) -> Object:
 
 def move_up_edge(object: Object, gridsize: int) -> Object:
     outcome = set()
-    max_y_value = max_y(object)
+    max_y_value = y_max(object)
     for pixel in object:
         newpixel = (pixel[0], pixel[1] + (gridsize - max_y_value), pixel[2])
         outcome.add(newpixel)
