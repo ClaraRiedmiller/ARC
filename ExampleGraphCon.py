@@ -16,7 +16,7 @@ if __name__ == "__main__":
     task = train_set[4]
     drawProblem(task, "ForGraphTest")
         # For a single grid:
-    grid = task.train[0][0]
+    grid = task.train[2][1]
     g = create_heterograph_with_relations(grid, include_groups=True)
     visualize_heterograph(
         g,
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     )
 
     # Or for multiple subplots (task with 4 known grids):
-    visualize_multiple_heterographs(
+    visualize_all_train_heterographs(
         task,
         create_graph_func=create_heterograph_with_relations,
         plot_name="./kg_plots/Graphs_Multiple.png"

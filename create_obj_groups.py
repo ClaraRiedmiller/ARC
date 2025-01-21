@@ -222,9 +222,9 @@ def create_groups(grid):
 
 if __name__ == "__main__":
     # Example array with multiple "colors" (values)
-    task = train_set[100]
+    task = train_set[4]
     
-    drawProblem(task, "Problem100")
+    drawProblem(task, "Problem4")
     print(create_groups(task.train[0][0]), "\n")
     print(create_groups(task.train[0][1]))
 

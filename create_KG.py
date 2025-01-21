@@ -11,6 +11,7 @@ import matplotlib.colors as mcolors
 from create_Obj import label_by_color, get_unique_labels, extract_object_shapes
 from create_obj_Rel import get_object_adjacency_scipy, is_same_shape
 
+
 def create_heterograph_with_relations(grid, include_groups=False):
     """
     Create a DGL heterograph with:
@@ -70,6 +71,10 @@ def create_heterograph_with_relations(grid, include_groups=False):
         for i in range(num_object_nodes):
             group_src.append(0)  # group node index
             group_dst.append(i)  # object node index
+    
+    ## Build Group of same size (group -> group)
+
+    ## Build belongs-to-group (objects -> group)
 
     # ----------------------------------------------------------------------
     # 5. Construct data dictionary for the heterograph
@@ -157,11 +162,11 @@ def visualize_heterograph(
     # 1. Default Edge Color Map
     if edge_color_map is None:
         edge_color_map = {
-            "adjacent_to": "blue",
-            "same_shape_as": "red",
-            "contains": "green",
-            "unknown": "black",
-        }
+                ("object", "adjacent_to", "object"): "blue",
+                ("object", "same_shape_as", "object"): "red",
+                ("group", "contains", "object"): "green",
+                "unknown": "black"
+            } # Before fix: "adjacent_to", no tuples. 
 
     # 2. Convert the DGL graph to a NetworkX graph
     #    - Do NOT use 'etype' in edge_attrs or it conflicts with DGL's internal usage
@@ -189,6 +194,8 @@ def visualize_heterograph(
             node_colors.append("gray")
 
     # 5. Map Edge Colors Based on 'relation_type'
+
+    
     edge_colors = []
     for _, _, data_dict in nx_g.edges(data=True):
         rel_type = data_dict.get("relation_type", "unknown")
@@ -222,45 +229,58 @@ def visualize_heterograph(
 ###############################################################################
 # 3. Visualize Multiple Heterographs in a 2x2 Grid
 ###############################################################################
-def visualize_multiple_heterographs(task, create_graph_func, plot_name=None):
+def visualize_all_train_heterographs(task, create_graph_func, plot_name=None):
     """
-    Visualize multiple heterographs in a 2x2 grid layout using grids from a task.
+    Visualize all heterographs in task.train where task.train is of shape (i, 1).
 
     Parameters:
         task: Task object containing the grids (train/test) for a task.
         create_graph_func: Function to create a heterograph from a grid.
         plot_name (str): If provided, saves the combined plot to this path.
     """
-    # Define the grids to process and plot (4 subplots)
-    grids = [
-        (task.train[0][0], "train[0][0]"),
-        (task.train[0][1], "train[0][1]"),
-        (task.train[1][0], "train[1][0]"),
-        (task.train[1][1], "train[1][1]"),
-    ]
-    
-    fig, axes = plt.subplots(2, 2, figsize=(16, 16))
+    num_train = len(task.train)  # Number of training examples
 
-    for idx, (grid, title_str) in enumerate(grids):
-        ax = axes[idx // 2, idx % 2]
+    # Create subplots dynamically based on the number of training examples
+    num_cols = 2  # Each training example has an Input/Output pair
+    num_rows = num_train  # One row per training example
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=(12, 6 * num_rows))
+
+    for row_idx, (input_output_pair) in enumerate(task.train):
+        input_grid, output_grid = input_output_pair[0], input_output_pair[1]
         
-        # Create the heterograph
-        g = create_graph_func(grid, include_groups=True)
-
-        # Reuse single-graph visualization for each subplot
+        # Create and visualize the input grid
+        ax_input = axes[row_idx, 0] if num_train > 1 else axes[0]
+        g_input = create_graph_func(input_grid, include_groups=True)
         visualize_heterograph(
-            g,
-            node_attrs=["color", "shape"], 
-            edge_attrs=[],  # Typically no conflict with 'etype'
+            g_input,
+            node_attrs=["color", "shape"],
+            edge_attrs=[],
             edge_color_map={
-                "adjacent_to": "blue",
-                "same_shape_as": "red",
-                "contains": "green",
-                "unknown": "black",
+                ("object", "adjacent_to", "object"): "blue",
+                ("object", "same_shape_as", "object"): "red",
+                ("group", "contains", "object"): "green",
+                "unknown": "black"
             },
-            ax=ax
+            ax=ax_input
         )
-        ax.set_title(title_str, fontsize=14)
+        ax_input.set_title(f"Train {row_idx + 1}: Input", fontsize=14)
+
+        # Create and visualize the output grid
+        ax_output = axes[row_idx, 1] if num_train > 1 else axes[1]
+        g_output = create_graph_func(output_grid, include_groups=True)
+        visualize_heterograph(
+            g_output,
+            node_attrs=["color", "shape"],
+            edge_attrs=[],
+            edge_color_map={
+                ("object", "adjacent_to", "object"): "blue",
+                ("object", "same_shape_as", "object"): "red",
+                ("group", "contains", "object"): "green",
+                "unknown": "black"
+            },                          #different relation naming: not just adjacent to
+            ax=ax_output
+        )
+        ax_output.set_title(f"Train {row_idx + 1}: Output", fontsize=14)
 
     plt.tight_layout()
     if plot_name:
