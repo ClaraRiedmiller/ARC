@@ -1,3 +1,6 @@
+# ignore everyone's local image folder
+images/
+
 # ignore MAC specific DS_Store
 .DS_Store
 
