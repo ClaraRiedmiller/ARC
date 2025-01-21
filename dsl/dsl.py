@@ -22,7 +22,7 @@ def neighborhood(object: Object, gridesize: int) -> object:     #We want to dete
     return outcome
 
 def pixel_out(object: Object, gridsize: int) -> Object:             # Given an object, we want to the new the pixels on the outside
-    outcome = set{}
+    outcome = set()
     for pixel_1 in object:
         neighborhood_pixel_1 = neighborhood(pixel_1, gridsize)
         for pixel_2 in object:
@@ -36,7 +36,7 @@ def pixel_out(object: Object, gridsize: int) -> Object:             # Given an o
     return outcome
 
 def pixel_out(object: Object, gridsize: int) -> Object:             # Given an object, we want to the new the pixels in the inside
-    outcome = set{}
+    outcome = set()
     for pixel_1 in object:
         neighborhood_pixel_1 = neighborhood(pixel_1, gridsize)
         for pixel_2 in object:
