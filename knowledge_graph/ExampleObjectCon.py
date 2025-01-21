@@ -13,7 +13,6 @@ train_set, eval_set = arckit.load_data() # Load ARC1 train/eval
 if __name__ == "__main__":
     # Example array with multiple "colors" (values)
     task = train_set[100]
-    drawProblem(task, "ForGraphTest")
 
     for j in range(len(task.train[0])):     
         for i in range(2):                  
