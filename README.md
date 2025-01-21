@@ -55,6 +55,9 @@ conda list
 #### in case cairo (needed to process the grid visualisations) does not work, you might need to install it another way. For instance on mac, you can use homebrew (which you need to set up first) to install it. Most helpful article: https://jonathansoma.com/everything/blog/2022/solution-to-no-library-called-cairo-2-was-found-error/
 brew install cairo
 
+*alternatively:* 
+python3 -m pip install "drawsvg[all]"
+
 
 
 ## Git
