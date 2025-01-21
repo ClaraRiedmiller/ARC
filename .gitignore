@@ -1,3 +1,6 @@
+# Loren'z local package
+libcairo.2.dylib
+
 # ignore everyone's local image folder
 images/
 
