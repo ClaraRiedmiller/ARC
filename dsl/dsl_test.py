@@ -1,6 +1,7 @@
 import arckit
 import arckit.vis as vis
 import drawsvg
+from hodel_solver import get_problem_hardness
 
 
 def terminalVis(task):
@@ -31,44 +32,24 @@ def drawProblem(task, file_name):
 
    
     graphic = vis.draw_task(task, width=14, height=8, label="Problorenz")
-    vis.output_drawing(graphic, './images/problem_images/' + file_name + '.png') 
+    vis.output_drawing(graphic, '../images/problem_images/' + file_name + '.png') 
 
 
 
 
 def main():
 
-
     train_set, eval_set = arckit.load_data() 
+    problem_hardness = get_problem_hardness() 
 
 
-    taskNr = 0
-    problem_image_file_name = 'taskno_' + str(taskNr)
+    for problem, lines in problem_hardness.items():
+        if lines < 2:
+            print(f"{problem}: {lines}")
 
-    # load task
-    task = train_set[taskNr]
-
-    # visualize task in terminal
-    terminalVis(task)
-
-
-    # # just to look at the easier problems: visualize the first 10
-    # for i in range(0,30):
-
-    #     taskNr = i
-    #     problem_image_file_name = 'taskno_' + str(taskNr)
-
-    #     drawProblem(train_set[i], problem_image_file_name)
-
-
-    # look at the simple tasks
-    one_liners = ['67a3c6ac', '68b16354', '74dd1130']
-
-    for ol in one_liners:
-
-        problem_image_file_name = 'ol_' + ol
-        drawProblem(train_set[ol], problem_image_file_name)
-
+            problem_image_file_name = 'hardness_' + str(lines) + '_problem_' + problem
+            drawProblem(train_set[problem], problem_image_file_name)
+    
 
 
     # ## looking at specific grid
