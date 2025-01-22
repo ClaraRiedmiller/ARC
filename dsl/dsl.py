@@ -82,7 +82,7 @@ def y_min(object: Object) -> int:
 def rotate_vertical(object: Object, gridsize: int) -> Object: #we want to flip the y-value of the pixels
     outcome = set()
     for pixel in object:
-        newpixel = (pixel[0], gridsize - pixel[1] + 1, pixel[2])
+        newpixel = (pixel[0], gridsize - pixel[1] - 1, pixel[2])
         outcome.add(newpixel) 
     return outcome
 

@@ -1,28 +1,10 @@
 import arckit
 import arckit.vis as vis
 import drawsvg
+import numpy as np
 
 from hodel_solver import get_problem_hardness
 from dsl import *
-
-from typing import TypeAlias, Tuple, Set
-#basic types
-coordinate: TypeAlias = int     #x or y value
-color: TypeAlias = int          #color value
-boolean: TypeAlias = bool       #boolean values 
-
-#complex types
-Pixel: TypeAlias = Tuple[coordinate, coordinate, color]
-Object: TypeAlias = Set[Pixel]  # Note that any grid is hence an object
-
-# Movement DSL 
-def rotate_vertical(object: Object, gridsize: int) -> Object: #we want to flip the y-value of the pixels
-    outcome = set()
-    for pixel in object:
-        newpixel = (pixel[0], gridsize - pixel[1] + 1, pixel[2])
-        outcome.add(newpixel) 
-    return outcome
-
 
 def terminalVis(task):
 
@@ -97,8 +79,8 @@ def reconvert_grid_format(formatted_grid):
     # # Create an empty grid with the specified dimensions
     # grid = [[None for _ in range(height)] for _ in range(width)]
     
-    # Create an empty grid with the specified dimensions
-    grid = [[None for _ in range(height)] for _ in range(width)]
+    # Create an empty grid (numpy array) with the specified dimensions
+    grid = np.array([[None for _ in range(height)] for _ in range(width)])
 
 
     # Iterate over the formatted grid and place the values back into the correct positions
@@ -120,7 +102,7 @@ def main():
     # get specific grid
     grid = getGrid(train_set['68b16354'], True, 0, True)
 
-    print('\n', 'Grid:\n', grid)
+    print('\n', 'Grid:\n', grid, '\n', type(grid))
 
     formatted_grid = convert_grid_format(grid)
 
@@ -132,9 +114,13 @@ def main():
     print('\n', 'Reformatted Grid:\n', recovered_grid)
 
 
-    test_output = reconvert_grid_format(rotate_vertical(formatted_grid, 5))
+    test_output = rotate_vertical(formatted_grid, 5)
+    formatted_test_output = reconvert_grid_format(test_output)
 
     print('\n', 'Test Output:\n', test_output)
+    print('\n', 'Formatted Test Output:\n', formatted_test_output)
+
+    drawGrid(formatted_test_output, 'rotated_test')
 
 
 
