@@ -6,7 +6,7 @@ import arckit
 import arckit.vis as vis
 from create_Obj import *
 from create_obj_Rel import get_object_adjacency_scipy
-from arckit_handler import drawProblem
+from arckit_handler.arckit_handler import drawProblem
 
 train_set, eval_set = arckit.load_data() # Load ARC1 train/eval
 

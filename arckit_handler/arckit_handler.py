@@ -35,41 +35,40 @@ def drawProblem(task, file_name):
 
 
 
-
-def main():
+def get_problem(task_id, terminal_visualize = True, image_visualize = True):
 
     train_set, eval_set = arckit.load_data() 
 
-
-    ## looking at the whole problem
-
-    # set parameters for task
-    taskId = '5582e5ca'
-    problem_image_file_name = str(taskId)
-
     # load task
-    task = train_set[taskId]
+    task = train_set[task_id]
 
     # visualize task in terminal
-    terminalVis(task)
+    if terminal_visualize:
+        terminalVis(task)
 
-    # draw whole problem
-    drawProblem(task, problem_image_file_name)
+    # draw the problem, gets saved into images/problem_images
+    if image_visualize:
+        problem_image_file_name = str(task_id)
+        drawProblem(task, problem_image_file_name)
+
+    return(task.train)
 
 
 
-    ## looking at specific grid
+def get_grid(task_id, terminal_visualize = True, image_visualize = True, is_training = True, which_example = 0, is_in = True):
 
-    # set paramters 
-    is_training = True
-    which_example = 0
-    is_in = True
-    grid_image_file_name = str(taskId) + '_' + str(int(is_training)) + '_' + str(which_example) + '_' + str(is_in)
+    train_set, eval_set = arckit.load_data() 
 
-    # retreive and draw grid
+    # load task
+    task = train_set[task_id]
     grid = getGrid(task, is_training, which_example, is_in)
-    drawGrid(grid, grid_image_file_name)
-   
 
+    if terminal_visualize:
+        print(grid)
 
-main()
+    # draw grid
+    if image_visualize:
+        grid_image_file_name = str(task_id) + '_' + str(int(is_training)) + '_' + str(which_example) + '_' + str(is_in)
+        drawGrid(grid, grid_image_file_name)
+
+    return(grid)

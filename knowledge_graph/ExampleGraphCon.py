@@ -1,4 +1,4 @@
-from arckit_handler import drawProblem
+from arckit_handler.arckit_handler import drawProblem
 from create_Obj import *
 from create_KG import *
 from create_obj_Rel import *

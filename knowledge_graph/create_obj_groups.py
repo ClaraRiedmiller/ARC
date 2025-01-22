@@ -14,7 +14,7 @@ import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from scipy.ndimage import binary_dilation
 
-from arckit_handler import drawProblem
+from arckit_handler.arckit_handler import drawProblem
 import arckit
 import arckit.vis as vis
 train_set, eval_set = arckit.load_data() # Load ARC1 train/eval

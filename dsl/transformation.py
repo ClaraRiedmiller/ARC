@@ -4,19 +4,9 @@ import drawsvg
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from .hodel_hardness import get_hodel_hardness
 from .dsl import *
 
-def getGrid(task, is_training, which_example, is_in):
-
-    return(task.train[which_example][int(not is_in)] if is_training else task.test[which_example][int(not is_in)])
-
-
-def drawGrid(grid, file_name):
-
-    graphic = vis.draw_grid(grid, xmax=3, ymax=3, padding=0.5, label="")
-    vis.output_drawing(graphic, './images/grid_images/' + file_name + '.png')
-
+from arckit_handler.arckit_handler import drawGrid, getGrid
 
 def convert_grid_format(grid):
 
