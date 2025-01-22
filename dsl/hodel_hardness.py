@@ -1,7 +1,7 @@
 # in this file, we create a dictionary with name and number of lines of code needed to solve of training problems hodel hand-coded the solution to. This refers to his specific dsl. We consider solutions up to  6 lines of code to solve. 
 
 
-def get_problem_hardness():
+def get_hodel_hardness():
 
     with open ("./dsl/hodel_solvers.txt", "r") as myfile:
         hodel_string =  myfile.read()
@@ -30,3 +30,13 @@ def get_problem_hardness():
 
     return problem_hardness
 
+
+
+def upper_bound_hardness(upper_bound):
+
+    problem_hardness = get_hodel_hardness() 
+
+    for problem, lines in problem_hardness.items():
+        if lines <= upper_bound:
+            print(f"{problem}: {lines}")
+            

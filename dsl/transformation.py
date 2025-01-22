@@ -4,14 +4,8 @@ import drawsvg
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from hodel_solver import get_problem_hardness
-from dsl import *
-
-def terminalVis(task):
-
-    task.show()
-
-
+from .hodel_hardness import get_hodel_hardness
+from .dsl import *
 
 def getGrid(task, is_training, which_example, is_in):
 
@@ -22,38 +16,6 @@ def drawGrid(grid, file_name):
 
     graphic = vis.draw_grid(grid, xmax=3, ymax=3, padding=0.5, label="")
     vis.output_drawing(graphic, './images/grid_images/' + file_name + '.png')
-
-    
-
-def drawProblem(task, file_name):
-    
-    # Monkey-patch to add embed_google_font to Group
-    class GroupWithFont(drawsvg.Group):
-        def embed_google_font(self, *args, **kwargs):
-            pass  
-    vis.drawsvg.Group = GroupWithFont
-
-   
-    graphic = vis.draw_task(task, width=14, height=8, label="Problorenz")
-    vis.output_drawing(graphic, './images/problem_images/' + file_name + '.png') 
-
-
-
-
-def get_prblm_hrdns_one(train_set):
-
-    problem_hardness = get_problem_hardness() 
-
-
-    for problem, lines in problem_hardness.items():
-        if lines < 3:
-            print(f"{problem}: {lines}")
-
-            problem_image_file_name = 'hardness_' + str(lines) + '_problem_' + str(problem)
-            drawProblem(train_set[problem], problem_image_file_name)
-
-
-
 
 
 def convert_grid_format(grid):
@@ -162,43 +124,26 @@ def visualize_transformation(grid, transgrid, transformation_name, grid_title):
     combined_image.show()
 
 
-def main():
+def apply_transformation(transformation, terminal_visualize = True, image_visualize = True):
 
     train_set, eval_set = arckit.load_data() 
 
-    # specify which dsl transformation we want to apply
-    transformation = move_left
-
-    # specify which grid we want
+    # specify which grid we want. This is just an example one for now that helps to visualize the transformations.
     task_id = '68b16354'
     is_training = True
     which_example = 0
     is_in = True
     grid_image_file_name = str(task_id) + '_' + str(int(is_training)) + '_' + str(which_example) + '_' + str(is_in)
 
-    # get_prblm_hrdns_one(train_set)
-
     # get specific grid
     grid = getGrid(train_set[task_id], True, 0, True)
-
-    print('\n', 'Grid:\n', grid, '\n')
-    drawGrid(grid, 'pre_rotated')
-
     formatted_grid = convert_grid_format(grid)
-    print('\n', 'Formatted grid:\n', formatted_grid)
-
-
-    recovered_grid = reconvert_grid_format(formatted_grid)
-    print('\n', 'Reformatted Grid:\n', recovered_grid)
-
-
     transgrid = reconvert_grid_format(transformation(formatted_grid, 5))
-    print('\n', 'Formatted Test Output:\n', transgrid)
-    # drawGrid(formatted_test_output, 'rotated_test')
 
 
-    visualize_transformation(grid, transgrid, transformation.__name__ , grid_image_file_name)
+    if terminal_visualize:
+        print('\n', 'Grid:\n', grid, '\n')
+        print('\n', 'Transformed Grid:\n', transgrid)
 
-
-
-main()
+    if image_visualize:
+        visualize_transformation(grid, transgrid, transformation.__name__ , grid_image_file_name)
