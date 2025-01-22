@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from .dsl import *
+from . import dsl as module
 
 from arckit_handler.arckit_handler import drawGrid, getGrid
 
@@ -114,9 +115,10 @@ def visualize_transformation(grid, transgrid, transformation_name, grid_title):
     combined_image.show()
 
 
-def apply_transformation(transformation, terminal_visualize = True, image_visualize = True):
+def apply_transformation(transformation_name, terminal_visualize = True, image_visualize = True):
 
     train_set, eval_set = arckit.load_data() 
+    transformation = globals().get(transformation_name)
 
     # specify which grid we want. This is just an example one for now that helps to visualize the transformations.
     task_id = '68b16354'
@@ -128,7 +130,10 @@ def apply_transformation(transformation, terminal_visualize = True, image_visual
     # get specific grid
     grid = getGrid(train_set[task_id], True, 0, True)
     formatted_grid = convert_grid_format(grid)
-    transgrid = reconvert_grid_format(transformation(formatted_grid, 5))
+
+    # TEMP: Lorenz uses a single value for grids and assumes they are square. this will change later! Rn, I am using the height
+    grid_size = max(sublist[1] for sublist in formatted_grid) +1
+    transgrid = reconvert_grid_format(transformation(formatted_grid, grid_size))
 
 
     if terminal_visualize:
