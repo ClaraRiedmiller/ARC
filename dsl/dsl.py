@@ -328,12 +328,12 @@ def project_bigger(object: Object, gridsize: int) -> ObjectGrid: #assumes that s
             for y_value in range(0,grid_ratio):
                     outcome.add((pixel[0]*grid_ratio - x_value,pixel[1]*grid_ratio - y_value,pixel[3]))
     
-    outcome_grid_size = (max_x(outcome) - min_x(outcome) +1, max_y(outcome) - min_y(outcome) + 1) #calculates new gridsize
+    outcome_grid_size = (x_max(outcome) - x_min(outcome) +1, y_max(outcome) - y_min(outcome) + 1) #calculates new gridsize
     return (outcome, outcome_grid_size)
 
 def project_smaller(object: Object, gridsize: int) -> ObjectGrid: #assumes that same ratio for x and y coordinate
     outcome = set()
-    grid_x_value = max_x(object) - min_x(object) + 1
+    grid_x_value = x_max(object) - x_min(object) + 1
     # grid_y_value = max_y(object) - min_y(object) + 1
     grid_ratio =  grid_x_value / gridsize
     if not grid_ratio.is_integer():
@@ -359,7 +359,7 @@ def add_star_around_object(object: Object, color: color, gridsize: int) -> Objec
     for pixel in out_pixels:
         outcome.add(pixel[0],pixel[1], color) #they get the assigned color
     
-    return object, gridesize
+    return object, gridsize
 
 def add_corners_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid:
     outcome = set()
@@ -369,7 +369,7 @@ def add_corners_around_object(object: Object, color: color, gridsize: int) -> Ob
     for pixel in out_pixels:
         outcome.add(pixel[0],pixel[1], color) #they get the assigned color
     
-    return object, gridesize
+    return object, gridsize
 
 def add_border_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid:
     outcome = set()
@@ -379,7 +379,7 @@ def add_border_around_object(object: Object, color: color, gridsize: int) -> Obj
     for pixel in out_pixels:
         outcome.add(pixel[0],pixel[1], color) #they get the assigned color
     
-    return object, gridesize
+    return object, gridsize
 
 def change_color_pixel_in(object: Object, color: color, gridsize) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
     outcome = set()
