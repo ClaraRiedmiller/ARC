@@ -69,7 +69,7 @@ def pixel_in(object: Object, gridsize: int) -> Object:             # Given an ob
                 break
         if len(neighborhood_pixel_1) == 0:                          # If every neighborhood is covered, we know that the object has no empty-space next to it
             outcome.add(pixel_1)
-    for pixel in in outcome:
+    for pixel in outcome:
         result.remove(pixel)
     return result
 
@@ -239,7 +239,7 @@ def move_right(object: Object, gridsize: int) -> Object: #we want tot move the o
 def move_left(object: Object, gridsize: int) -> Object:  #we want tot move the object one pixel to the right 
     outcome = set()
     for pixel in object:
-        if pixel[0] - 1 >= 1:  
+        if pixel[0] - 1 >= 0:  
             newpixel = (pixel[0]  - 1 , pixel[1], pixel[2])
             outcome.add(newpixel) 
     return outcome
@@ -299,7 +299,7 @@ def isolate(object: Object, gridsize: int) -> ObjectGrid:
         newpixel = (pixel[0] - x_min(object) + 1, pixel[1] - y_min(object) + 1, pixel[2])
         outcome.add(newpixel)
     newgridsize = (x_max(object) - x_min(object),y_max(object)-y_min(object) )
-return (outcome, newgridsize)
+    return (outcome, newgridsize)
 
 def color_object_max(object: Object, gridesize: int) -> (Object):
     outcome = set()
@@ -351,7 +351,7 @@ def project_smaller(object: Object, gridsize: int) -> ObjectGrid: #assumes that 
                 outcome.add(value_1, value_2, 0)
     return outcome 
 
-def add_star_around_object(object: Object, color: Color, gridsize: int) -> ObjectGrid:
+def add_star_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid:
     outcome = set()
     for pixel in object: # first we add all the pixels of the object
         outcome.add(pixel)
@@ -361,7 +361,7 @@ def add_star_around_object(object: Object, color: Color, gridsize: int) -> Objec
     
     return object, gridesize
 
-def add_corners_around_object(object: Object, color: Color, gridsize: int) -> ObjectGrid:
+def add_corners_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid:
     outcome = set()
     for pixel in object: # first we add all the pixels of the object
         outcome.add(pixel)
@@ -371,7 +371,7 @@ def add_corners_around_object(object: Object, color: Color, gridsize: int) -> Ob
     
     return object, gridesize
 
-def add_border_around_object(object: Object, color: Color, gridsize: int) -> ObjectGrid:
+def add_border_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid:
     outcome = set()
     for pixel in object: # first we add all the pixels of the object
         outcome.add(pixel)
@@ -381,7 +381,7 @@ def add_border_around_object(object: Object, color: Color, gridsize: int) -> Obj
     
     return object, gridesize
 
-def change_color_pixel_in(object: Object, color: Color, gridsize) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
+def change_color_pixel_in(object: Object, color: color, gridsize) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
     outcome = set()
     for pixel in pixel_in(object, gridsize):
         outcome.add(pixel)
@@ -389,7 +389,7 @@ def change_color_pixel_in(object: Object, color: Color, gridsize) -> ObjectGrid:
         outcome.add(pixel[0], pixel [1], color)
     return outcome
 
-def change_color_pixel_in(object: Object, color: Color, gridsize:int) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
+def change_color_pixel_in(object: Object, color: color, gridsize:int) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
     outcome = set()
     for pixel in pixel_in(object, gridsize):
         outcome.add(pixel[0], pixel [1], color)
@@ -397,45 +397,45 @@ def change_color_pixel_in(object: Object, color: Color, gridsize:int) -> ObjectG
         outcome.add(pixel)
     return outcome
 
-def fill_pixel(object: Object, color: Color, gridsize: int) -> Object: 
+def fill_pixel(object: Object, color: color, gridsize: int) -> Object: 
     outcome = set()
     holes = holes(object, gridsize)
     for pixel in object:
         outcome.add(pixel)
     for pixel in object:
         outcome.add((pixel[0], pixel[1], color))
-    resutl outcome
+    return outcome
 
-def fill_pixel_right(object: Object, color: Color, gridsize: int) -> Object:
+def fill_pixel_right(object: Object, color: color, gridsize: int) -> Object:
     outcome = set()
     gaps = set()
     for y_value in range(0,gridsize):
         y_pixel = set(pixel for pixel in object if pixel[1] == y_value)
         sorted_y_pixel = sorted(y_pixel, key=lambda pixel: pixel[0])
         for i in range(len(sorted_y_pixel)-1):              #generate pxiels to be compared
-        (x1, y1, color1) = sorted_pixels[i]
-        (x2, y2, color2) = sorted_pixels[i + 1]
-        if x2 > x1 + 1:                                     # There is a gap if the x-coordinate
-            for x in range(x1 + 1, x2):                     # Store x,y value of gap
-                gaps.add((x, y_value)) 
+            (x1, y1, color1) = sorted_pixels[i]
+            (x2, y2, color2) = sorted_pixels[i + 1]
+            if x2 > x1 + 1:                                     # There is a gap if the x-coordinate
+                for x in range(x1 + 1, x2):                     # Store x,y value of gap
+                    gaps.add((x, y_value)) 
     for pixel in object: 
         outcome.add(pixel)
     for pixel in gaps:
         outcome.add((pixel[0], pixel[1], color))
     return outcome
 
-def fill_pixel_down(object: Object, color: Color, gridsize: int) -> Object:
+def fill_pixel_down(object: Object, color: color, gridsize: int) -> Object:
     outcome = set()
     gaps = set()
     for x_value in range(0,gridsize):
         x_pixel = set(pixel for pixel in object if pixel[0] == x_value)
         sorted_x_pixel = sorted(x_pixel, key=lambda pixel: pixel[1])
         for i in range(len(sorted_y_pixel)-1):              # generate pixels to be compared
-        (x1, y1, color1) = sorted_pixels[i]
-        (x2, y2, color2) = sorted_pixels[i + 1]
-        if y2 > y1 + 1:                                     # There is a gap if the x-coordinate
-            for y in range(y1 + 1, y2):                     # Store x,y value of gap
-                gaps.add((y, x_value)) 
+            (x1, y1, color1) = sorted_pixels[i]
+            (x2, y2, color2) = sorted_pixels[i + 1]
+            if y2 > y1 + 1:                                     # There is a gap if the x-coordinate
+                for y in range(y1 + 1, y2):                     # Store x,y value of gap
+                    gaps.add((y, x_value)) 
     for pixel in object: 
         outcome.add(pixel)
     for pixel in gaps:
