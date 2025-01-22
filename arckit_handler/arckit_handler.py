@@ -16,7 +16,7 @@ def getGrid(task, is_training, which_example, is_in):
 
 def drawGrid(grid, file_name):
 
-    graphic = vis.draw_grid(grid, xmax=3, ymax=3, padding=0.5, label="LoLoLorenz")
+    graphic = vis.draw_grid(grid, xmax=3, ymax=3, padding=0.5)
     vis.output_drawing(graphic, './images/grid_images/' + file_name + '.png')
 
     
