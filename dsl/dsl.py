@@ -89,7 +89,7 @@ def rotate_vertical(object: Object, gridsize: int) -> Object: #we want to flip t
 def rotate_horizontal(object: Object, gridsize: int) -> Object: #we want to flip the x-value of the pixels
     outcome = set()
     for pixel in object:
-        newpixel = (gridsize - pixel[0] +1, pixel[1], pixel[2])
+        newpixel = (gridsize - pixel[0] + 1, pixel[1], pixel[2])
         outcome.add(newpixel) 
     return outcome
 
@@ -104,7 +104,7 @@ def move_right(object: Object, gridsize: int) -> Object: #we want tot move the o
 def move_left(object: Object, gridsize: int) -> Object:  #we want tot move the object one pixel to the right 
     outcome = set()
     for pixel in object:
-        if pixel[0] - 1 >= 1:  
+        if pixel[0] - 1 >= 0:  
             newpixel = (pixel[0]  - 1 , pixel[1], pixel[2])
             outcome.add(newpixel) 
     return outcome

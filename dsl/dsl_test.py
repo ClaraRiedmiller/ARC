@@ -64,7 +64,7 @@ def convert_grid_format(grid):
 
     for row_index, row in enumerate(grid):
         for column_index, column in enumerate(row):
-            Object.append([row_index, column_index, column])
+            Object.append([column_index, row_index, column])
 
     return Object
 
@@ -72,12 +72,8 @@ def convert_grid_format(grid):
 def reconvert_grid_format(formatted_grid):
 
     # get og grid dimensions
-    width = max(sublist[0] for sublist in formatted_grid) +1
-    height = max(sublist[1] for sublist in formatted_grid) +1
-
-    
-    # # Create an empty grid with the specified dimensions
-    # grid = [[None for _ in range(height)] for _ in range(width)]
+    width = max(sublist[1] for sublist in formatted_grid) +1
+    height = max(sublist[0] for sublist in formatted_grid) +1
     
     # Create an empty grid (numpy array) with the specified dimensions
     grid = np.array([[None for _ in range(height)] for _ in range(width)])
@@ -86,8 +82,7 @@ def reconvert_grid_format(formatted_grid):
     # Iterate over the formatted grid and place the values back into the correct positions
     for item in formatted_grid:
         row_index, column_index, color = item
-        grid[row_index][column_index] = color
-        # grid[row_index][column_index] = value
+        grid[column_index][row_index] = color
 
     return grid
 
@@ -103,24 +98,21 @@ def main():
     grid = getGrid(train_set['68b16354'], True, 0, True)
 
     print('\n', 'Grid:\n', grid, '\n', type(grid))
+    drawGrid(grid, 'pre_rotated')
 
     formatted_grid = convert_grid_format(grid)
-
     print('\n', 'Formatted grid:\n', formatted_grid)
 
 
     recovered_grid = reconvert_grid_format(formatted_grid)
-    
     print('\n', 'Reformatted Grid:\n', recovered_grid)
 
 
-    test_output = rotate_vertical(formatted_grid, 5)
+    test_output = move_left(formatted_grid, 5)
     formatted_test_output = reconvert_grid_format(test_output)
-
     print('\n', 'Test Output:\n', test_output)
     print('\n', 'Formatted Test Output:\n', formatted_test_output)
-
-    drawGrid(formatted_test_output, 'rotated_test')
+    # drawGrid(formatted_test_output, 'rotated_test')
 
 
 
