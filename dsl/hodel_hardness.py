@@ -36,7 +36,11 @@ def upper_bound_hardness(upper_bound):
 
     problem_hardness = get_hodel_hardness() 
 
+    upper_bounded_list = []
+
     for problem, lines in problem_hardness.items():
         if lines <= upper_bound:
-            print(f"{problem}: {lines}")
+            upper_bounded_list.append(f"{problem}: {lines}")
+    
+    return(upper_bounded_list)
             

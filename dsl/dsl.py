@@ -15,30 +15,30 @@ Object: TypeAlias = Set[Pixel]  # Note that any grid is hence an object
 ObjectGrid: TypeAlias = Tuple[Object,Tuple[int,int]] #this type can store gridsize infromattion as width x height 
 
 #Core functions: these functions are not part of the DSL but enable us to detect elements of a structure:
-def neighborhood(object: Object, gridesize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
+def neighborhood(object: Object, gridsize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
     neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1)]
     outcome = set()
     for pixel in object:
         for change in neighbor:
-            if pixel[0] + change[0] >= 0 and pixel[0] + change[0] <= gridesize and pixel[1] + change[1] >= 0 and pixel[1] + change[1] <= gridesize:
+            if pixel[0] + change[0] >= 0 and pixel[0] + change[0] <= gridsize and pixel[1] + change[1] >= 0 and pixel[1] + change[1] <= gridsize:
                 outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
-def neighborhood_with_diagonals(object: Object, gridesize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
+def neighborhood_with_diagonals(object: Object, gridsize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
     neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1), (1,1), (1, -1), (-1,1), (-1,-1)]
     outcome = set()
     for pixel in object:
         for change in neighbor:
-            if pixel[0] + change[0] >= 0 and pixel[0] + change[0] <= gridesize and pixel[1] + change[1] >= 0 and pixel[1] + change[1] <= gridesize:
+            if pixel[0] + change[0] >= 0 and pixel[0] + change[0] <= gridsize and pixel[1] + change[1] >= 0 and pixel[1] + change[1] <= gridsize:
                 outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
-def only_diagonal_neighborhood(object: Object, gridesize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
+def only_diagonal_neighborhood(object: Object, gridsize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
     neighbor = [(1,1), (1, -1), (-1,1), (-1,-1)]
     outcome = set()
     for pixel in object:
         for change in neighbor:
-            if pixel[0] + change[0] >= 0 and pixel[0] + change[0] <= gridesize and pixel[1] + change[1] >= 0 and pixel[1] + change[1] <= gridesize:
+            if pixel[0] + change[0] >= 0 and pixel[0] + change[0] <= gridsize and pixel[1] + change[1] >= 0 and pixel[1] + change[1] <= gridsize:
                 outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
@@ -301,14 +301,22 @@ def isolate(object: Object, gridsize: int) -> ObjectGrid: #isolate an object
     newgridsize = (x_max(object) - x_min(object),y_max(object)-y_min(object) )
     return (outcome, newgridsize)
 
+<<<<<<< HEAD
 def color_object_max(object: Object, gridesize: int) -> (Object): # color an object by its max color
+=======
+def color_object_max(object: Object, gridsize: int) -> (Object):
+>>>>>>> d95580bc5cd868cfc328b746b0061ec67d22ae9d
     outcome = set()
     tobecolor = color_max(object)
     for pixel in object:
         outcome.add((pixel[0], pixel[1], tobecolor))
     return outcome
 
+<<<<<<< HEAD
 def color_object_min(object: Object, gridesize: int) -> (Object): # color an object by its min color
+=======
+def color_object_min(object: Object, gridsize: int) -> (Object):
+>>>>>>> d95580bc5cd868cfc328b746b0061ec67d22ae9d
     outcome = set()
     tobecolor = color_min(object)
     for pixel in object:
@@ -328,12 +336,12 @@ def project_bigger(object: Object, gridsize: int) -> ObjectGrid: #project object
             for y_value in range(0,grid_ratio):
                     outcome.add((pixel[0]*grid_ratio - x_value,pixel[1]*grid_ratio - y_value,pixel[3]))
     
-    outcome_grid_size = (max_x(outcome) - min_x(outcome) +1, max_y(outcome) - min_y(outcome) + 1) #calculates new gridsize
+    outcome_grid_size = (x_max(outcome) - x_min(outcome) +1, y_max(outcome) - y_min(outcome) + 1) #calculates new gridsize
     return (outcome, outcome_grid_size)
 
 def project_smaller(object: Object, gridsize: int) -> ObjectGrid: #object object on smaller grid, assumes that same ratio for x and y coordinate
     outcome = set()
-    grid_x_value = max_x(object) - min_x(object) + 1
+    grid_x_value = x_max(object) - x_min(object) + 1
     # grid_y_value = max_y(object) - min_y(object) + 1
     grid_ratio =  grid_x_value / gridsize
     if not grid_ratio.is_integer():
@@ -359,7 +367,7 @@ def add_star_around_object(object: Object, color: color, gridsize: int) -> Objec
     for pixel in out_pixels:
         outcome.add(pixel[0],pixel[1], color) #they get the assigned color
     
-    return object, gridesize
+    return object, gridsize
 
 def add_corners_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid: # add diagonal corners
     outcome = set()
@@ -369,7 +377,7 @@ def add_corners_around_object(object: Object, color: color, gridsize: int) -> Ob
     for pixel in out_pixels:
         outcome.add(pixel[0],pixel[1], color) #they get the assigned color
     
-    return object, gridesize
+    return object, gridsize
 
 def add_border_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid: # add boundary
     outcome = set()
@@ -379,7 +387,7 @@ def add_border_around_object(object: Object, color: color, gridsize: int) -> Obj
     for pixel in out_pixels:
         outcome.add(pixel[0],pixel[1], color) #they get the assigned color
     
-    return object, gridesize
+    return object, gridsize
 
 def change_color_pixel_in(object: Object, color: color, gridsize) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
     outcome = set()
