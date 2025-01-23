@@ -109,6 +109,29 @@ def is_scaled_quadratic(shape1, shape2):
     
     return True
 
+def is_scaled_quadratic_inverse(shape2, shape1): #reuse is_scaled with switched arguments
+    r1, c1 = shape1.shape
+    r2, c2 = shape2.shape
+    
+    # Check dimension scaling
+    if r2 != 2 * r1 or c2 != 2 * c1:
+        return False
+    
+    # Check each cell
+    for i in range(r1):
+        for j in range(c1):
+            block = shape2[2*i : 2*i+2, 2*j : 2*j+2]
+            if shape1[i, j] == 1:
+                # Block should be all 1s
+                if not np.all(block == 1):
+                    return False
+            else:
+                # Block should be all 0s
+                if not np.all(block == 0):
+                    return False
+    
+    return True
+
 def is_rotation(shape1, shape2):
     # 0° rotation (Identity excluded; excludes also squares)
     if shape1.shape == shape2.shape and np.array_equal(shape1, shape2):
