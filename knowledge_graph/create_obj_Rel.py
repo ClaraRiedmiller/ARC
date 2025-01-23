@@ -1,4 +1,4 @@
-from create_Obj import *
+from knowledge_graph.create_obj import *
 
 #Grid related relations:
 

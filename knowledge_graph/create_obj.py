@@ -7,17 +7,20 @@ import arckit.vis as vis
 train_set, eval_set = arckit.load_data() 
 
 
+def label_objects_by_color(grid, mode="direct"):
+
+
 def label_by_color(color, mode="direct"):
     # Define structuring elements for each mode:
     # 1) direct (orthogonal neighbors only)
     direct_structure = np.array([[0, 1, 0],
-                                [1, 1, 1],
-                                [0, 1, 0]], dtype=bool)
+                                 [1, 1, 1],
+                                [ 0, 1, 0]], dtype=bool)
     
     # 2) diagonal (the 4 corners only)
     diagonal_structure = np.array([[1, 0, 1],
-                                [0, 0, 0],
-                                [1, 0, 1]], dtype=bool)
+                                   [0, 0, 0],
+                                   [1, 0, 1]], dtype=bool)
     
     # 3) 8-way (all neighbors including diagonals)
     eight_structure = np.ones((3,3), dtype=bool)

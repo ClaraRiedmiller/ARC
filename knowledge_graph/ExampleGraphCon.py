@@ -1,30 +1,21 @@
-from arckit_handler.arckit_handler import drawProblem
+import arckit
+import kuzu
+
 from create_Obj import *
-from create_KG import *
+from create_KG import create_knowledge_graph
 from create_obj_Rel import *
 from create_obj_groups import *
 
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.colors as mcolors
-import networkx as nx
-import torch
-from dgl import to_networkx
+
 
 if __name__ == "__main__":
-    # Example array with multiple "colors"
-    # Example usage
-    task = train_set[4]
-    drawProblem(task, "ForGraphTest")
-        # For a single grid:
-    grid = task.train[0][0]
-    g = create_heterograph_with_relations_and_groups(grid)
-    visualize_heterograph(
-        g,
-        node_attrs=["color", "shape"], 
-        edge_attrs=[], 
-        plot_name="images/kg_plots/Graph_Single.png"
-    )
+    # Load the data
+    train_set, _ = arckit.load_data()
+
+    for task in train_set:
+        # Create a task centric knowledge graph
+        knowledge_graph = create_knowledge_graph(task)
+
 
     # Or for multiple subplots (task with 4 known grids):
     visualize_all_train_heterographs(

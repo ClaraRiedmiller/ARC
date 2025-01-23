@@ -1,6 +1,7 @@
+from arckit import Task
+
 import numpy as np
 import torch
-import dgl
 import networkx as nx
 from dgl import to_networkx
 
@@ -8,134 +9,56 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 
-from create_Obj import label_by_color, get_unique_labels, extract_object_shapes
+from knowledge_graph.create_obj import label_by_color, get_unique_labels, extract_object_shapes
 from create_obj_Rel import get_object_adjacency_scipy, is_same_shape
 from create_obj_groups import *
 
+from kuzu_db_manager import KuzuDBManager
 
-# def create_heterograph_with_relations(grid, include_groups=False):
-#     """
-#     Create a DGL heterograph with:
-#       - 'object' node type for each labeled object
-#       - optionally 'group' node type (placeholder)
-#       - edge type 'adjacent_to' for adjacency among objects
-#       - edge type 'same_shape_as' for objects that share the same shape
-#     """
-#     # ----------------------------------------------------------------------
-#     # 1. Identify object-level data
-#     # ----------------------------------------------------------------------
-#     labeled_array = label_by_color(grid, mode="direct")
-#     unique_labels = get_unique_labels(labeled_array, exclude_zero=True)
-#     object_shapes = extract_object_shapes(labeled_array)
+def extract_objects(gird):
+    """
+    Extracts object-level nodes from a grid.
+    """
+    pass
 
-#     # Create adjacency using diagonal connectivity
-#     adjacency = get_object_adjacency_scipy(labeled_array, mode="diagonal")
+def extract_groups(grid):
+    """
+    Extracts group-level nodes from a grid.
+    """
+    pass
 
-#     # Map each label to an integer ID (for 'object' nodes)
-#     label2id = {lbl: i for i, lbl in enumerate(unique_labels)}
-#     num_object_nodes = len(unique_labels)
+def extract_contains_relations(grid):
+    """
+    Extracts contains relations between groups and objects.
+    """
+    pass
 
-#     # ----------------------------------------------------------------------
-#     # 2. Build adjacency edges (object -> object)
-#     # ----------------------------------------------------------------------
-#     adjacency_src, adjacency_dst = [], []
-#     for lbl in unique_labels:
-#         i = label2id[lbl]
-#         neighbors = adjacency.get(lbl, set())
-#         for neigh in neighbors:
-#             adjacency_src.append(i)
-#             adjacency_dst.append(label2id[neigh])
+def create_knowledge_graph(task: Task):
+    knowledge_graph = KuzuDBManager()
+    knowledge_graph.create_schema()
 
-#     # ----------------------------------------------------------------------
-#     # 3. Build same-shape edges (object -> object)
-#     # ----------------------------------------------------------------------
-#     same_shape_src, same_shape_dst = [], []
-#     for i, lbl_i in enumerate(unique_labels):
-#         arr_i = object_shapes[lbl_i]
-#         for j, lbl_j in enumerate(unique_labels):
-#             if j <= i:
-#                 continue
-#             arr_j = object_shapes[lbl_j]
-#             if is_same_shape(arr_i, arr_j):
-#                 # Add edges in both directions
-#                 same_shape_src.extend([i, j])
-#                 same_shape_dst.extend([j, i])
+    for input, output in task.train:
+        # Extract object-level nodes
+        input_objects = extract_objects(input)
+        output_objects = extract_objects(output)
 
-#     # ----------------------------------------------------------------------
-#     # 4. (Optional) Build group nodes & edges
-#     # ----------------------------------------------------------------------
-#     group_src, group_dst = [], []
-#     num_group_nodes = 0
-#     if include_groups:
-#         # Single 'group' node that contains all objects (demo)
-#         num_group_nodes = 1
-#         for i in range(num_object_nodes):
-#             group_src.append(0)  # group node index
-#             group_dst.append(i)  # object node index
-    
-#     ## Build Group of same size (group -> group)
+        # Extract group-level nodes
+        input_groups = extract_groups(input)
+        output_groups = extract_groups(output)
 
-#     ## Build belongs-to-group (objects -> group)
+        # Extract contains relations between groups and objects
+        input_contains = extract_contains_relations(input)
+        output_contains = extract_contains_relations(output)
 
-#     # ----------------------------------------------------------------------
-#     # 5. Construct data dictionary for the heterograph
-#     # ----------------------------------------------------------------------
-#     data_dict = {
-#         ("object", "adjacent_to", "object"): (
-#             torch.tensor(adjacency_src, dtype=torch.int64),
-#             torch.tensor(adjacency_dst, dtype=torch.int64),
-#         ),
-#         ("object", "same_shape_as", "object"): (
-#             torch.tensor(same_shape_src, dtype=torch.int64),
-#             torch.tensor(same_shape_dst, dtype=torch.int64),
-#         ),
-#     }
-#     if include_groups:
-#         data_dict[("group", "contains", "object")] = (
-#             torch.tensor(group_src, dtype=torch.int64),
-#             torch.tensor(group_dst, dtype=torch.int64),
-#         )
+    # Insert the data into the database
+    knowledge_graph.insert_input_objects(input_objects)
+    knowledge_graph.insert_output_objects(output_objects)
+    knowledge_graph.insert_input_groups(input_groups)
+    knowledge_graph.insert_output_groups(output_groups) 
+    knowledge_graph.relationships(input_contains + output_contains)   
 
-#     # ----------------------------------------------------------------------
-#     # 6. Define number of nodes for each type
-#     # ----------------------------------------------------------------------
-#     num_nodes_dict = {"object": num_object_nodes}
-#     if include_groups:
-#         num_nodes_dict["group"] = num_group_nodes
-
-#     # ----------------------------------------------------------------------
-#     # 7. Create the heterograph
-#     # ----------------------------------------------------------------------
-#     g = dgl.heterograph(data_dict, num_nodes_dict=num_nodes_dict)
-
-#     # ----------------------------------------------------------------------
-#     # 8. Add node features for 'object' nodes (color & shape)
-#     # ----------------------------------------------------------------------
-#     colors = np.array([lbl // 100 for lbl in unique_labels], dtype=np.float32)
-#     g.nodes["object"].data["color"] = torch.from_numpy(colors)
-
-#     # Prepare shape features (padded 2D arrays flattened)
-#     shape_arrays = [object_shapes.get(lbl, np.zeros((0, 0), dtype=np.uint8)) for lbl in unique_labels]
-#     max_dim = 1
-#     if shape_arrays:
-#         max_dim = max((max(a.shape) if a.size > 0 else 1) for a in shape_arrays)
-
-#     padded_shapes = []
-#     for arr in shape_arrays:
-#         h, w = arr.shape if arr.size > 0 else (0, 0)
-#         pad_h, pad_w = max_dim - h, max_dim - w
-#         arr_padded = np.pad(arr, ((0, pad_h), (0, pad_w)), mode="constant")
-#         padded_shapes.append(arr_padded.flatten())
-#     shape_features = np.stack(padded_shapes, axis=0).astype(np.float32)
-#     g.nodes["object"].data["shape"] = torch.from_numpy(shape_features)
-
-#     # (Optional) group node features
-#     if include_groups:
-#         group_feat = torch.zeros(num_group_nodes, 4)  # shape [num_group_nodes, 4]
-#         g.nodes["group"].data["group_feat"] = group_feat
-
-#     return g
-
+    # TODO: Extend to add task.test to the knowledge graph so we can make predictions
+    return knowledge_graph
 
 def create_heterograph_with_relations_and_groups(grid):
     """
@@ -280,72 +203,8 @@ def create_heterograph_with_relations_and_groups(grid):
     # ----------------------------------------------------------------------
     # (D) BUILD THE HETEROGRAPH
     # ----------------------------------------------------------------------
-    data_dict = {
-        ("object", "adjacent_to", "object"): (
-            torch.tensor(adjacency_src, dtype=torch.int64),
-            torch.tensor(adjacency_dst, dtype=torch.int64),
-        ),
-        ("object", "same_shape_as", "object"): (
-            torch.tensor(same_shape_src, dtype=torch.int64),
-            torch.tensor(same_shape_dst, dtype=torch.int64),
-        ),
-        ("group", "contains", "object"): (
-            torch.tensor(group_src, dtype=torch.int64),
-            torch.tensor(group_dst, dtype=torch.int64),
-        )
-    }
-
-    num_nodes_dict = {
-        "object": num_object_nodes,
-        "group":  num_group_nodes
-    }
-
-    g = dgl.heterograph(data_dict, num_nodes_dict=num_nodes_dict)
-
-    # ----------------------------------------------------------------------
-    # (E) ADD NODE FEATURES
-    # ----------------------------------------------------------------------
-    # -- For object nodes
-    g.nodes["object"].data["color"] = torch.from_numpy(object_colors)              # shape [N]
-    g.nodes["object"].data["shape"] = torch.from_numpy(shape_features)             # shape [N, max_dim*max_dim]
-    g.nodes["object"].data["bbox"]  = torch.from_numpy(object_bboxes)              # shape [N, 2]
-
-    # -- For group nodes
-    # Build group features: group_type, group_size, average color
-    group_type_list = []
-    group_size_list = []
-    group_avg_color_list = []
-
-    # Precompute object color dict for quick lookups
-    lbl2color = {lbl: (lbl // 100) for lbl in unique_labels}
-
-    for (gid, lbl_set, gtype_str) in group_node_entries:
-        # group_type as integer code
-        code = group_type_map.get(gtype_str, 0)  # default 0 if not found
-        group_type_list.append(code)
-
-        # group_size = number of objects in lbl_set
-        size_val = len(lbl_set)
-        group_size_list.append(size_val)
-
-        # average color among members
-        if size_val > 0:
-            # gather colors from each object
-            cols = [lbl2color[lbl] for lbl in lbl_set if lbl in lbl2color]
-            avg_col = float(np.mean(cols)) if len(cols) > 0 else 0.0
-        else:
-            avg_col = 0.0
-        group_avg_color_list.append(avg_col)
-
-    group_type_tensor = torch.tensor(group_type_list, dtype=torch.int64)      # shape [num_group_nodes]
-    group_size_tensor = torch.tensor(group_size_list, dtype=torch.float32)    # shape [num_group_nodes]
-    group_avg_color   = torch.tensor(group_avg_color_list, dtype=torch.float32)
-
-    g.nodes["group"].data["group_type"] = group_type_tensor
-    g.nodes["group"].data["group_size"] = group_size_tensor.unsqueeze(-1)   # shape [num_group_nodes, 1]
-    g.nodes["group"].data["avg_color"]  = group_avg_color.unsqueeze(-1)     # shape [num_group_nodes, 1]
-
-    return g
+    
+    return 
 
 
 ###############################################################################
