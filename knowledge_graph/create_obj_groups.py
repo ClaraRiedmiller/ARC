@@ -14,7 +14,7 @@ import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from scipy.ndimage import binary_dilation
 
-from arckit_handler.arckit_handler import drawProblem
+from arckit_handler import drawProblem
 import arckit
 import arckit.vis as vis
 train_set, eval_set = arckit.load_data() # Load ARC1 train/eval
@@ -50,7 +50,7 @@ def create_color_group(obj_color_dict, obj_shapes):
     for lbl, color_val in obj_color_dict.items():
         # Skip objects with <= 2 pixels
         shape_arr = obj_shapes.get(lbl, None)
-        if shape_arr is None or np.count_nonzero(shape_arr) <= 2:
+        if shape_arr is None or np.count_nonzero(shape_arr) <= 1: # We don't want restriction in size here.
             continue
         
         if color_val not in color_groups:
@@ -62,8 +62,6 @@ def create_color_group(obj_color_dict, obj_shapes):
 def create_shape_group(obj_shape_dict):
     """
     Group objects that share the exact same 2D shape (binary array),
-    skipping shapes with <= 2 pixels.
-
     Parameters
     ----------
     obj_shape_dict : dict
@@ -76,7 +74,7 @@ def create_shape_group(obj_shape_dict):
     """
     shape_groups = {}
     for lbl, shape_arr in obj_shape_dict.items():
-        if np.count_nonzero(shape_arr) <= 2:
+        if np.count_nonzero(shape_arr) <= 1: # For restriction in size higher number.
             # Skip small objects
             continue
         
@@ -89,8 +87,7 @@ def create_shape_group(obj_shape_dict):
 
 def create_adjacency_group(obj_adjacency_dict, obj_shapes):
     """
-    Group objects that are connected via adjacency. That is, we find connected
-    components in the adjacency dict. Skip objects with <= 2 pixels.
+    Group objects that are connected via adjacency. 
 
     Parameters
     ----------
@@ -106,7 +103,7 @@ def create_adjacency_group(obj_adjacency_dict, obj_shapes):
     """
     # Filter out small objects
     valid_labels = set(lbl for lbl, shape in obj_shapes.items()
-                       if np.count_nonzero(shape) > 2)
+                       if np.count_nonzero(shape) > 0) # Increase to exclude smaller objects
 
     visited = set()
     groups = []
@@ -133,8 +130,6 @@ def create_adjacency_group(obj_adjacency_dict, obj_shapes):
 
 def create_shape_color_group(obj_shape_dict, obj_color_dict):
     """
-    Group objects that share both shape and color, ignoring objects with <= 2 pixels.
-
     Returns
     -------
     dict
@@ -142,7 +137,7 @@ def create_shape_color_group(obj_shape_dict, obj_color_dict):
     """
     shape_color_groups = {}
     for lbl, shape_arr in obj_shape_dict.items():
-        if np.count_nonzero(shape_arr) <= 2:
+        if np.count_nonzero(shape_arr) <= 1: # increase to exclude smaller objects
             continue
         color_val = obj_color_dict.get(lbl, None)
         if color_val is None:
@@ -167,7 +162,7 @@ def create_rotations_group(obj_shape_dict):
         shape_i = obj_shape_dict[lbl_i]
         if lbl_i in visited:
             continue
-        if np.count_nonzero(shape_i) <= 2:
+        if np.count_nonzero(shape_i) <= 2: # increase to exclude smaller objects.
             continue
 
         # We will group all shapes that rotate into shape_i
@@ -177,13 +172,13 @@ def create_rotations_group(obj_shape_dict):
         for j in range(i + 1, len(labels)):
             lbl_j = labels[j]
             shape_j = obj_shape_dict[lbl_j]
-            if lbl_j not in visited and np.count_nonzero(shape_j) > 2:
+            if lbl_j not in visited and np.count_nonzero(shape_j) >= 2: # increase to exclude smaller objects
                 if is_rotation(shape_i, shape_j):
                     group_set.add(lbl_j)
                     visited.add(lbl_j)
 
         # Add group only if it has at least 2 objects
-        if len(group_set) >= 2:
+        if len(group_set) >= 2: 
             rotation_groups.append(group_set)
 
     return rotation_groups
@@ -222,9 +217,9 @@ def create_groups(grid):
 
 if __name__ == "__main__":
     # Example array with multiple "colors" (values)
-    task = train_set[4]
+    task = train_set[3]
     
-    drawProblem(task, "Problem4")
+    drawProblem(task, "Problem3")
     print(create_groups(task.train[0][0]), "\n")
     print(create_groups(task.train[0][1]))
 

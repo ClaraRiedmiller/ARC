@@ -1,8 +1,8 @@
 from arckit_handler.arckit_handler import drawProblem
-from create_Obj import *
-from create_KG import *
-from create_obj_Rel import *
-from create_obj_groups import *
+from knowledge_graph/create_Obj import *
+from knowledge_graph/create_KG import *
+from knowledge_graph/create_obj_Rel import *
+from knowledge_graph/create_obj_groups import *
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
