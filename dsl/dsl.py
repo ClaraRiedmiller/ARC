@@ -301,22 +301,14 @@ def isolate(object: Object, gridsize: int) -> ObjectGrid: #isolate an object
     newgridsize = (x_max(object) - x_min(object),y_max(object)-y_min(object) )
     return (outcome, newgridsize)
 
-<<<<<<< HEAD
-def color_object_max(object: Object, gridesize: int) -> (Object): # color an object by its max color
-=======
 def color_object_max(object: Object, gridsize: int) -> (Object):
->>>>>>> d95580bc5cd868cfc328b746b0061ec67d22ae9d
     outcome = set()
     tobecolor = color_max(object)
     for pixel in object:
         outcome.add((pixel[0], pixel[1], tobecolor))
     return outcome
 
-<<<<<<< HEAD
-def color_object_min(object: Object, gridesize: int) -> (Object): # color an object by its min color
-=======
 def color_object_min(object: Object, gridsize: int) -> (Object):
->>>>>>> d95580bc5cd868cfc328b746b0061ec67d22ae9d
     outcome = set()
     tobecolor = color_min(object)
     for pixel in object:
@@ -452,7 +444,7 @@ def fill_pixel_down(object: Object, color: color, gridsize: int) -> Object: # co
 
 
  # DSL grid modifications
- def grid_add_down(object: Object, gridsize: int, color : color) -> Object: #add one more gridline at the bottom
+def grid_add_down(object: Object, gridsize: int, color : color) -> Object: #add one more gridline at the bottom
     outcome = set()
     for pixel in object:
         outcome.add(pixel)
@@ -461,7 +453,7 @@ def fill_pixel_down(object: Object, color: color, gridsize: int) -> Object: # co
         outcome.add(newpixel)
     return outcome
 
- def grid_add_up(object: Object, gridsize: int, color : color) -> Object: #add one more gridline at the top
+def grid_add_up(object: Object, gridsize: int, color : color) -> Object: #add one more gridline at the top
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
@@ -480,7 +472,7 @@ def grid_add_right(object: Object, gridsize: int, color : color) -> Object: #add
         outcome.add(newpixel)
     return outcome
 
- def grid_add_left(object: Object, gridsize: int, color : color) -> Object: #add one more gridline left
+def grid_add_left(object: Object, gridsize: int, color : color) -> Object: #add one more gridline left
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] +1, pixel[1], pixel[2])
@@ -522,7 +514,7 @@ def grid_duplicate_down(object: Object, gridsize: int) -> Object: #add one more 
         outcome.add(newpixel)
     return outcome
 
- def grid_duplicate_up(object: Object, gridsize: int, color : color) -> Object: #add one more gridline by duplication the top line
+def grid_duplicate_up(object: Object, gridsize: int, color : color) -> Object: #add one more gridline by duplication the top line
     outcome = set()
     for pixel in object:      
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
@@ -543,7 +535,7 @@ def grid_duplicate_right(object: Object, gridsize: int, color : color) -> Object
         outcome.add(newpixel)
     return outcome
 
- def grid_duplicate_left(object: Object, gridsize: int, color : color) -> Object: ##add one more gridline by duplication the left line
+def grid_duplicate_left(object: Object, gridsize: int, color : color) -> Object: ##add one more gridline by duplication the left line
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] +1, pixel[1], pixel[2])
