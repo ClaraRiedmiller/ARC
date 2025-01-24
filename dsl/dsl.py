@@ -14,37 +14,37 @@ Pixel: TypeAlias = Tuple[coordinate, coordinate, color]
 Object: TypeAlias = Set[Pixel]  # Note that any grid is hence an object
 
 #Core functions: these functions are not part of the DSL but enable us to detect elements of a structure:
-def neighborhood(object: Object, gridsize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
+def neighborhood(object: Object) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
     neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1)]
     outcome = set()
     for pixel in object:
         for change in neighbor:
-            if pixel[0] + change[0] >= 0 and pixel[0] + change[0] <= gridsize and pixel[1] + change[1] >= 0 and pixel[1] + change[1] <= gridsize:
+            if 0 <= pixel[0] + change[0] <= gridsize[0] and  0 <= pixel[1] + change[1] <= gridsize[1]:
                 outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
-def neighborhood_with_diagonals(object: Object, gridsize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
+def neighborhood_with_diagonals(object: Object) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
     neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1), (1,1), (1, -1), (-1,1), (-1,-1)]
     outcome = set()
     for pixel in object:
         for change in neighbor:
-            if pixel[0] + change[0] >= 0 and pixel[0] + change[0] <= gridsize and pixel[1] + change[1] >= 0 and pixel[1] + change[1] <= gridsize:
+            if 0 <= pixel[0] + change[0] <= gridsize[0]  and   0 <= pixel[1] + change[1] <= gridsize[1]:
                 outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
-def only_diagonal_neighborhood(object: Object, gridsize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
+def only_diagonal_neighborhood(object: Object) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
     neighbor = [(1,1), (1, -1), (-1,1), (-1,-1)]
     outcome = set()
     for pixel in object:
         for change in neighbor:
-            if pixel[0] + change[0] >= 0 and pixel[0] + change[0] <= gridsize and pixel[1] + change[1] >= 0 and pixel[1] + change[1] <= gridsize:
+            if  0 <= pixel[0] + change[0] < =gridsize[0] and 0 <= pixel[1] + change[1] <= gridsize[1]:
                 outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
-def pixel_out(object: Object, gridsize: int) -> Object:             # Given an object, we want to the pixels on the outside
+def pixel_out(object: Object) -> Object:             # Given an object, we want to the pixels on the outside
     outcome = set()
     for pixel_1 in object:
-        neighborhood_pixel_1 = neighborhood(pixel_1, gridsize)
+        neighborhood_pixel_1 = neighborhood(pixel_1)
         for pixel_2 in object:
             pixel_2_check = (pixel_2[0],pixel_2[1], pixel_1[2])     # We want to check whether an object is in the 
             if  pixel_2_check in neighborhood_pixel_1:
@@ -55,11 +55,11 @@ def pixel_out(object: Object, gridsize: int) -> Object:             # Given an o
             outcome.add(pixel_1)
     return outcome
 
-def pixel_in(object: Object, gridsize: int) -> Object:             # Given an object, we want to the pixels in the inside
+def pixel_in(object: Object) -> Object:             # Given an object, we want to the pixels in the inside
     result = object
     outcome = set()
     for pixel_1 in object:
-        neighborhood_pixel_1 = neighborhood(pixel_1, gridsize)
+        neighborhood_pixel_1 = neighborhood(pixel_1)
         for pixel_2 in object:
             pixel_2_check = (pixel_2[0],pixel_2[1], pixel_1[2])     # We want to check whether an object is in the  neighborhood of pixel_1
             if  pixel_2_check in neighborhood_pixel_1:
@@ -72,11 +72,11 @@ def pixel_in(object: Object, gridsize: int) -> Object:             # Given an ob
         result.remove(pixel)
     return result
 
-def holes(object: Object, gridsize: int) -> Object:  # outputs a set containing pixel-holes of an object
+def holes(object: Object) -> Object:  # outputs a set containing pixel-holes of an object
     outcome = set()
     object_xy = set((x,y) for x,y,c in object)
-    for x in range(gridsize):
-        for y in range(gridsize):
+    for x in range(gridsize[0]):
+        for y in range(gridsize[1]):
             if (x,y) in object_xy:
                 continue 
             left = (x - 1, y) in object_xy
@@ -88,12 +88,12 @@ def holes(object: Object, gridsize: int) -> Object:  # outputs a set containing 
                 holes.add((x,y))
     return outcome 
 
-def pixel_out_with_uncovered_neighbors(object: Object, gridsize: int) -> (Object, Object):
+def pixel_out_with_uncovered_neighbors(object: Object) -> (Object, Object):
     outside_pixels = set()
     uncovered_neighbors = set()
 
     for pixel_1 in object:
-        neighborhood_pixel_1 = neighborhood(pixel_1, gridsize)
+        neighborhood_pixel_1 = neighborhood(pixel_1)
         local_uncovered = set(neighborhood_pixel_1)  # Start with all neighbors.
 
         for pixel_2 in object:
@@ -110,12 +110,12 @@ def pixel_out_with_uncovered_neighbors(object: Object, gridsize: int) -> (Object
     return outside_pixels, uncovered_neighbors
 
 
-def pixel_out_with_uncovered_neighbors_with_diagonal(object: Object, gridsize: int) -> (Object, Object):
+def pixel_out_with_uncovered_neighbors_with_diagonal(object: Object) -> (Object, Object):
     outside_pixels = set()
     uncovered_neighbors = set()
 
     for pixel_1 in object: 
-        neighborhood_pixel_1 = neighborhood_with_diagonal(pixel_1, gridsize)
+        neighborhood_pixel_1 = neighborhood_with_diagonal(pixel_1)
         local_uncovered = set(neighborhood_pixel_1)  # Start with all neighbors.
 
         for pixel_2 in object:
@@ -131,12 +131,12 @@ def pixel_out_with_uncovered_neighbors_with_diagonal(object: Object, gridsize: i
 
     return outside_pixels, uncovered_neighbors
 
-def pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(object: Object, gridsize: int) -> (Object, Object):
+def pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(object: Object) -> (Object, Object):
     outside_pixels = set()
     uncovered_neighbors = set()
 
     for pixel_1 in object:
-        neighborhood_pixel_1 = only_diagonal_neighborhood(pixel_1, gridsize)
+        neighborhood_pixel_1 = only_diagonal_neighborhood(pixel_1)
         local_uncovered = set(neighborhood_pixel_1)  # Start with all neighbors.
 
         for pixel_2 in object:
@@ -218,30 +218,30 @@ def color_order(object: Object) -> list[color]: # Generalisation of min, max
 
 
 # mirrors on x axis
-def flip_xax(object: Object, gridsize: int) -> Object: #we want to flip the y-value of the pixels
+def flip_xax(object: Object) -> Object: #we want to flip the y-value of the pixels
     outcome = set()
     for pixel in object:
-        newpixel = (pixel[0], gridsize - pixel[1] - 1, pixel[2])
+        newpixel = (pixel[0], gridsize[1] - pixel[1] - 1, pixel[2])
         outcome.add(newpixel) 
     return outcome
 
 # mirrors on y axis
-def flip_yax(object: Object, gridsize: int) -> Object: #we want to flip the x-value of the pixels
+def flip_yax(object: Object) -> Object: #we want to flip the x-value of the pixels
     outcome = set()
     for pixel in object:
-        newpixel = (gridsize - pixel[0] -1, pixel[1], pixel[2])
+        newpixel = (gridsize[0] - pixel[0] -1, pixel[1], pixel[2])
         outcome.add(newpixel) 
     return outcome
 
-def move_right(object: Object, gridsize: int) -> Object: #we want to move the object one pixel to the right 
+def move_right(object: Object) -> Object: #we want to move the object one pixel to the right 
     outcome = set()
     for pixel in object:
-        if pixel[0] + 1 <= gridsize:  
+        if pixel[0] + 1 <= gridsize[0]:  
             newpixel = (pixel[0] +1 , pixel[1], pixel[2])
             outcome.add(newpixel) 
     return outcome
 
-def move_left(object: Object, gridsize: int) -> Object:  #we want tot move the object one pixel to the right 
+def move_left(object: Object) -> Object:  #we want tot move the object one pixel to the right 
     outcome = set()
     for pixel in object:
         if pixel[0] - 1 >= 0:  
@@ -249,85 +249,85 @@ def move_left(object: Object, gridsize: int) -> Object:  #we want tot move the o
             outcome.add(newpixel) 
     return outcome
 
-def move_up(object: Object, gridsize: int) -> Object: #we want tot move the object one pixel up 
+def move_down(object: Object) -> Object: #we want tot move the object one pixel up 
     outcome = set()
     for pixel in object:
-        if pixel[1] + 1 <= gridsize:  
+        if pixel[1] + 1 <= gridsize[1]:  
             newpixel = (pixel[0], pixel[1] + 1, pixel[2])
             outcome.add(newpixel) 
     return outcome
 
-def move_down(object: Object, gridsize: int) -> Object:  #we want to move the object one pixel down
+def move_up(object: Object) -> Object:  #we want to move the object one pixel down
     outcome = set()
     for pixel in object:
-        if pixel[1] - 1 >= 1:  
+        if pixel[1] - 1 >= 0:  
             newpixel = (pixel[0], pixel[1] - 1, pixel[2])
             outcome.add(newpixel) 
     return outcome
 
-def move_left_edge(object: Object, gridsize: int) -> Object: # move to left edge
+def move_left_edge(object: Object) -> Object: # move to left edge
     outcome = set()
     min_x_value = x_min(object)
     for pixel in object:
-        newpixel = (pixel[0] - min_x_value + 1, pixel[1], pixel[2])
+        newpixel = (pixel[0] - min_x_value, pixel[1], pixel[2])
         outcome.add(newpixel)
     return outcome 
 
-def move_right_edge(object: Object, gridsize: int) -> Object: #move to right edge
+def move_right_edge(object: Object) -> Object: #move to right edge
     outcome = set()
     max_x_value = x_max(object)
     for pixel in object:
-        newpixel = (pixel[0] + (gridsize - max_x_value), pixel[1], pixel[2])
+        newpixel = (pixel[0] + (gridsize[0] - max_x_value - 1), pixel[1], pixel[2])
         outcome.add(newpixel)
     return outcome 
 
-def move_down_edge(object: Object, gridsize: int) -> Object: # move to bottom edge
+def move_up_edge(object: Object) -> Object: # move to bottom edge
     outcome = set()
     min_y_value = y_min(object)
     for pixel in object:
-        newpixel = (pixel[0], pixel[1] - min_y_value + 1, pixel[2])
+        newpixel = (pixel[0], pixel[1] - min_y_value, pixel[2])
         outcome.add(newpixel)
     return outcome 
 
-def move_up_edge(object: Object, gridsize: int) -> Object: # move to top edge
+def move_down_edge(object: Object) -> Object: # move to top edge
     outcome = set()
     max_y_value = y_max(object)
     for pixel in object:
-        newpixel = (pixel[0], pixel[1] + (gridsize - max_y_value), pixel[2])
+        newpixel = (pixel[0], pixel[1] + (gridsize[1] - max_y_value - 1), pixel[2])
         outcome.add(newpixel)
     return outcome 
 
 ### DSL Transform 
-def isolate(object: Object, gridsize: int) -> ObjectGrid: #isolate an object
+def isolate(object: Object) -> ObjectGrid: #isolate an object
     outcome= set()
     for pixel in object:
-        newpixel = (pixel[0] - x_min(object) + 1, pixel[1] - y_min(object) + 1, pixel[2])
+        newpixel = (pixel[0] - x_min(object), pixel[1] - y_min(object), pixel[2])
         outcome.add(newpixel)
     #newgridsize = (x_max(object) - x_min(object),y_max(object)-y_min(object) )
     return outcome
 
-def color_object_max(object: Object, gridsize: int) -> (Object):
+def color_object_max(object: Object) -> (Object):
     outcome = set()
     tobecolor = color_max(object)
     for pixel in object:
         outcome.add((pixel[0], pixel[1], tobecolor))
     return outcome
 
-def color_object_min(object: Object, gridsize: int) -> (Object):
+def color_object_min(object: Object) -> (Object):
     outcome = set()
     tobecolor = color_min(object)
     for pixel in object:
         outcome.add((pixel[0], pixel[1], tobecolor))
     return outcome
 
-def project_bigger(object: Object, gridsize: int) -> ObjectGrid: #project object on bigger grid, assumes that same ratio for x and y coordinate
+def project_bigger(object: Object) -> Object: #project object on bigger grid, assumes that same ratio for x and y coordinate
     outcome = set()
     grid_x_value = x_max(object) - x_min(object) + 1
     # grid_y_value = max_y(object) - min_y(object) + 1
-    grid_ratio = gridsize / grid_x_value #we assume that gridsize value is bigger (because of project_bigger) @Lorenz what if we resize the grid before, is this just a separate operation? 
+    grid_ratio = gridsize[0] / grid_x_value #we assume that gridsize value is bigger (because of project_bigger) @Lorenz what if we resize the grid before, is this just a separate operation? 
 
     if not grid_ratio.is_integer():
-        return (object, gridsize)
+        return object
     
     for pixel in object: # duplicates the pixel into multiple pixels according to the ratio
         for x_value in range(0,grid_ratio): 
@@ -335,18 +335,18 @@ def project_bigger(object: Object, gridsize: int) -> ObjectGrid: #project object
                     outcome.add((pixel[0]*grid_ratio - x_value,pixel[1]*grid_ratio - y_value,pixel[3]))
     
     # outcome_grid_size = (x_max(outcome) - x_min(outcome) +1, y_max(outcome) - y_min(outcome) + 1)
-    return (outcome)
+    return outcome
     
 
-def project_smaller(object: Object, gridsize: int) -> ObjectGrid: #object object on smaller grid, assumes that same ratio for x and y coordinate
+def project_smaller(object: Object) -> Object: #object object on smaller grid, assumes that same ratio for x and y coordinate
     outcome = set()
     grid_x_value = x_max(object) - x_min(object) + 1
     # grid_y_value = max_y(object) - min_y(object) + 1
 
     # we do not want to resize the whole grid? I am not sure @Lorenz. This relates to the issue of reasoning about the object itself or relative to the whole grid
-    grid_ratio =  grid_x_value / gridsize
+    grid_ratio =  grid_x_value / gridsize[0]
     if not grid_ratio.is_integer() or int(grid_ratio) == 1:
-        return (object)
+        return object
 
     grid_ratio = int(grid_ratio)
     for value_1 in range(1,grid_ratio +1): #to shrink x-value
@@ -374,65 +374,65 @@ def project_smaller(object: Object, gridsize: int) -> ObjectGrid: #object object
     #             outcome.add(value_1, value_2, 0)
     # return outcome 
 
-def add_star_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid: # add star-like pixels
+def add_star_around_object(object: Object) -> Object: # add star-like pixels
     outcome = set()
     for pixel in object: # first we add all the pixels of the object
         outcome.add(pixel)
-    out_pixels = pixel_out_with_uncovered_neighbors(object, gridsize) # then we add the surronding objects
+    out_pixels = pixel_out_with_uncovered_neighbors(object) # then we add the surronding objects
     for pixel in out_pixels:
         outcome.add((pixel[0],pixel[1], color)) #they get the assigned color
     
-    return object, gridsize
+    return object
 
-def add_corners_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid: # add diagonal corners
+def add_corners_around_object(object: Object) -> Object: # add diagonal corners
     outcome = set()
     for pixel in object: # first we add all the pixels of the object
         outcome.add(pixel)
-    out_pixels = pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(object, gridsize) # then we add the surronding corners
+    out_pixels = pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(object) # then we add the surronding corners
     for pixel in out_pixels:
         outcome.add((pixel[0],pixel[1], color)) #they get the assigned color
     
-    return object, gridsize
+    return object
 
-def add_border_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid: # add boundary
+def add_border_around_object(object: Object) -> Object: # add boundary
     outcome = set()
     for pixel in object: # first we add all the pixels of the object
         outcome.add(pixel)
-    out_pixels = pixel_out_with_uncovered_neighbors_with_diagonal(object, gridsize) # then we add the surronding corners
+    out_pixels = pixel_out_with_uncovered_neighbors_with_diagonal(object) # then we add the surronding corners
     for pixel in out_pixels:
-        outcome.add(pixel[0],pixel[1], color) #they get the assigned color
+        outcome.add((pixel[0],pixel[1], color)) #they get the assigned color
     
-    return object, gridsize
+    return object
 
-def change_color_pixel_out(object: Object, color: color, gridsize) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
+def change_color_pixel_out(object: Object) -> Object: # only change the color of pixels classified as out-side pixels 
     outcome = set()
-    for pixel in pixel_in(object, gridsize):
+    for pixel in pixel_in(object):
         outcome.add(pixel)
-    for  pixel in pixel_out(object, gridsize):
+    for  pixel in pixel_out(object):
         outcome.add((pixel[0], pixel [1], color))
     return outcome
 
-def change_color_pixel_in(object: Object, color: color, gridsize:int) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
+def change_color_pixel_in(object: Object) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
     outcome = set()
-    for pixel in pixel_in(object, gridsize):
+    for pixel in pixel_in(object):
         outcome.add((pixel[0], pixel [1], color))
-    for  pixel in pixel_out(object, gridsize):
+    for  pixel in pixel_out(object):
         outcome.add(pixel)
     return outcome
 
-def fill_pixel(object: Object, color: color, gridsize: int) -> Object: # fill pixel within an object
+def fill_pixel(object: Object) -> Object: # fill pixel within an object
     outcome = set()
-    holes = holes(object, gridsize)
+    holes = holes(object)
     for pixel in object:
         outcome.add(pixel)
     for pixel in object:
         outcome.add((pixel[0], pixel[1], color))
     return outcome
 
-def fill_pixel_right(object: Object, color: color, gridsize: int) -> Object: # combine pixels on the same x-value but with a gap 
+def fill_pixel_right(object: Object) -> Object: # combine pixels on the same x-value but with a gap 
     outcome = set()
     gaps = set()
-    for y_value in range(0,gridsize):
+    for y_value in range(0,gridsize[0]):
         y_pixel = set(pixel for pixel in object if pixel[1] == y_value)
         sorted_y_pixel = sorted(y_pixel, key=lambda pixel: pixel[0])
         for i in range(len(sorted_y_pixel)-1):              #generate pxiels to be compared
@@ -447,10 +447,10 @@ def fill_pixel_right(object: Object, color: color, gridsize: int) -> Object: # c
         outcome.add((pixel[0], pixel[1], color))
     return outcome
 
-def fill_pixel_down(object: Object, color: color, gridsize: int) -> Object: # combine pixels on the same y-value but with a gap
+def fill_pixel_down(object: Object) -> Object: # combine pixels on the same y-value but with a gap
     outcome = set()
     gaps = set()
-    for x_value in range(0,gridsize):
+    for x_value in range(0,gridsize[1]):
         x_pixel = set(pixel for pixel in object if pixel[0] == x_value)
         sorted_x_pixel = sorted(x_pixel, key=lambda pixel: pixel[1])
         for i in range(len(sorted_y_pixel)-1):              # generate pixels to be compared
@@ -467,77 +467,77 @@ def fill_pixel_down(object: Object, color: color, gridsize: int) -> Object: # co
 
 
  # DSL grid modifications
-def grid_add_down(object: Object, gridsize: int, color : color) -> Object: #add one more gridline at the bottom
+def grid_add_down(object: Object) -> Object: #add one more gridline at the bottom
     outcome = set()
     for pixel in object:
         outcome.add(pixel)
-    for x_value in (range, gridsize):
-        newpixel = (x_value, gridsize, color)
+    for x_value in (range, gridsize[0]):
+        newpixel = (x_value, gridsize[1], color)
         outcome.add(newpixel)
     return outcome
 
-def grid_add_up(object: Object, gridsize: int, color : color) -> Object: #add one more gridline at the top
+def grid_add_up(object: Object) -> Object: #add one more gridline at the top
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
         outcome.add(newpixel)
-    for x_value in (range, gridsize):
+    for x_value in (range, gridsize[0]):
         newpixel = (x_value, 0, color)
         outcome.add(newpixel)
     return outcome
 
-def grid_add_right(object: Object, gridsize: int, color : color) -> Object: #add one more gridline right
+def grid_add_right(object: Object) -> Object: #add one more gridline right
     outcome = set()
     for pixel in object:
         outcome.add(pixel)
-    for y_value in (range, gridsize):
-        newpixel = (gridsize, y_value, color)
+    for y_value in (range, gridsize[1]):
+        newpixel = (gridsize[0], y_value, color)
         outcome.add(newpixel)
     return outcome
 
-def grid_add_left(object: Object, gridsize: int, color : color) -> Object: #add one more gridline left
+def grid_add_left(object: Object) -> Object: #add one more gridline left
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] +1, pixel[1], pixel[2])
         outcome.add(newpixel)
-    for y_value in (range, gridsize):
+    for y_value in (range, gridsize[1]):
         newpixel = (0, y_value, color)
         outcome.add(newpixel)
     return outcome
 
-def grid_add_up_and_down (object: Object, gridsize: int, color: color) -> Object: #add one more gridline at top and bottom
+def grid_add_up_and_down (object: Object) -> Object: #add one more gridline at top and bottom
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
         outcome.add(newpixel)
-    for x_value in (range, gridsize):
+    for x_value in (range, gridsize[0]):
         newpixel_1 = (x_value, 0, color) #first line 
         outcome.add(newpixel_1)
-        newpixel_2 = (x_value, gridsize + 1, color) #last line 
+        newpixel_2 = (x_value, gridsize[1] + 1, color) #last line 
     return outcome
 
-def grid_add_left_and_right (object: Object, gridsize: int, color: color) -> Object: #add one more gridline at left and right 
+def grid_add_left_and_right (object: Object) -> Object: #add one more gridline at left and right 
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] + 1, pixel[1], pixel[2])
         outcome.add(newpixel)
-    for y_value in (range, gridsize):
+    for y_value in (range, gridsize[1]):
         newpixel_1 = (0, y_value, color) #first line 
         outcome.add(newpixel_1)
-        newpixel_2 = (gridsize + 1, y_value, color) #last line 
+        newpixel_2 = (gridsize[0] + 1, y_value, color) #last line 
     return outcome
 
-def grid_duplicate_down(object: Object, gridsize: int) -> Object: #add one more gridline by duplication the bottom line
+def grid_duplicate_down(object: Object) -> Object: #add one more gridline by duplication the bottom line
     outcome = set()
     for pixel in object:
         outcome.add(pixel)
-    sorted_object = filter(lambda pixel: pixel[1] == gridsize - 1, object)
+    sorted_object = filter(lambda pixel: pixel[1] == gridsize[1] - 1, object)
     for pixel in filtered_pixels:
-        newpixel = (pixel[0], gridsize, pixel[2])
+        newpixel = (pixel[0], gridsize[1], pixel[2])
         outcome.add(newpixel)
     return outcome
 
-def grid_duplicate_up(object: Object, gridsize: int, color : color) -> Object: #add one more gridline by duplication the top line
+def grid_duplicate_up(object: Object) -> Object: #add one more gridline by duplication the top line
     outcome = set()
     for pixel in object:      
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
@@ -548,17 +548,17 @@ def grid_duplicate_up(object: Object, gridsize: int, color : color) -> Object: #
         outcome.add(newpixel)
     return outcome
 
-def grid_duplicate_right(object: Object, gridsize: int, color : color) -> Object: #add one more gridline by duplication the right line
+def grid_duplicate_right(object: Object) -> Object: #add one more gridline by duplication the right line
     outcome = set()
     for pixel in object:
         outcome.add(pixel)
-    sorted_object = filter(lambda pixel: pixel[0] == gridsize - 1, object)
+    sorted_object = filter(lambda pixel: pixel[0] == gridsize[0] - 1, object)
     for pixel in filtered_pixels:
-        newpixel = (gridsize, pixel[1], pixel[2])
+        newpixel = (gridsize[0], pixel[1], pixel[2])
         outcome.add(newpixel)
     return outcome
 
-def grid_duplicate_left(object: Object, gridsize: int, color : color) -> Object: ##add one more gridline by duplication the left line
+def grid_duplicate_left(object: Object) -> Object: ##add one more gridline by duplication the left line
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] +1, pixel[1], pixel[2])
@@ -570,32 +570,32 @@ def grid_duplicate_left(object: Object, gridsize: int, color : color) -> Object:
     return outcome
 
 
-def grid_duplicate_up_and_down (object: Object, gridsize: int, color: color) -> Object: #duplication of top and bottom
+def grid_duplicate_up_and_down (object: Object) -> Object: #duplication of top and bottom
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
         outcome.add(newpixel)
     sorted_object_up = filter(lambda pixel: pixel[1] == 0, object)
-    sorted_object_down = filter(lambda pixel: pixel[1] == gridsize - 1, object)
+    sorted_object_down = filter(lambda pixel: pixel[1] == gridsize[1] - 1, object)
     for pixel in sorted_object_up:   # new first line
         newpixel = (pixel[0], 0, pixel[2])
         outcome.add(newpixel)
     for pixel in sorted_object_down: # new last line 
-        newpixel = (pixel[0], gridsize + 1, pixel[2])
+        newpixel = (pixel[0], gridsize[1] + 1, pixel[2])
         outcome.add(newpixel)
     return outcome
 
-def grid_duplicate_left_and_right (object: Object, gridsize: int, color: color) -> Object: #duplication of left and right
+def grid_duplicate_left_and_right (object: Object) -> Object: #duplication of left and right
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] + 1, pixel[1], pixel[2])
         outcome.add(newpixel)
     sorted_object_left = filter(lambda pixel: pixel[0] == 0, object)
-    sorted_object_right = filter(lambda pixel: pixel[0] == gridsize - 1, object)
+    sorted_object_right = filter(lambda pixel: pixel[0] == gridsize[0] - 1, object)
     for pixel in sorted_object_left:   # new first line
         newpixel = (0, pixel[1], pixel[2])
         outcome.add(newpixel)
     for pixel in sorted_object_down: # new last line 
-        newpixel = (gridsize + 1, pixel[1] ,pixel[2])
+        newpixel = (gridsize[0] + 1, pixel[1] ,pixel[2])
         outcome.add(newpixel)
     return outcome
