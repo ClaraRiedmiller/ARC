@@ -12,7 +12,6 @@ boolean: TypeAlias = bool       #boolean values
 #complex types
 Pixel: TypeAlias = Tuple[coordinate, coordinate, color]
 Object: TypeAlias = Set[Pixel]  # Note that any grid is hence an object
-ObjectGrid: TypeAlias = Tuple[Object,Tuple[int,int]] #this type can store gridsize infromattion as width x height 
 
 #Core functions: these functions are not part of the DSL but enable us to detect elements of a structure:
 def neighborhood(object: Object, gridsize: int) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
@@ -304,8 +303,8 @@ def isolate(object: Object, gridsize: int) -> ObjectGrid: #isolate an object
     for pixel in object:
         newpixel = (pixel[0] - x_min(object) + 1, pixel[1] - y_min(object) + 1, pixel[2])
         outcome.add(newpixel)
-    newgridsize = (x_max(object) - x_min(object),y_max(object)-y_min(object) )
-    return (outcome, newgridsize)
+    #newgridsize = (x_max(object) - x_min(object),y_max(object)-y_min(object) )
+    return outcome
 
 def color_object_max(object: Object, gridsize: int) -> (Object):
     outcome = set()
@@ -405,18 +404,18 @@ def add_border_around_object(object: Object, color: color, gridsize: int) -> Obj
     
     return object, gridsize
 
-def change_color_pixel_in(object: Object, color: color, gridsize) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
+def change_color_pixel_out(object: Object, color: color, gridsize) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
     outcome = set()
     for pixel in pixel_in(object, gridsize):
         outcome.add(pixel)
     for  pixel in pixel_out(object, gridsize):
-        outcome.add(pixel[0], pixel [1], color)
+        outcome.add((pixel[0], pixel [1], color))
     return outcome
 
 def change_color_pixel_in(object: Object, color: color, gridsize:int) -> ObjectGrid: # only change the color of pixels classified as out-side pixels 
     outcome = set()
     for pixel in pixel_in(object, gridsize):
-        outcome.add(pixel[0], pixel [1], color)
+        outcome.add((pixel[0], pixel [1], color))
     for  pixel in pixel_out(object, gridsize):
         outcome.add(pixel)
     return outcome
