@@ -154,28 +154,33 @@ def pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(object: Object
     return outside_pixels, uncovered_neighbors
 
 def x_max(object: Object) -> coordinate:
-    x_max = object[0][0]            # Initialize with the x-coordinate of the first pixel
+    # x_max = object[0][0]            # Initialize with the x-coordinate of the first pixel
+    x_max =  next(iter(object))[0]  
     for pixel in object:
         if pixel[0] > x_max:        # Compare the x-coordinate of each pixel
             x_max = pixel[0]
     return x_max
 
 def x_min(object: Object) -> coordinate:
-    x_min = object[0][0]            # Initialize with the x-coordinate of the first pixel
+    # x_min = object[0][0]            # Initialize with the x-coordinate of the first pixel
+    x_min =  next(iter(object))[0]  
     for pixel in object:
         if pixel[0] < x_min:        # Compare the x-coordinate of each pixel
             x_min = pixel[0]
     return x_min   
 
 def y_max(object: Object) -> coordinate:
-    y_max = object[0][1]            # Initialize with the y-coordinate of the first pixel
+    # y_max = object[0][1]            # Initialize with the y-coordinate of the first pixel
+    y_max =  next(iter(object))[1]  
     for pixel in object:
         if pixel[1] > y_max:        # Compare the y-coordinate of each pixel
             y_max = pixel[1]
     return y_max
 
 def y_min(object: Object) -> coordinate:
-    y_min = object[0][1]            # Initialize with the y-coordinate of the first pixel
+    # y_min = object[0][1]            # Initialize with the y-coordinate of the first pixel @Lorenz: object is a set, not a list! You cannot refer to it like this, instead we just draw an element from the set. I changed it below:
+    y_min =  next(iter(object))[1]   
+    
     for pixel in object:
         if pixel[1] < y_min:        # Compare the y-coordinate of each pixel
             y_min = pixel[1]
@@ -213,22 +218,23 @@ def color_order(object: Object) -> list[color]: # Generalisation of min, max
     return [farbe for farbe, count in sorted_colors] #return only color
 
 
-# Movement DSL 
-def rotate_vertical(object: Object, gridsize: int) -> Object: #we want to flip the y-value of the pixels
+# mirrors on x axis
+def flip_xax(object: Object, gridsize: int) -> Object: #we want to flip the y-value of the pixels
     outcome = set()
     for pixel in object:
-        newpixel = (pixel[0], gridsize - pixel[1] + 1, pixel[2])
+        newpixel = (pixel[0], gridsize - pixel[1] - 1, pixel[2])
         outcome.add(newpixel) 
     return outcome
 
-def rotate_horizontal(object: Object, gridsize: int) -> Object: #we want to flip the x-value of the pixels
+# mirrors on y axis
+def flip_yax(object: Object, gridsize: int) -> Object: #we want to flip the x-value of the pixels
     outcome = set()
     for pixel in object:
-        newpixel = (gridsize - pixel[0] +1, pixel[1], pixel[2])
+        newpixel = (gridsize - pixel[0] -1, pixel[1], pixel[2])
         outcome.add(newpixel) 
     return outcome
 
-def move_right(object: Object, gridsize: int) -> Object: #we want tot move the object one pixel to the right 
+def move_right(object: Object, gridsize: int) -> Object: #we want to move the object one pixel to the right 
     outcome = set()
     for pixel in object:
         if pixel[0] + 1 <= gridsize:  
@@ -317,9 +323,10 @@ def color_object_min(object: Object, gridsize: int) -> (Object):
 
 def project_bigger(object: Object, gridsize: int) -> ObjectGrid: #project object on bigger grid, assumes that same ratio for x and y coordinate
     outcome = set()
-    grid_x_value = max_x(object) - min_x(object) + 1
+    grid_x_value = x_max(object) - x_min(object) + 1
     # grid_y_value = max_y(object) - min_y(object) + 1
-    grid_ratio = gridsize / grid_x_value #we assume that gridsize value is bigger (because of project_bigger)
+    grid_ratio = gridsize / grid_x_value #we assume that gridsize value is bigger (because of project_bigger) @Lorenz what if we resize the grid before, is this just a separate operation? 
+
     if not grid_ratio.is_integer():
         return (object, gridsize)
     
@@ -328,28 +335,45 @@ def project_bigger(object: Object, gridsize: int) -> ObjectGrid: #project object
             for y_value in range(0,grid_ratio):
                     outcome.add((pixel[0]*grid_ratio - x_value,pixel[1]*grid_ratio - y_value,pixel[3]))
     
-    outcome_grid_size = (x_max(outcome) - x_min(outcome) +1, y_max(outcome) - y_min(outcome) + 1) #calculates new gridsize
-    return (outcome, outcome_grid_size)
+    # outcome_grid_size = (x_max(outcome) - x_min(outcome) +1, y_max(outcome) - y_min(outcome) + 1)
+    return (outcome)
+    
 
 def project_smaller(object: Object, gridsize: int) -> ObjectGrid: #object object on smaller grid, assumes that same ratio for x and y coordinate
     outcome = set()
     grid_x_value = x_max(object) - x_min(object) + 1
     # grid_y_value = max_y(object) - min_y(object) + 1
+
+    # we do not want to resize the whole grid? I am not sure @Lorenz. This relates to the issue of reasoning about the object itself or relative to the whole grid
     grid_ratio =  grid_x_value / gridsize
-    if not grid_ratio.is_integer():
-        return (object, gridsize)
-    
+    if not grid_ratio.is_integer() or int(grid_ratio) == 1:
+        return (object)
+
+    grid_ratio = int(grid_ratio)
     for value_1 in range(1,grid_ratio +1): #to shrink x-value
-        for value_2 in range(1, grid_ratio +1): # to shirk y-value
+        for value_2 in range(1, grid_ratio +1): # to shrink y-value
             subgrid = set()
-            for pixel in object:
-                if pixel[0] / grid_ratio < value_1 and pixel[1] / grid_ratio < value_2:
-                    subgrid.add(pixel)
+            for (x,y,c) in object:
+                if x / grid_ratio < value_1 and y / grid_ratio < value_2:
+                    subgrid.add((x,y,c))
             if color_max(subgrid) is not None: # does this work??   
-                outcome.add(value_1, value_2, color_max(subgrid)) #add new pixel to final object
+                outcome.add((value_1, value_2, color_max(subgrid))) #add new pixel to final object
             else:
-                outcome.add(value_1, value_2, 0)
+                outcome.add((value_1, value_2, 0))
     return outcome 
+    
+    # for value_1 in range(1,grid_ratio +1): #to shrink x-value
+    #     for value_2 in range(1, grid_ratio +1): # to shrink y-value
+    #         subgrid = set()
+    #         for pixel in object:
+    #             if pixel[0] / grid_ratio < value_1 and pixel[1] / grid_ratio < value_2:
+    #                 print(type(pixel))
+    #                 subgrid.add(pixel)
+    #         if color_max(subgrid) is not None: # does this work??   
+    #             outcome.add(value_1, value_2, color_max(subgrid)) #add new pixel to final object
+    #         else:
+    #             outcome.add(value_1, value_2, 0)
+    # return outcome 
 
 def add_star_around_object(object: Object, color: color, gridsize: int) -> ObjectGrid: # add star-like pixels
     outcome = set()
@@ -357,7 +381,7 @@ def add_star_around_object(object: Object, color: color, gridsize: int) -> Objec
         outcome.add(pixel)
     out_pixels = pixel_out_with_uncovered_neighbors(object, gridsize) # then we add the surronding objects
     for pixel in out_pixels:
-        outcome.add(pixel[0],pixel[1], color) #they get the assigned color
+        outcome.add((pixel[0],pixel[1], color)) #they get the assigned color
     
     return object, gridsize
 
@@ -367,7 +391,7 @@ def add_corners_around_object(object: Object, color: color, gridsize: int) -> Ob
         outcome.add(pixel)
     out_pixels = pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(object, gridsize) # then we add the surronding corners
     for pixel in out_pixels:
-        outcome.add(pixel[0],pixel[1], color) #they get the assigned color
+        outcome.add((pixel[0],pixel[1], color)) #they get the assigned color
     
     return object, gridsize
 

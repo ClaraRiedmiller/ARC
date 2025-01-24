@@ -14,13 +14,16 @@ def convert_grid_format(grid):
     # convert into Lorenz' prefered format
 
     # empty Object
-    Object = []
+    object = []
 
     for row_index, row in enumerate(grid):
         for column_index, column in enumerate(row):
-            Object.append([column_index, row_index, column])
+            object.append([column_index, row_index, column])
 
-    return Object
+    # the above creates a list of lists. The dsl though uses sets of touples. Since we are typing, this is an important distiction! Thus, we convert to a set of touples
+    object = {tuple(pixel) for pixel in object}
+
+    return object
 
 
 def reconvert_grid_format(formatted_grid):
@@ -29,8 +32,8 @@ def reconvert_grid_format(formatted_grid):
     width = max(sublist[1] for sublist in formatted_grid) +1
     height = max(sublist[0] for sublist in formatted_grid) +1
     
-    # Create an empty grid (numpy array) with the specified dimensions
-    grid = np.array([[None for _ in range(height)] for _ in range(width)])
+    # Create an empty grid (numpy array; empty here means filled with 0, which is the bg color in most cases.) with the specified dimensions
+    grid = np.array([[0 for _ in range(height)] for _ in range(width)])
 
 
     # Iterate over the formatted grid and place the values back into the correct positions
@@ -41,7 +44,7 @@ def reconvert_grid_format(formatted_grid):
     return grid
 
 
-def visualize_transformation(grid, transgrid, transformation_name, grid_title):
+def visualize_transformation(grid, transgrid, transformation_name, grid_title, show):
 
     def fill_transparent_area(image, fill_color):
         # Ensure the image is in RGBA mode (so it has an alpha channel)
@@ -73,9 +76,9 @@ def visualize_transformation(grid, transgrid, transformation_name, grid_title):
     image1_filled = fill_transparent_area(image1, bg_color)
     image2_filled = fill_transparent_area(image2, bg_color)
 
-    # Ensure both images have the same height (resize if necessary)
-    if image1.height != image2.height:
-        image2 = image2.resize((int(image2.width * (image1.height / image2.height))), image1.height)
+    # # Ensure both images have the same height (resize if necessary)
+    # if image1.height != image2.height:
+    #     image2 = image2.resize((int(image2.width * (image1.height / image2.height))), image1.height)
 
     # Calculate the total width and create a blank canvas
     text_height = 50  # Space for the title and arrow text
@@ -112,10 +115,12 @@ def visualize_transformation(grid, transgrid, transformation_name, grid_title):
 
     # Save or show the result
     combined_image.save('./images/dsl_images/' + file_name_transformation + '.png')
-    combined_image.show()
+
+    if show:
+        combined_image.show()
 
 
-def apply_transformation(transformation_name, terminal_visualize = True, image_visualize = True):
+def apply_transformation(transformation_name, terminal_visualize = True, image_visualize = True, show=True):
 
     train_set, eval_set = arckit.load_data() 
     transformation = globals().get(transformation_name)
@@ -131,7 +136,7 @@ def apply_transformation(transformation_name, terminal_visualize = True, image_v
     grid = getGrid(train_set[task_id], True, 0, True)
     formatted_grid = convert_grid_format(grid)
 
-    # TEMP: Lorenz uses a single value for grids and assumes they are square. this will change later! Rn, I am using the height
+    # TEMP: Lorenz uses a single value for grids and assumes they are square. this will change later! Rn, I am using the height. This method only works when reasoning on the grid level! Otherwise, we will have to give this paramter separately
     grid_size = max(sublist[1] for sublist in formatted_grid) +1
     transgrid = reconvert_grid_format(transformation(formatted_grid, grid_size))
 
@@ -141,4 +146,4 @@ def apply_transformation(transformation_name, terminal_visualize = True, image_v
         print('\n', 'Transformed Grid:\n', transgrid)
 
     if image_visualize:
-        visualize_transformation(grid, transgrid, transformation.__name__ , grid_image_file_name)
+        visualize_transformation(grid, transgrid, transformation.__name__ , grid_image_file_name, show)

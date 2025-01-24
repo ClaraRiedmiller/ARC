@@ -1,5 +1,3 @@
-from typing import TypeAlias, Tuple, Set
-
 from dsl.transformation import apply_transformation
 from dsl.dsl import *
 from dsl.hodel_hardness import upper_bound_hardness
@@ -25,23 +23,33 @@ dsl_functions = get_dsl_functions()
 
 
 filtered_dict = {key: value for key, value in dsl_functions.items() if value['inputs'] == ['object', 'gridsize']}
-print(filtered_dict)
 
-forbidden_functions = ['holes', 'isolate', 'pixel_in', 'pixel_out', 'pixel_out_with_uncovered_neighbors' ,'pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood', 'pixel_out_with_uncovered_neighbors_with_diagonal', 'project_bigger', 'project_smaller']
+
+forbidden_functions = ['holes', 'isolate', 'pixel_in', 'pixel_out', 'pixel_out_with_uncovered_neighbors' ,'pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood', 'pixel_out_with_uncovered_neighbors_with_diagonal', 'project_bigger', 'grid_duplicate_down']
 broken_functions = ['move_down', 'move_down_edge', 'move_left_edge', 'move_right', 'move_right_edge', 'move_up', 'move_up_edge', 'neighborhood', 'rotate_horizontal', 'rotate_vertical']
 working_functions = ['color_object_max', 'color_object_min', 'move_left', 'color_object_max', 'color_object_min', 'move_left', 'color_object_max', 'color_object_min', 'move_left', 'color_object_max', 'color_object_min', 'move_left', 'neighborhood_with_diagonals', 'only_diagonal_neighborhood']
 
+testing_functions = ['project_smaller']
 
-# I sorted the functions we have right now into three buckets (see above). Should be self-explanatory, otherwise ask me, Lorenz :)
-for function, type in filtered_dict.items():
-    print('\n', function)
-    if function in broken_functions:
-        apply_transformation(function, image_visualize=False)
-    elif function in forbidden_functions:
-        print('forbidden function!')
-    else:
-        print('last working function:', working_functions)
-        working_functions.append(function)
-        apply_transformation(function)
 
+
+for function in testing_functions:
+    apply_transformation(function, show=False)
+
+
+# # I sorted the functions we have right now into three buckets (see above). Should be self-explanatory, otherwise ask me, Lorenz :)
+# for function, type in filtered_dict.items():
+#     print('\n', function)
+#     if function in forbidden_functions or function in testing_functions:
+#         print('forbidden function or testing')
+#     # elif function in forbidden_functions:
+#     #     print('forbidden function!')
+#     else:
+#         # print('last working function:', working_functions)
+#         # working_functions.append(function)
+#         apply_transformation(function, show=False)
+
+
+
+        
 
