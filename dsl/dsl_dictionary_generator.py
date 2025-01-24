@@ -1,7 +1,6 @@
 import csv
 import pprint
 
-from dsl.transformation import apply_transformation
 from dsl.dsl import *
 from dsl.dsl_features import get_dsl_functions
 

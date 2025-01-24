@@ -1,4 +1,3 @@
-import arckit
 import arckit.vis as vis
 import drawsvg
 import numpy as np
@@ -120,20 +119,10 @@ def visualize_transformation(grid, transgrid, transformation_name, grid_title, s
         combined_image.show()
 
 
-def apply_transformation(transformation_name, terminal_visualize = True, image_visualize = True, show=True):
+def apply_transformation(grid, grid_name, transformation_name, terminal_visualize = True, image_visualize = True, show=True):
 
-    train_set, eval_set = arckit.load_data() 
     transformation = globals().get(transformation_name)
 
-    # specify which grid we want. This is just an example one for now that helps to visualize the transformations.
-    task_id = '68b16354'
-    is_training = True
-    which_example = 0
-    is_in = True
-    grid_image_file_name = str(task_id) + '_' + str(int(is_training)) + '_' + str(which_example) + '_' + str(is_in)
-
-    # get specific grid
-    grid = getGrid(train_set[task_id], True, 0, True)
     formatted_grid = convert_grid_format(grid)
 
     # TEMP: Lorenz uses a single value for grids and assumes they are square. this will change later! Rn, I am using the height. This method only works when reasoning on the grid level! Otherwise, we will have to give this paramter separately
@@ -146,4 +135,6 @@ def apply_transformation(transformation_name, terminal_visualize = True, image_v
         print('\n', 'Transformed Grid:\n', transgrid)
 
     if image_visualize:
-        visualize_transformation(grid, transgrid, transformation.__name__ , grid_image_file_name, show)
+        visualize_transformation(grid, transgrid, transformation.__name__ , grid_name, show)
+
+    return(transgrid)
