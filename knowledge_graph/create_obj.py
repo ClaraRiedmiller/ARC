@@ -4,11 +4,6 @@ import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from scipy.ndimage import binary_dilation
 
-import arckit
-import arckit.vis as vis
-train_set, eval_set = arckit.load_data() 
-
-
 def label_components(grid, mode="direct"):          # formerly called label_by_color
     """
     Labels connected pixels of the same color in grid as components.

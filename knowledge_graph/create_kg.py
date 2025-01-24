@@ -3,11 +3,12 @@ from knowledge_graph.create_obj import label_components, get_unique_labels
 from knowledge_graph.create_obj_groups import to_hashable_shape, is_rotation
 from knowledge_graph.create_obj_Rel import get_object_adjacency
 
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from arckit import Task
 
+import matplotlib.pyplot as plt
 import numpy as np
-
+import networkx as nx
 
 def create_knowledge_graph(task: Task) -> KuzuDBManager:
     """
@@ -24,6 +25,36 @@ def create_knowledge_graph(task: Task) -> KuzuDBManager:
     kg_builder = KnowledgeGraphBuilder(db_manager)
     return kg_builder.build_knowledge_graph(task)
 
+def visualize_knowledge_graph(db_manager: KuzuDBManager, plot_name: Optional[str] = None):
+    nodes, edges = db_manager.get_graph()
+
+    # Create a NetworkX directed graph
+    graph = nx.DiGraph()  
+
+    # Add nodes
+    for _, node in nodes.iterrows():
+        graph.add_node( node['n.id'], label=node['n.node_class'])
+    # Add edges
+    for _, edge in edges.iterrows():
+        graph.add_edge(edge["src.id"], edge["dest.id"], label=edge['r.edge_class'])
+
+    # Draw the graph
+    pos = nx.spring_layout(graph)
+    edge_labels=nx.get_edge_attributes(graph, "label")
+
+    nx.draw(graph, 
+            pos, 
+            with_labels=True, 
+            node_size=800, 
+            font_size=10)
+
+    nx.draw_networkx_edge_labels(graph, 
+                                 pos, 
+                                 edge_labels)
+    
+    if plot_name:
+        plt.savefig("images/kg_plots/"+plot_name, dpi=300, bbox_inches="tight")
+    plt.show()
 
 class KnowledgeGraphBuilder:
     def __init__(self, db_manager: KuzuDBManager):
@@ -190,7 +221,6 @@ class KnowledgeGraphBuilder:
         
         nodes = []
         group_objects_mapping = []
-
         group_id = 1
         for group_type, groups in groups_by_type:
             for group in groups:
@@ -237,6 +267,7 @@ class KnowledgeGraphBuilder:
             for group_id, objects in input_group_object_mapping:
                 for object_id in objects:
                     self.db_manager.insert_input_contains_relationship(group_id, object_id)
+            
             for group_id, objects in output_group_object_mapping:
                 for object_id in objects:
                     self.db_manager.insert_output_contains_relationship(group_id, object_id)

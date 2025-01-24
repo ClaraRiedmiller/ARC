@@ -9,6 +9,7 @@ class KuzuDBManager:
        self.db = kuzu.Database(db_path)
        self.conn = kuzu.Connection(self.db)
 
+       # Configure DB to allow for json storage type
        self.conn.execute('INSTALL json;')
        self.conn.execute('LOAD EXTENSION json;')
 
@@ -16,6 +17,7 @@ class KuzuDBManager:
         
        # Create the object node tables
         self.conn.execute('''CREATE NODE TABLE input_object(
+                                   node_class STRING,
                                    id INT32 PRIMARY KEY,
                                    example_id INT32,
                                    color INT32, 
@@ -29,6 +31,7 @@ class KuzuDBManager:
                              ''')
        
         self.conn.execute('''CREATE NODE TABLE output_object(
+                                   node_class STRING,
                                    id INT32 PRIMARY KEY,
                                    example_id INT32,
                                    color INT32, 
@@ -42,28 +45,27 @@ class KuzuDBManager:
                              ''')  #TODO: extend to include things like is_rotation_invariant
         # Group level
         self.conn.execute('''CREATE NODE TABLE input_group(
-                                   id SERIAL PRIMARY KEY,
-                                   example_id INT32,                         
-                                   type STRING, 
-                                   size INT 
+                                    node_class STRING,
+                                    id INT32 PRIMARY KEY,
+                                    example_id INT32,                         
+                                    type STRING, 
+                                    size INT 
                             );
                             ''')
                      
         self.conn.execute('''CREATE NODE TABLE output_group(
-                                   id SERIAL PRIMARY KEY,
-                                   example_id INT32,
-                                   type STRING, 
-                                   size INT
+                                    node_class STRING,
+                                    id INT32 PRIMARY KEY,
+                                    example_id INT32,
+                                    type STRING, 
+                                    size INT
                             );
                             ''')
                      
         # Create the relationship tables
 
-        self.conn.execute('CREATE REL TABLE input_contains(FROM input_group TO input_object);')
-        self.conn.execute('CREATE REL TABLE output_contains(FROM output_group TO output_object);')
-
-    def commit(self):
-        self.db.commit()
+        self.conn.execute('CREATE REL TABLE input_contains(FROM input_group TO input_object, edge_class STRING);')
+        self.conn.execute('CREATE REL TABLE output_contains(FROM output_group TO output_object, edge_class STRING);')
 
     def deserialize_shape(self, shape_json):
         return np.array(json.loads(shape_json))
@@ -75,6 +77,7 @@ class KuzuDBManager:
 
         query = f"""
         CREATE (n:{table_name} {{
+            node_class: '{table_name}',
             id: $id,
             example_id: $example_id,
             color: $color,
@@ -89,7 +92,7 @@ class KuzuDBManager:
     
         # Create the parameter dictionary
         parameters = {
-            "id": id,
+            "id": id + (10_000*example_id),
             "example_id": example_id,
             "color": color,
            # "shape": self.serialize_shape(shape),  # Serialize as JSON
@@ -102,8 +105,7 @@ class KuzuDBManager:
     
         # Execute the query
         self.conn.execute(query, parameters=parameters)
-
-     
+   
     def insert_input_object(self, id, example_id, color, shape, bbox_x, bbox_y, bbox_width, bbox_height, adjacency):
         self.insert_object('input_object', id, example_id, color, shape, bbox_x, bbox_y, bbox_width, bbox_height, adjacency)
 
@@ -114,6 +116,7 @@ class KuzuDBManager:
         # Define the query
         query = f"""
         CREATE (n:{table_name} {{
+            node_class: '{table_name}',
             id: $id,
             example_id : $example_id,
             type: $type,
@@ -123,7 +126,7 @@ class KuzuDBManager:
         
         # Create the parameter dictionary
         parameters = {
-            "id": id,
+            "id": id + (10_000*example_id),
             "example_id": example_id,
             "type": type,
             "size": size,
@@ -143,7 +146,7 @@ class KuzuDBManager:
         query = f"""
         MATCH (g:{group_type}), (o:{object_type})
         WHERE g.id = $group_id AND o.id = $object_id
-        CREATE (g)-[:{table_name}]->(o)
+        CREATE (g)-[:{table_name} {{edge_class: '{table_name}'}}]->(o)
         """
         
         # Create the parameter dictionary
@@ -154,9 +157,13 @@ class KuzuDBManager:
         # Execute the query
         self.conn.execute(query, parameters=parameters)
 
-
     def insert_input_contains_relationship(self, group_id, object_id):
         self.insert_relationship(table_name='input_contains',group_id=group_id, group_type='input_group',object_id=object_id,object_type='input_object')
 
     def insert_output_contains_relationship(self, group_id, object_id):
-        self.insert_relationship(table_name='output_contains',group_id=group_id, group_type='output_group',object_id=object,object_type='output_object')
+        self.insert_relationship(table_name='output_contains',group_id=group_id, group_type='output_group',object_id=object_id,object_type='output_object')
+
+    def get_graph(self):
+        nodes = self.conn.execute("MATCH (n) RETURN DISTINCT n.id, n.node_class")
+        edges = self.conn.execute("MATCH (src)-[r]->(dest) RETURN DISTINCT src.id, r.edge_class, dest.id")
+        return nodes.get_as_df(), edges.get_as_df()
