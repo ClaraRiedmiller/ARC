@@ -23,7 +23,7 @@ def get_and_mod_dsl_dict():
 
 def save_dict(dict):
     # Specify the CSV file name
-    filename = './dsl/dsl_description.csv'
+    filename = './dsl/dsl_description_empty.csv'
 
     # # Get the field names (keys of the inner dictionaries)
     # fieldnames = ['function_name'] + list(next(iter(dict.values())).keys())
