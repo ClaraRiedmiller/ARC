@@ -1,52 +1,52 @@
-function_name,output,description,grid_size_change,additional_comments,inputs,requires_color,object_level,grid_level
-add_border_around_object,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]",,,,"['object', 'color', 'gridsize']",,,
-add_corners_around_object,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]",,,,"['object', 'color', 'gridsize']",,,
-add_star_around_object,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]",,,,"['object', 'color', 'gridsize']",,,
-change_color_pixel_in,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]",,,,"['object', 'color', 'gridsize']",,,
-color_max,<class 'int'>,,,,['object'],,,
-color_min,<class 'int'>,,,,['object'],,,
-color_object_max,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-color_object_min,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-color_order,list[int],,,,['object'],,,
-fill_pixel,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'color', 'gridsize']",,,
-fill_pixel_down,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'color', 'gridsize']",,,
-fill_pixel_right,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'color', 'gridsize']",,,
-flip_xax,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-flip_yax,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-grid_add_down,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_add_left,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_add_left_and_right,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_add_right,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_add_up,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_add_up_and_down,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_duplicate_down,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-grid_duplicate_left,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_duplicate_left_and_right,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_duplicate_right,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_duplicate_up,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-grid_duplicate_up_and_down,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize', 'color']",,,
-holes,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-isolate,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]",,,,"['object', 'gridsize']",,,
-move_down,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-move_down_edge,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-move_left,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-move_left_edge,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-move_right,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-move_right_edge,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-move_up,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-move_up_edge,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-neighborhood,<class 'object'>,,,,"['object', 'gridsize']",,,
-neighborhood_with_diagonals,<class 'object'>,,,,"['object', 'gridsize']",,,
-only_diagonal_neighborhood,<class 'object'>,,,,"['object', 'gridsize']",,,
-pixel_in,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-pixel_out,"typing.Set[typing.Tuple[int, int, int]]",,,,"['object', 'gridsize']",,,
-pixel_out_with_uncovered_neighbors,"(typing.Set[typing.Tuple[int, int, int]], typing.Set[typing.Tuple[int, int, int]])",,,,"['object', 'gridsize']",,,
-pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood,"(typing.Set[typing.Tuple[int, int, int]], typing.Set[typing.Tuple[int, int, int]])",,,,"['object', 'gridsize']",,,
-pixel_out_with_uncovered_neighbors_with_diagonal,"(typing.Set[typing.Tuple[int, int, int]], typing.Set[typing.Tuple[int, int, int]])",,,,"['object', 'gridsize']",,,
-project_bigger,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]",,,,"['object', 'gridsize']",,,
-project_smaller,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]",,,,"['object', 'gridsize']",,,
-x_max,<class 'int'>,,,,['object'],,,
-x_min,<class 'int'>,,,,['object'],,,
-y_max,<class 'int'>,,,,['object'],,,
-y_min,<class 'int'>,,,,['object'],,,
-function_name_here,,,,,"['input1', 'input2', 'input3']",,,
+function_name,grid_size_change,grid_level,requires_color,object_level,description,inputs,additional_comments,output
+add_border_around_object,,,,,,"['object', 'color', 'gridsize']",,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"
+add_corners_around_object,,,,,,"['object', 'color', 'gridsize']",,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"
+add_star_around_object,,,,,,"['object', 'color', 'gridsize']",,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"
+change_color_pixel_in,,,,,,"['object', 'color', 'gridsize']",,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"
+color_max,,,,,,['object'],,<class 'int'>
+color_min,,,,,,['object'],,<class 'int'>
+color_object_max,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+color_object_min,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+color_order,,,,,,['object'],,list[int]
+fill_pixel,,,,,,"['object', 'color', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+fill_pixel_down,,,,,,"['object', 'color', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+fill_pixel_right,,,,,,"['object', 'color', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+flip_xax,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+flip_yax,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_add_down,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_add_left,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_add_left_and_right,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_add_right,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_add_up,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_add_up_and_down,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_duplicate_down,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_duplicate_left,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_duplicate_left_and_right,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_duplicate_right,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_duplicate_up,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+grid_duplicate_up_and_down,,,,,,"['object', 'gridsize', 'color']",,"typing.Set[typing.Tuple[int, int, int]]"
+holes,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+isolate,,,,,,"['object', 'gridsize']",,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"
+move_down,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+move_down_edge,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+move_left,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+move_left_edge,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+move_right,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+move_right_edge,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+move_up,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+move_up_edge,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+neighborhood,,,,,,"['object', 'gridsize']",,<class 'object'>
+neighborhood_with_diagonals,,,,,,"['object', 'gridsize']",,<class 'object'>
+only_diagonal_neighborhood,,,,,,"['object', 'gridsize']",,<class 'object'>
+pixel_in,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+pixel_out,,,,,,"['object', 'gridsize']",,"typing.Set[typing.Tuple[int, int, int]]"
+pixel_out_with_uncovered_neighbors,,,,,,"['object', 'gridsize']",,"(typing.Set[typing.Tuple[int, int, int]], typing.Set[typing.Tuple[int, int, int]])"
+pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood,,,,,,"['object', 'gridsize']",,"(typing.Set[typing.Tuple[int, int, int]], typing.Set[typing.Tuple[int, int, int]])"
+pixel_out_with_uncovered_neighbors_with_diagonal,,,,,,"['object', 'gridsize']",,"(typing.Set[typing.Tuple[int, int, int]], typing.Set[typing.Tuple[int, int, int]])"
+project_bigger,,,,,,"['object', 'gridsize']",,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"
+project_smaller,,,,,,"['object', 'gridsize']",,"typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"
+x_max,,,,,,['object'],,<class 'int'>
+x_min,,,,,,['object'],,<class 'int'>
+y_max,,,,,,['object'],,<class 'int'>
+y_min,,,,,,['object'],,<class 'int'>
+function_name_here,,,,,,"['input1', 'input2', 'input3']",,

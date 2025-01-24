@@ -47,39 +47,61 @@ def save_dict(dict):
 
 
 
+def confirm_overwrite():
+    
+    while True:
+        response = input("Are you sure you want to overwrite the dsl_description? [y/n]: ").strip().lower()
+        if response in ['yes', 'y']:
+            print('\nSuccessfully overwrote dsl description with empty table.\n')
+            return True
+        elif response in ['no', 'n']:
+            print('\nNo changes have been made to your dsl description.\n')
+            return False
+        else:
+            print("Invalid input. Please type 'yes' or 'no'.")
+
+
+
 def main():
 
     dsl_functions = get_dsl_functions()
 
-    # now, @Lorenz fill in the details of each. The entries should be the following:
+    # @Lorenz fill in the details of each. The entries should be the following:
     # ------------------------------
     # inputs:               [Auto generated] Input types of the fct
     # output:               [Auto generated] Return types of the fct
     # ------------------------------
     # description:          A short description of what the function does 
     # requires_grid_size    bool, does fct require grid size
-    # requires_color       bool, does fct require color
+    # requires_color        bool, does fct require color
     # grid_size_change      bool, can this fct change the grid size
     # color_change          bool, can this fct change color
     # grid_level:           bool, does this fct work on whole grids
     # object_level:         bool, does this fct work on single objects within grids (that are not the whole grid)
     # additional_comments:  any other relevant notes or comments about the function
 
-    dsl_functions['function_name_here'] = {
-        'inputs': ['input1', 'input2', 'input3'],  # List of required inputs (e.g., 'object', 'color', 'gridsize')
-        'output': None,                           # Expected output type/structure (e.g., Tuple, Set, etc.)
-        'description': None,                      # Short description of what the function does
-        'grid_size_change': None,                 # Impact on grid size (e.g., 'increases by 1', 'no change')
-        'requires_color': None,                   # True/False if the function depends on color
-        'grid_level': None,                       # Specify grid level operation (e.g., 'affects entire grid')
-        'object_level': None,                     # Specify object-level operation (e.g., 'adds a border to object')
-        'additional_comments': None               # Any additional notes or comments about the function
-    }
 
 
-    save_dict(dsl_functions)
+    # The following is a template for how you could change the fields from within the code before saving:
+    # ------------------------------
+    # dsl_functions['function_name_here'] = {
+    #     'inputs': ['input1', 'input2', 'input3'],  
+    #     'output': None,                           
+    #     'description': None,                      
+    #     'grid_size_change': None,                
+    #     'requires_color': None,                   
+    #     'grid_level': None,                      
+    #     'object_level': None,                     
+    #     'additional_comments': None
+    # }               
 
-    pprint.pprint(dsl_functions)
+
+    # Ask for confirmation before overwriting the file
+    if confirm_overwrite():
+        save_dict(dsl_functions)
+
+        print('Your new dsl function descriptor looks like this:\n')
+        pprint.pprint(dsl_functions)
 
 
 main()
