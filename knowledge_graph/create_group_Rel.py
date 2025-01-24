@@ -7,14 +7,16 @@
 # Invariance!!
 # Match persisting shapes.
 
+
+### TODO: implement if required
 def group_same_size():
-    return True
+    pass
 
 def group_same_color():
-    return True
+    pass 
 
 def group_sub_group():
-    return True
+    pass
 
 def group_is_scaled():
-    return True
+    pass 

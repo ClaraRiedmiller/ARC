@@ -1,41 +1,26 @@
 from knowledge_graph.create_obj import *
+from knowledge_graph.utils import StructuringElementMode
 
-#Grid related relations:
+from scipy.ndimage import binary_dilation
+import numpy as np 
 
-def get_object_adjacency_scipy(labeled_array, mode="direct"):
-    # Define structuring elements for each mode:
-    # 1) direct (orthogonal neighbors only)
-    direct_structure = np.array([[0, 1, 0],
-                                [1, 1, 1],
-                                [0, 1, 0]], dtype=bool)
-    
-    # 2) diagonal (the 4 corners only)
-    diagonal_structure = np.array([[1, 0, 1],
-                                [0, 0, 0],
-                                [1, 0, 1]], dtype=bool)
-    
-    # 3) 8-way (all neighbors including diagonals)
-    eight_structure = np.ones((3,3), dtype=bool)
-    
-    # Choose the desired structure
-    if mode == "direct":
-        structure = direct_structure
-    elif mode == "diagonal":
-        structure = diagonal_structure
-    elif mode == "8-way":
-        structure = eight_structure
-    else:
+def get_object_adjacency(labeled_array, mode="direct"):
+    # Convert mode to StructuringElementMode enum
+    try:
+        mode_enum = StructuringElementMode(mode)
+    except ValueError:
         raise ValueError(f"Unknown mode='{mode}'. Must be 'direct', 'diagonal', or '8-way'.")
-    
+
+    structure = mode_enum.get_structuring_element()
     adjacency = {}
     
     # Gather non-zero labels (ignore background=0)
     unique_labels = np.unique(labeled_array)
     unique_labels = unique_labels[unique_labels != 0]
     
-    for lbl in unique_labels:
+    for label in unique_labels:
         # 1) Binary mask for this label
-        mask = (labeled_array == lbl)
+        mask = (labeled_array == label)
         
         # 2) Dilate mask using the chosen structuring element
         dilated = binary_dilation(mask, structure=structure)
@@ -45,23 +30,14 @@ def get_object_adjacency_scipy(labeled_array, mode="direct"):
         
         # 4) Exclude background and the label itself
         neighbor_labels = neighbor_labels[
-            (neighbor_labels != 0) & (neighbor_labels != lbl)
+            (neighbor_labels != 0) & (neighbor_labels != label)
         ]
         
-        adjacency[lbl] = set(neighbor_labels)
+        adjacency[label] = set(neighbor_labels)
     
     return adjacency
 
 ###### Functions between objects (independent of the grid): #######
-
-
-def same_color(object1, object2):
-    # Maybe it would be smarter to extract that information earlier
-    color1 = object1_label // 100
-    color2 = object2_label // 100
-    return color1 == color2
-
-
 
 # We define functions to compare the objects through their shapes:
 

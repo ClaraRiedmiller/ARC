@@ -7,60 +7,60 @@ class KuzuDBManager:
     def __init__(self, db_path=''):
        self.db_path = db_path
        self.db = kuzu.Database(db_path)
-       self.conn = self.db.connect()
+       self.conn = kuzu.Connection(self.db)
+
+       self.conn.execute('INSTALL json;')
+       self.conn.execute('LOAD EXTENSION json;')
 
     def create_schema(self):
         
        # Create the object node tables
         self.conn.execute('''CREATE NODE TABLE input_object(
-                                   id INTEGER PRIMARY KEY,
-                                   example_id INTEGER,
-                                   colour INTEGER, 
+                                   id INT32 PRIMARY KEY,
+                                   example_id INT32,
+                                   color INT32, 
                                    shape JSON, 
-                                   bbox_x INTEGER,
-                                   bbox_y INTEGER,
-                                   bbox_width INTEGER,
-                                   bbox_height INTEGER,
-                                   is_rotation_invariant BOOLEAN
+                                   bbox_x INT32,
+                                   bbox_y INT32,
+                                   bbox_width INT32,
+                                   bbox_height INT32,
+                                   adjacency INT64[]
                              );
                              ''')
        
         self.conn.execute('''CREATE NODE TABLE output_object(
-                                   id INTEGER PRIMARY KEY,
-                                   example_id INTEGER,
-                                   colour INTEGER, 
+                                   id INT32 PRIMARY KEY,
+                                   example_id INT32,
+                                   color INT32, 
                                    shape JSON, 
-                                   bbox_x INTEGER,
-                                   bbox_y INTEGER,
-                                   bbox_width INTEGER,
-                                   bbox_height INTEGER,
-                                   is_rotation_invariant BOOLEAN,
+                                   bbox_x INT32,
+                                   bbox_y INT32,
+                                   bbox_width INT32,
+                                   bbox_height INT32,
+                                   adjacency INT64[]
                              );
-                             ''')
-       # Group level
-
+                             ''')  #TODO: extend to include things like is_rotation_invariant
+        # Group level
         self.conn.execute('''CREATE NODE TABLE input_group(
-                                   id INTEGER PRIMARY KEY,
-                                   example_id INTEGER,                         
-                                   group_type STRING, 
-                                   group_size JSON, 
-                                   avg_colour INTEGER
+                                   id SERIAL PRIMARY KEY,
+                                   example_id INT32,                         
+                                   type STRING, 
+                                   size INT 
                             );
                             ''')
                      
         self.conn.execute('''CREATE NODE TABLE output_group(
-                                   id INTEGER PRIMARY KEY,
-                                   example_id INTEGER,
-                                   group_type STRING, 
-                                   group_size JSON, 
-                                   avg_colour INTEGER,
+                                   id SERIAL PRIMARY KEY,
+                                   example_id INT32,
+                                   type STRING, 
+                                   size INT
                             );
                             ''')
                      
         # Create the relationship tables
 
-        self.conn.execute('CREATE REL TABLE input_contains(from_id INTEGER, to_id INTEGER, FROM input_group, TO input_object);')
-        self.conn.execute('CREATE REL TABLE output_contains(from_id INTEGER, to_id INTEGER, FROM output_group, TO output_object);')
+        self.conn.execute('CREATE REL TABLE input_contains(FROM input_group TO input_object);')
+        self.conn.execute('CREATE REL TABLE output_contains(FROM output_group TO output_object);')
 
     def commit(self):
         self.db.commit()
@@ -71,32 +71,85 @@ class KuzuDBManager:
     def serialize_shape(self, shape_array):
         return json.dumps(shape_array.tolist())
     
-    def insert_input_object(self, id, colour, shape_array, bbox_x, bbox_y, bbox_width, bbox_height, is_rotation_invariant):
-        shape_json = self.serialize_shape(shape_array)
-        self.conn.execute('''
-        INSERT INTO input_object (id, colour, shape, bbox_x, bbox_y, bbox_width, bbox_height, is_rotation_invariant)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
-        ''', (id, colour, shape_json, bbox_x, bbox_y, bbox_width, bbox_height, is_rotation_invariant))
+    def insert_object(self, table_name, id, example_id, color, shape, bbox_x, bbox_y, bbox_width, bbox_height, adjacency):
 
-    def insert_output_object(self, id, colour, shape_array, bbox_x, bbox_y, bbox_width, bbox_height, is_rotation_invariant):
-        shape_json = self.serialize_shape(shape_array)
-        self.conn.execute('''
-        INSERT INTO output_object (id, colour, shape, bbox_x, bbox_y, bbox_width, bbox_height, is_rotation_invariant)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
-        ''', (id, colour, shape_json, bbox_x, bbox_y, bbox_width, bbox_height, is_rotation_invariant))
+        query = f"""
+        CREATE (n:{table_name} {{
+            id: $id,
+            example_id: $example_id,
+            color: $color,
+            shape: $shape,
+            bbox_x: $bbox_x,
+            bbox_y: $bbox_y,
+            bbox_width: $bbox_width,
+            bbox_height: $bbox_height,
+            adjacency: $adjacency
+        }})
+        """
+    
+        # Create the parameter dictionary
+        parameters = {
+            "id": id,
+            "example_id": example_id,
+            "color": color,
+           # "shape": self.serialize_shape(shape),  # Serialize as JSON
+            "bbox_x": bbox_x,
+            "bbox_y": bbox_y,
+            "bbox_width": bbox_width,
+            "bbox_height": bbox_height, 
+            "adjacency": adjacency
+        }
+    
+        # Execute the query
+        self.conn.execute(query, parameters=parameters)
 
-    def insert_input_group(self, id, group_type, group_size, avg_colour):
-        self.conn.execute('''
-        INSERT INTO input_group (id, group_type, group_size, avg_colour)
-        VALUES (?, ?, ?, ?);
-        ''', (id, group_type, json.dumps(group_size), avg_colour))
+     
+    def insert_input_object(self, id, example_id, color, shape, bbox_x, bbox_y, bbox_width, bbox_height, adjacency):
+        self.insert_object('input_object', id, example_id, color, shape, bbox_x, bbox_y, bbox_width, bbox_height, adjacency)
 
-    def insert_output_group(self, id, group_type, group_size, avg_colour):
-        self.conn.execute('''
-        INSERT INTO output_group (id, group_type, group_size, avg_colour)
-        VALUES (?, ?, ?, ?);
-        ''', (id, group_type, json.dumps(group_size), avg_colour))
+    def insert_output_object(self, id, example_id, color, shape, bbox_x, bbox_y, bbox_width, bbox_height, adjacency):
+        self.insert_object('output_object', id, example_id, color, shape, bbox_x, bbox_y, bbox_width, bbox_height, adjacency)
 
-    def create_relationship(self, table, from_id, to_id):
-        self.conn.execute(f'INSERT INTO {table} (from_id, to_id) VALUES (?, ?);', (from_id, to_id))
+    def insert_group(self, table_name, id, example_id,  type, size):
+        # Define the query
+        query = f"""
+        CREATE (n:{table_name} {{
+            id: $id,
+            example_id : $example_id,
+            type: $type,
+            size: $size
+        }})
+        """
+        
+        # Create the parameter dictionary
+        parameters = {
+            "id": id,
+            "example_id": example_id,
+            "type": type,
+            "size": size,
+        }
+        
+        # Execute the query
+        self.conn.execute(query, parameters=parameters)
 
+    def insert_input_group(self, id, example_id, type, size):
+        self.insert_group('input_group', id, example_id, type, size)
+    
+    def insert_output_group(self, id, example_id, type, size):
+        self.insert_group('output_group', id, example_id, type, size)
+    
+    def insert_relationship(self, table_name, group_id, object_id):
+        # Define the query with escaped curly braces
+        query = f"""
+        MATCH (g:Group {{id: $group_id}}) (o:Object {{id: $object_id}})
+        CREATE (g)-[:{table_name}]->(o)
+        """
+
+        # Create the parameter dictionary
+        parameters = {
+            "group_id": group_id,
+            "object_id": object_id,
+        }
+
+        # Execute the query
+        self.conn.execute(query, parameters=parameters)

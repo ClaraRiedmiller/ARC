@@ -1,12 +1,7 @@
 import arckit
 import kuzu
 
-from create_Obj import *
 from create_KG import create_knowledge_graph
-from create_obj_Rel import *
-from create_obj_groups import *
-
-
 
 if __name__ == "__main__":
     # Load the data

@@ -19,7 +19,7 @@ import arckit
 import arckit.vis as vis
 train_set, eval_set = arckit.load_data() # Load ARC1 train/eval
 
-from create_obj_Rel import *
+from knowledge_graph.create_obj_Rel import *
 
 
 def to_hashable_shape(shape_array):
