@@ -138,18 +138,25 @@ class KuzuDBManager:
     def insert_output_group(self, id, example_id, type, size):
         self.insert_group('output_group', id, example_id, type, size)
     
-    def insert_relationship(self, table_name, group_id, object_id):
+    def insert_relationship(self, table_name, group_id , group_type, object_id, object_type):
         # Define the query with escaped curly braces
         query = f"""
-        MATCH (g:Group {{id: $group_id}}) (o:Object {{id: $object_id}})
+        MATCH (g:{group_type}), (o:{object_type})
+        WHERE g.id = $group_id AND o.id = $object_id
         CREATE (g)-[:{table_name}]->(o)
         """
-
+        
         # Create the parameter dictionary
         parameters = {
             "group_id": group_id,
             "object_id": object_id,
         }
-
         # Execute the query
         self.conn.execute(query, parameters=parameters)
+
+
+    def insert_input_contains_relationship(self, group_id, object_id):
+        self.insert_relationship(table_name='input_contains',group_id=group_id, group_type='input_group',object_id=object_id,object_type='input_object')
+
+    def insert_output_contains_relationship(self, group_id, object_id):
+        self.insert_relationship(table_name='output_contains',group_id=group_id, group_type='output_group',object_id=object,object_type='output_object')

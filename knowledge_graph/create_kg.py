@@ -236,10 +236,10 @@ class KnowledgeGraphBuilder:
              # Insert contains relations
             for group_id, objects in input_group_object_mapping:
                 for object_id in objects:
-                    self.db_manager.insert_relationship('contains', group_id, object_id)
+                    self.db_manager.insert_input_contains_relationship(group_id, object_id)
             for group_id, objects in output_group_object_mapping:
                 for object_id in objects:
-                    self.db_manager.insert_relationship('contains', group_id, object_id)
+                    self.db_manager.insert_output_contains_relationship(group_id, object_id)
 
             # TODO: Extend to add task.test to the knowledge graph so we can make predictions
         return self.db_manager
