@@ -4,7 +4,7 @@ from knowledge_graph.utils import StructuringElementMode
 from scipy.ndimage import binary_dilation
 import numpy as np 
 
-def get_object_adjacency(labeled_array, mode="direct"):
+def get_object_adjacency(labeled_array, mode="8-way"):
     # Convert mode to StructuringElementMode enum
     try:
         mode_enum = StructuringElementMode(mode)
