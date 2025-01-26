@@ -84,8 +84,8 @@ class KnowledgeGraphBuilder:
             
             # Find the bounding box coordinates
             bbox_x, bbox_y = np.where(mask)
-            bbox_width = bbox_x.max() - bbox_x.min() + 1
-            bbox_height = bbox_y.max() - bbox_y.min() + 1
+            bbox_height  = bbox_x.max() - bbox_x.min() + 1  # Note that this looks weird but bc of the problem format the axes have been swapped
+            bbox_width = bbox_y.max() - bbox_y.min() + 1    # Numpy dimensions are row then column
             
             # Extract the subarray corresponding to the bounding box
             bbox = mask[bbox_x.min():bbox_x.max() + 1, bbox_y.min():bbox_y.max() + 1]
