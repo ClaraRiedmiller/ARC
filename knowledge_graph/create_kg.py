@@ -60,7 +60,7 @@ class KnowledgeGraphBuilder:
     def __init__(self, db_manager: KuzuDBManager):
         self.db_manager = db_manager
 
-    def extract_objects(self, grid: np.ndarray) -> List[dict]:
+    def extract_objects(self, grid: np.ndarray, example_id: int) -> List[dict]:
         """
         Extracts object-level nodes from a grid.
         
@@ -90,7 +90,8 @@ class KnowledgeGraphBuilder:
             # Convert to binary representation to represent shape
             binary_shape = bbox.astype(int)
             nodes.append({
-                'id': int(label),
+                'id': int(label) + (10_000 * example_id),
+                'example_id': example_id,
                 'color': int(str(label)[0]),
                 'shape': binary_shape,
                 'bbox_x': int(bbox_x.min()),
@@ -196,7 +197,7 @@ class KnowledgeGraphBuilder:
 
         return list(composite_groups.values())
 
-    def extract_groups(self, object_nodes: List[dict]) -> Tuple[List[Tuple[int, int]], List[dict]]:
+    def extract_groups(self, object_nodes: List[dict], example_id: int) -> Tuple[List[Tuple[int, int]], List[dict]]:
         """
         Extracts group-level nodes from a grid.
         
@@ -221,11 +222,12 @@ class KnowledgeGraphBuilder:
         
         nodes = []
         group_objects_mapping = []
-        group_id = 1
+        group_id = 1 + (10_000 * example_id)
         for group_type, groups in groups_by_type:
             for group in groups:
                 nodes.append({
                     'id': group_id,
+                    'example_id': example_id,
                     'type': group_type,
                     'size': len(group)
                 })
@@ -247,21 +249,24 @@ class KnowledgeGraphBuilder:
         KuzuDBManager: An instance of KuzuDBManager with the knowledge graph.
         """
         for example_id, (input_grid, output_grid) in enumerate(task.train):
+            # Increment to start example_id by 1
+            example_id = example_id + 1 
+
             # Extract and insert object-level nodes
-            input_objects = self.extract_objects(input_grid)
-            output_objects = self.extract_objects(output_grid)
+            input_objects = self.extract_objects(input_grid, example_id)
+            output_objects = self.extract_objects(output_grid, example_id)
             for obj in input_objects:
-                self.db_manager.insert_input_object(example_id=example_id, **obj)
+                self.db_manager.insert_input_object(**obj)
             for obj in output_objects:
-                self.db_manager.insert_output_object(example_id=example_id, **obj)
+                self.db_manager.insert_output_object(**obj)
 
             # Create and insert group-level nodes
-            input_group_object_mapping, input_groups = self.extract_groups(input_objects)
-            output_group_object_mapping, output_groups = self.extract_groups(output_objects)
+            input_group_object_mapping, input_groups = self.extract_groups(input_objects, example_id)
+            output_group_object_mapping, output_groups = self.extract_groups(output_objects, example_id)
             for group in input_groups:
-                self.db_manager.insert_input_group(example_id=example_id, **group)
+                self.db_manager.insert_input_group(**group)
             for group in output_groups:
-                self.db_manager.insert_output_group(example_id=example_id, **group)
+                self.db_manager.insert_output_group(**group)
 
              # Insert contains relations
             for group_id, objects in input_group_object_mapping:

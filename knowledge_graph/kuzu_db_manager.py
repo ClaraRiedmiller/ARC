@@ -92,7 +92,7 @@ class KuzuDBManager:
     
         # Create the parameter dictionary
         parameters = {
-            "id": id + (10_000*example_id),
+            "id": id,
             "example_id": example_id,
             "color": color,
            # "shape": self.serialize_shape(shape),  # Serialize as JSON
@@ -102,7 +102,7 @@ class KuzuDBManager:
             "bbox_height": bbox_height, 
             "adjacency": adjacency
         }
-    
+   
         # Execute the query
         self.conn.execute(query, parameters=parameters)
    
@@ -126,12 +126,12 @@ class KuzuDBManager:
         
         # Create the parameter dictionary
         parameters = {
-            "id": id + (10_000*example_id),
+            "id": id,
             "example_id": example_id,
             "type": type,
             "size": size,
         }
-        
+
         # Execute the query
         self.conn.execute(query, parameters=parameters)
 
