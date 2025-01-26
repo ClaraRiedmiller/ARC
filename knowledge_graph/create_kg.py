@@ -20,7 +20,7 @@ def create_knowledge_graph(task: Task) -> KuzuDBManager:
     Returns:
     KuzuDBManager: An instance of KuzuDBManager with the knowledge graph.
     """
-    db_manager = KuzuDBManager()
+    db_manager = KuzuDBManager("kuzudb")
     db_manager.create_schema()
     kg_builder = KnowledgeGraphBuilder(db_manager)
     return kg_builder.build_knowledge_graph(task)

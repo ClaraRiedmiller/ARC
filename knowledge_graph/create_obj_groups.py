@@ -14,7 +14,6 @@ import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from scipy.ndimage import binary_dilation
 
-from arckit_handler import drawProblem
 import arckit
 import arckit.vis as vis
 

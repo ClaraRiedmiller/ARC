@@ -3,6 +3,7 @@ libcairo.2.dylib
 
 # ignore everyone's local image folder
 images/
+kuzudb/
 
 # ignore MAC specific DS_Store
 .DS_Store
