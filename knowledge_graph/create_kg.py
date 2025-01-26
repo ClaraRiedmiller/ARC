@@ -54,7 +54,7 @@ def visualize_knowledge_graph(db_manager: KuzuDBManager, plot_name: Optional[str
     
     if plot_name:
         plt.savefig("images/kg_plots/"+plot_name, dpi=300, bbox_inches="tight")
-    plt.show()
+    # plt.show()
 
 class KnowledgeGraphBuilder:
     def __init__(self, db_manager: KuzuDBManager):
