@@ -4,7 +4,7 @@ import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from scipy.ndimage import binary_dilation
 
-def label_components(grid, mode="direct"):          # formerly called label_by_color
+def label_components(grid, example_id, mode="direct"):          # formerly called label_by_color
     """
     Labels connected pixels of the same color in grid as components.
     Parameters:
@@ -42,9 +42,9 @@ def label_components(grid, mode="direct"):          # formerly called label_by_c
         labeled_mask, n_components = label(mask, structure=structure)
         # 0 means "not in the mask" or background, 1...n_components are distinct objects.
         
-        # Assign final labels: color_value * 1000 + component_id; upper bound is 900 (30x30) objects in a grid
+        # Assign final labels:example_id * 10_000 color_value * 1000 + component_id; upper bound is 900 (30x30) objects in a grid
         for comp_id in range(1, n_components + 1):
-            out[labeled_mask == comp_id] = color_value * 1000 + comp_id
+            out[labeled_mask == comp_id] = + (10_000 * example_id) + (color_value * 1000) + comp_id
 
     return out
 

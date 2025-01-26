@@ -70,7 +70,7 @@ class KnowledgeGraphBuilder:
         Returns:
         List[dict]: A list of dictionaries representing the object-level nodes.
         """
-        labeled_grid = label_components(grid)
+        labeled_grid = label_components(grid, example_id)
         component_labels = get_unique_labels(labeled_grid)
         adjacency = get_object_adjacency(labeled_grid)
 
@@ -90,7 +90,7 @@ class KnowledgeGraphBuilder:
             # Convert to binary representation to represent shape
             binary_shape = bbox.astype(int)
             nodes.append({
-                'id': int(label) + (10_000 * example_id),
+                'id': int(label),
                 'example_id': example_id,
                 'color': int(str(label)[0]),
                 'shape': binary_shape,
