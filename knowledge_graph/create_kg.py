@@ -95,7 +95,7 @@ class KnowledgeGraphBuilder:
             nodes.append({
                 'id': int(label),
                 'example_id': example_id,
-                'color': int(str(label)[0]),
+                'color': int(str(label)[1]),
                 'shape': binary_shape,
                 'bbox_x': int(bbox_x.min()),
                 'bbox_y': int(bbox_y.min()),
