@@ -1,5 +1,8 @@
 from enum import Enum
+
 import numpy as np
+import os
+import shutil
 
 class StructuringElementMode(Enum):
     """
@@ -37,3 +40,7 @@ class StructuringElementMode(Enum):
             return np.ones((3, 3), dtype=bool)
         else:
             raise ValueError(f"Unknown mode='{self.value}'. Must be \"direct\", \"diagonal\", or \"8-way\".")
+
+def remove_folder_if_exists(folder_path):
+    if os.path.exists(folder_path) and os.path.isdir(folder_path):
+        shutil.rmtree(folder_path)  # Deletes the folder and everything inside it

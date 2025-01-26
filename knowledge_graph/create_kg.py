@@ -2,6 +2,7 @@ from knowledge_graph.kuzu_db_manager import KuzuDBManager
 from knowledge_graph.create_obj import label_components, get_unique_labels
 from knowledge_graph.create_obj_groups import to_hashable_shape, is_rotation
 from knowledge_graph.create_obj_Rel import get_object_adjacency
+from knowledge_graph.utils import remove_folder_if_exists
 
 from typing import List, Tuple, Optional
 from arckit import Task
@@ -20,7 +21,9 @@ def create_knowledge_graph(task: Task) -> KuzuDBManager:
     Returns:
     KuzuDBManager: An instance of KuzuDBManager with the knowledge graph.
     """
-    db_manager = KuzuDBManager("kuzudb")
+    db_folder = "kuzudb"
+    remove_folder_if_exists(db_folder)
+    db_manager = KuzuDBManager(db_folder)
     db_manager.create_schema()
     kg_builder = KnowledgeGraphBuilder(db_manager)
     return kg_builder.build_knowledge_graph(task)
