@@ -14,7 +14,7 @@ import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from scipy.ndimage import binary_dilation
 
-from arckit_handler.arckit_handler import drawProblem
+from arckit_handler import drawProblem
 import arckit
 import arckit.vis as vis
 
@@ -53,7 +53,7 @@ def to_hashable_shape(shape_array):
 #         if color_val not in color_groups:
 #             color_groups[color_val] = set()
 #         color_groups[color_val].add(lbl)
-    
+
 #     return color_groups
 
 # def create_shape_group(obj_shape_dict):
@@ -224,4 +224,3 @@ def to_hashable_shape(shape_array):
 #     drawProblem(task, "Problem4")
 #     print(create_groups(task.train[0][0]), "\n")
 #     print(create_groups(task.train[0][1]))
-
