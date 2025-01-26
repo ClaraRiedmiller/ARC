@@ -1,63 +1,54 @@
+from knowledge_graph.utils import StructuringElementMode
+
 import numpy as np
 from scipy.ndimage import label, binary_fill_holes
 from scipy.ndimage import binary_dilation
 
-import arckit
-import arckit.vis as vis
-train_set, eval_set = arckit.load_data() 
-
-
-def label_by_color(color, mode="direct"):
-    # Define structuring elements for each mode:
-    # 1) direct (orthogonal neighbors only)
-    direct_structure = np.array([[0, 1, 0],
-                                [1, 1, 1],
-                                [0, 1, 0]], dtype=bool)
-    
-    # 2) diagonal (the 4 corners only)
-    diagonal_structure = np.array([[1, 0, 1],
-                                [0, 0, 0],
-                                [1, 0, 1]], dtype=bool)
-    
-    # 3) 8-way (all neighbors including diagonals)
-    eight_structure = np.ones((3,3), dtype=bool)
-    
-    # Choose the desired structure
-    if mode == "direct":
-        structure = direct_structure
-    elif mode == "diagonal":
-        structure = diagonal_structure
-    elif mode == "8-way":
-        structure = eight_structure
-    else:
+def label_components(grid, mode="direct"):          # formerly called label_by_color
+    """
+    Labels connected pixels of the same color in grid as components.
+    Parameters:
+    grid (np.ndarray): A 2D numpy array representing the grid with different colors.
+    mode (str): The mode for structuring element. Must be one of 'direct', 'diagonal', or '8-way'.
+                Default is 'direct'.
+    Returns:
+    np.ndarray: A 2D numpy array with labeled components. Each label is of the form color_value * 1000 + component_id.
+    Raises:
+    ValueError: If the mode is not one of 'direct', 'diagonal', or '8-way'.
+    """
+     # Convert mode to StructuringElementMode enum
+    try:
+        mode_enum = StructuringElementMode(mode)
+    except ValueError:
         raise ValueError(f"Unknown mode='{mode}'. Must be 'direct', 'diagonal', or '8-way'.")
+
+    structure = mode_enum.get_structuring_element()
     
-    # Find all unique colors (excluding 0 if your data has zeros that are "background")
-    unique_vals = np.unique(color)
+    # Find all unique colors 
+    unique_colors = np.unique(grid)
     
     # Initialize output
-    out = np.zeros_like(color, dtype=int)
+    out = np.zeros_like(grid, dtype=int)
     
-    for val in unique_vals:
+    for color_value in unique_colors:
         # Create a binary mask for this particular color
-        if val == 0:
+        if color_value == 0:
             continue
         
-        mask = (color == val)
+        mask = (grid == color_value)
         
         # Label the connected components *within* this mask
-        labeled_mask, n_comp = label(mask, structure=structure)
-        # labeled_mask will have values in [0, 1, 2, ..., n_comp]
-        # 0 means "not in the mask" or background, 1..n_comp are distinct objects.
+        # labeled_mask will have values in [0, 1, 2, ..., n_components]
+        labeled_mask, n_components = label(mask, structure=structure)
+        # 0 means "not in the mask" or background, 1...n_components are distinct objects.
         
-        # Assign final labels: color * 100 + component_id; Could fail but we don't want 100 objects anyway
-        for comp_id in range(1, n_comp + 1):
-            out[labeled_mask == comp_id] = val * 100 + comp_id
+        # Assign final labels: color_value * 1000 + component_id; upper bound is 900 (30x30) objects in a grid
+        for comp_id in range(1, n_components + 1):
+            out[labeled_mask == comp_id] = color_value * 1000 + comp_id
 
     return out
 
 def get_unique_labels(labeled_array, exclude_zero=True):
-
     unique_vals = np.unique(labeled_array)
     if exclude_zero:
         unique_vals = unique_vals[unique_vals != 0]
@@ -81,8 +72,7 @@ def label_coordinates_dict(labeled_array, exclude_zero=True):
     return label_coords
 
 def get_quadrant(labeled_array): #Or other orientation to maybe use in group building process
-    return True
-
+    pass
 
 def extract_object_shapes(grid):
 
@@ -135,4 +125,4 @@ def find_centroid(object_shape): # Finds the "center of mass"
 
 def find_holes(object_shape):
     #We use flood-first algo to find holes
-    return True
+    pass
