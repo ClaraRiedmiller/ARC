@@ -9,3 +9,4 @@ db_manager = create_knowledge_graph(task)
 
 visualize_knowledge_graph(db_manager, 'test.png')
 
+
