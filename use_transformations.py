@@ -7,7 +7,6 @@ from dsl.dsl_features import get_dsl_functions
 from arckit_handler.arckit_handler import getGrid, get_problem
 
 
-
 # # apply the transformation move_left to an example grid. We could extend this to take a specific grid as an input as well
 # apply_transformation(move_left)
 
@@ -37,7 +36,7 @@ grid = getGrid(train_set[task_id], True, 0, True)
 dsl_functions = get_dsl_functions()
 
 
-filtered_dict = {key: value for key, value in dsl_functions.items() if value['inputs'] == ['object', 'gridsize']}
+# filtered_dict = {key: value for key, value in dsl_functions.items() if value['inputs'] == ['object', 'gridsize']}
 
 
 forbidden_functions = ['holes', 'isolate', 'pixel_in', 'pixel_out', 'pixel_out_with_uncovered_neighbors' ,'pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood', 'pixel_out_with_uncovered_neighbors_with_diagonal', 'project_bigger', 'grid_duplicate_down']
@@ -47,25 +46,23 @@ working_functions = ['color_object_max', 'color_object_min', 'move_left', 'color
 testing_functions = ['project_smaller']
 
 
-
-for function in testing_functions:
-    apply_transformation(grid, grid_name, function, show=False)
+apply_transformation(grid, grid_name, 'color_object_max', show=False)
 
 
-# I sorted the functions we have right now into three buckets (see above). Should be self-explanatory, otherwise ask me, Lorenz :)
-for function, type in filtered_dict.items():
-    print('\n', function)
-    if function in forbidden_functions or function in testing_functions:
-        print('forbidden function or testing')
-    # elif function in forbidden_functions:
-    #     print('forbidden function!')
-    else:
-        # print('last working function:', working_functions)
-        # working_functions.append(function)
-        apply_transformation(grid, grid_name, function, show=False)
+# # for function in testing_functions:
+# #     apply_transformation(grid, grid_name, function, show=False)
 
 
-
-# get_problem()
+# # I sorted the functions we have right now into three buckets (see above). Should be self-explanatory, otherwise ask me, Lorenz :)
+# for function, type in dsl_functions.items():
+#     print('\n', function)
+#     if function in forbidden_functions or function in testing_functions:
+#         print('forbidden function or testing')
+#     # elif function in forbidden_functions:
+#     #     print('forbidden function!')
+#     else:
+#         # print('last working function:', working_functions)
+#         # working_functions.append(function)
+#         apply_transformation(grid, grid_name, function)
 
 

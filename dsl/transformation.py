@@ -3,8 +3,8 @@ import drawsvg
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from .dsl import *
-from . import dsl as module
+from .dsl import Transformer
+# from . import dsl as module
 
 from arckit_handler.arckit_handler import drawGrid, getGrid
 
@@ -121,13 +121,23 @@ def visualize_transformation(grid, transgrid, transformation_name, grid_title, s
 
 def apply_transformation(grid, grid_name, transformation_name, terminal_visualize = True, image_visualize = True, show=True):
 
-    transformation = globals().get(transformation_name)
+    
+    # this dimensionality as input to the transformation only works when reasoning on the grid level. after, we would not be able to read the size from an object and have to pass it along another way
+
+    grid_width, grid_height = np.shape(grid)
+
+    transformer = Transformer(color = 1, grid_width = grid_width, grid_height = grid_height)
+
+    # get the function from the dsl that we called by name
+    transformation = getattr(transformer, transformation_name, None)
+    # transformation = globals().get(transformation_name)
+    print(transformation)
+
 
     formatted_grid = convert_grid_format(grid)
 
-    # TEMP: Lorenz uses a single value for grids and assumes they are square. this will change later! Rn, I am using the height. This method only works when reasoning on the grid level! Otherwise, we will have to give this paramter separately
-    grid_size = max(sublist[1] for sublist in formatted_grid) +1
-    transgrid = reconvert_grid_format(transformation(formatted_grid, grid_size))
+
+    transgrid = reconvert_grid_format(transformation(formatted_grid))
 
 
     if terminal_visualize:
