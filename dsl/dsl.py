@@ -13,7 +13,6 @@ Object: TypeAlias = Set[Pixel]  # Note that any grid is hence an object
 # Gridsize: TypeAlias = Tuple[coordinate, coordinate] # this is the type for the whole grid
 
 
-# context.py
 class Transformer:
     def __init__(self, color : color, grid_width : coordinate, grid_height : coordinate):
         self.color : color  = color
@@ -52,7 +51,7 @@ class Transformer:
     def pixel_out(self, object: Object) -> Object:             # Given an object, we want to the pixels on the outside
         outcome = set()
         for pixel_1 in object:
-            neighborhood_pixel_1 = neighborhood(pixel_1)
+            neighborhood_pixel_1 = self.neighborhood(pixel_1)
             for pixel_2 in object:
                 pixel_2_check = (pixel_2[0],pixel_2[1], pixel_1[2])     # We want to check whether an object is in the 
                 if  pixel_2_check in neighborhood_pixel_1:
