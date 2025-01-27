@@ -21,7 +21,7 @@ class Transformer:
 
 
     #Core functions: these functions are not part of the DSL but enable us to detect elements of a structure:
-    def neighborhood(self, object: Object) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
+    def neighborhood(self, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
         neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1)]
         outcome = set()
         for pixel in object:
@@ -30,7 +30,7 @@ class Transformer:
                     outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
         return outcome
 
-    def neighborhood_with_diagonals(self, object: Object) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
+    def neighborhood_with_diagonals(self, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
         neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1), (1,1), (1, -1), (-1,1), (-1,-1)]
         outcome = set()
         for pixel in object:
@@ -39,7 +39,7 @@ class Transformer:
                     outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
         return outcome
 
-    def only_diagonal_neighborhood(self, object: Object) -> object:     #We want to determine the neighbourhood pixels of a pixel. 
+    def only_diagonal_neighborhood(self, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
         neighbor = [(1,1), (1, -1), (-1,1), (-1,-1)]
         outcome = set()
         for pixel in object:
@@ -122,7 +122,7 @@ class Transformer:
         uncovered_neighbors = set()
 
         for pixel_1 in object: 
-            neighborhood_pixel_1 = self.neighborhood_with_diagonal(pixel_1)
+            neighborhood_pixel_1 = self.neighborhood_with_diagonals(pixel_1)
             local_uncovered = set(neighborhood_pixel_1)  # Start with all neighbors.
 
             for pixel_2 in object:
@@ -422,7 +422,7 @@ class Transformer:
             outcome.add(pixel)
         out_pixels = self.pixel_out_with_uncovered_neighbors(object) # then we add the surronding objects
         for pixel in out_pixels:
-            outcome.add((pixel[0],pixel[1], color)) #they get the assigned color
+            outcome.add((pixel[0],pixel[1], self.color)) #they get the assigned color
         
         return object
 
@@ -432,7 +432,7 @@ class Transformer:
             outcome.add(pixel)
         out_pixels = self.pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(object) # then we add the surronding corners
         for pixel in out_pixels:
-            outcome.add((pixel[0],pixel[1], color)) #they get the assigned color
+            outcome.add((pixel[0],pixel[1], self.color)) #they get the assigned color
         
         return object
 
@@ -442,7 +442,7 @@ class Transformer:
             outcome.add(pixel)
         out_pixels = self.pixel_out_with_uncovered_neighbors_with_diagonal(object) # then we add the surronding corners
         for pixel in out_pixels:
-            outcome.add((pixel[0],pixel[1], color)) #they get the assigned color
+            outcome.add((pixel[0],pixel[1], self.color)) #they get the assigned color
         
         return object
 
@@ -451,13 +451,13 @@ class Transformer:
         for pixel in self.pixel_in(object):
             outcome.add(pixel)
         for  pixel in self.pixel_out(object):
-            outcome.add((pixel[0], pixel [1], color))
+            outcome.add((pixel[0], pixel [1], self.color))
         return outcome
 
     def change_color_pixel_in(self, object: Object) -> (Object): # only change the color of pixels classified as in-side pixels 
         outcome = set()
         for pixel in self.pixel_in(object):
-            outcome.add((pixel[0], pixel [1], color))
+            outcome.add((pixel[0], pixel [1], self.color))
         for  pixel in self.pixel_out(object):
             outcome.add(pixel)
         return outcome
@@ -468,7 +468,7 @@ class Transformer:
         for pixel in object:
             outcome.add(pixel)
         for pixel in object:
-            outcome.add((pixel[0], pixel[1], color))
+            outcome.add((pixel[0], pixel[1], self.color))
         return outcome
 
     def fill_pixel_right(self, object: Object) -> Object: # combine pixels on the same x-value but with a gap 
@@ -504,7 +504,7 @@ class Transformer:
         for pixel in object: 
             outcome.add(pixel)
         for pixel in gaps:
-            outcome.add((pixel[0], pixel[1], color))
+            outcome.add((pixel[0], pixel[1], self.color))
         return outcome
 
 
@@ -512,10 +512,13 @@ class Transformer:
     def grid_add_down(self, object: Object) -> Object: #add one more gridline at the bottom
         outcome = set()
         for pixel in object:
-            outcome.add(pixel)
-        for x_value in (range, self.grid_width):
-            newpixel = (x_value, self.grid_height, color)
+            outcome.add(pixel) # @Lorenz, why not outcome=object instead of this loop?
+        # for x_value in (range, self.grid_width): # @Lorenz: LOL, siehe unten
+        for x_value in range(self.grid_width): 
+            newpixel = (x_value, self.grid_height, self.color)
             outcome.add(newpixel)
+            print(newpixel)
+        print(outcome)
         return outcome
 
     def grid_add_up(self, object: Object) -> Object: #add one more gridline at the top
@@ -523,8 +526,8 @@ class Transformer:
         for pixel in object:
             newpixel = (pixel[0], pixel[1] + 1, pixel[2])
             outcome.add(newpixel)
-        for x_value in (range, self.grid_width):
-            newpixel = (x_value, 0, color)
+        for x_value in range(self.grid_width):
+            newpixel = (x_value, 0, self.color)
             outcome.add(newpixel)
         return outcome
 
@@ -532,8 +535,8 @@ class Transformer:
         outcome = set()
         for pixel in object:
             outcome.add(pixel)
-        for y_value in (range, self.grid_height):
-            newpixel = (self.grid_width, y_value, color)
+        for y_value in range(self.grid_height):
+            newpixel = (self.grid_width, y_value, self.color)
             outcome.add(newpixel)
         return outcome
 
@@ -542,8 +545,8 @@ class Transformer:
         for pixel in object:
             newpixel = (pixel[0] +1, pixel[1], pixel[2])
             outcome.add(newpixel)
-        for y_value in (range, self.grid_height):
-            newpixel = (0, y_value, color)
+        for y_value in range(self.grid_height):
+            newpixel = (0, y_value, self.color)
             outcome.add(newpixel)
         return outcome
 
@@ -552,10 +555,10 @@ class Transformer:
         for pixel in object:
             newpixel = (pixel[0], pixel[1] + 1, pixel[2])
             outcome.add(newpixel)
-        for x_value in (range, self.grid_width):
-            newpixel_1 = (x_value, 0, color) #first line 
+        for x_value in range(self.grid_width):
+            newpixel_1 = (x_value, 0, self.color) #first line 
             outcome.add(newpixel_1)
-            newpixel_2 = (x_value, self.grid_height + 1, color) #last line 
+            newpixel_2 = (x_value, self.grid_height + 1, self.color) #last line #@Lorenz: what happens with this?
         return outcome
 
     def grid_add_left_and_right (self, object: Object) -> Object: #add one more gridline at left and right 
@@ -563,10 +566,10 @@ class Transformer:
         for pixel in object:
             newpixel = (pixel[0] + 1, pixel[1], pixel[2])
             outcome.add(newpixel)
-        for y_value in (range, self.grid_height):
-            newpixel_1 = (0, y_value, color) #first line 
+        for y_value in range(self.grid_height):
+            newpixel_1 = (0, y_value, self.color) #first line 
             outcome.add(newpixel_1)
-            newpixel_2 = (self.grid_width + 1, y_value, color) #last line 
+            newpixel_2 = (self.grid_width + 1, y_value, self.color) #last line 
         return outcome
 
     def grid_duplicate_down(self, object: Object) -> Object: #add one more gridline by duplication the bottom line
