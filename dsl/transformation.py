@@ -25,7 +25,7 @@ def convert_grid_format(grid):
 
 def reconvert_grid_format(formatted_grid):
 
-    # get og grid dimensions
+    # get grid dimensions
     width = max(sublist[1] for sublist in formatted_grid) +1
     height = max(sublist[0] for sublist in formatted_grid) +1
     
@@ -125,7 +125,7 @@ def apply_transformation(grid, grid_name, transformation_name, terminal_visualiz
     grid_width, grid_height = np.shape(grid)
 
 
-    # specify the context for the dsl. Within that context, get the functions. Filter out the auxiliary functions.
+    # specify the context for the dsl. Within that context, get the functions.
     transformer = Transformer(color = 1, grid_width = grid_width, grid_height = grid_height)
 
     # Get the specific function we want
