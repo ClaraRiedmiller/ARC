@@ -41,22 +41,7 @@ def create_similarity_matrix(shared_properties):
     return similarity_matrix, input_ids, output_ids
 
 
-from scipy.optimize import linear_sum_assignment
-import numpy as np
-
 def optimal_one_to_one_assignment_with_valid_dummies(shared_properties, similarity_threshold=0.2):
-    """
-    Finds the optimal one-to-one assignment of input-output pairs that maximizes the overall similarity,
-    while handling unmatched outputs by assigning them a dummy input, ensuring no duplicates for matched outputs.
-
-    Parameters:
-        shared_properties (list[dict]): A list of dictionaries containing input-output pairs and their similarity scores.
-        similarity_threshold (float): The minimum similarity required for an assignment.
-
-    Returns:
-        list[dict]: A list of dictionaries containing the optimal assignments, including dummy assignments
-                    only for unmatched outputs.
-    """
     # Create the similarity matrix and extract input/output IDs
     similarity_matrix, input_ids, output_ids = create_similarity_matrix(shared_properties)
 
