@@ -4,8 +4,6 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from .dsl import Transformer
-# from . import dsl as module
-
 from arckit_handler.arckit_handler import drawGrid, getGrid
 
 def convert_grid_format(grid):
@@ -126,12 +124,12 @@ def apply_transformation(grid, grid_name, transformation_name, terminal_visualiz
 
     grid_width, grid_height = np.shape(grid)
 
+
+    # specify the context for the dsl. Within that context, get the functions. Filter out the auxiliary functions.
     transformer = Transformer(color = 1, grid_width = grid_width, grid_height = grid_height)
 
-    # get the function from the dsl that we called by name
+    # Get the specific function we want
     transformation = getattr(transformer, transformation_name, None)
-    # transformation = globals().get(transformation_name)
-    print(transformation)
 
 
     formatted_grid = convert_grid_format(grid)

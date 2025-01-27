@@ -1,52 +1,53 @@
-function_name,output,inputs,requires_color,grid_level,grid_size_change,description,additional_comments,object_level
-"add_border_around_object,""typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"",""['object', 'color', 'gridsize']"",,,,,,"
-"add_corners_around_object,""typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"",""['object', 'color', 'gridsize']"",,,,,,"
-"add_star_around_object,""typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"",""['object', 'color', 'gridsize']"",,,,,,"
-"change_color_pixel_in,""typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"",""['object', 'color', 'gridsize']"",,,,,,"
-color_max,<class 'int'>,['object'],,,,,,
-color_min,<class 'int'>,['object'],,,,,,
-"color_object_max,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"color_object_min,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-color_order,list[int],['object'],,,,,,
-"fill_pixel,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'color', 'gridsize']"",,,,,,"
-"fill_pixel_down,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'color', 'gridsize']"",,,,,,"
-"fill_pixel_right,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'color', 'gridsize']"",,,,,,"
-"flip_xax,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"flip_yax,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"grid_add_down,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_add_left,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_add_left_and_right,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_add_right,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_add_up,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_add_up_and_down,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_duplicate_down,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"grid_duplicate_left,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_duplicate_left_and_right,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_duplicate_right,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_duplicate_up,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"grid_duplicate_up_and_down,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize', 'color']"",,,,,,"
-"holes,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"isolate,""typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"",""['object', 'gridsize']"",,,,,,"
-"move_down,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"move_down_edge,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"move_left,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"move_left_edge,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"move_right,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"move_right_edge,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"move_up,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"move_up_edge,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"neighborhood,<class 'object'>,""['object', 'gridsize']"",,,,,,"
-"neighborhood_with_diagonals,<class 'object'>,""['object', 'gridsize']"",,,,,,"
-"only_diagonal_neighborhood,<class 'object'>,""['object', 'gridsize']"",,,,,,"
-"pixel_in,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"pixel_out,""typing.Set[typing.Tuple[int, int, int]]"",""['object', 'gridsize']"",,,,,,"
-"pixel_out_with_uncovered_neighbors,""(typing.Set[typing.Tuple[int, int, int]], typing.Set[typing.Tuple[int, int, int]])"",""['object', 'gridsize']"",,,,,,"
-"pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood,""(typing.Set[typing.Tuple[int, int, int]], typing.Set[typing.Tuple[int, int, int]])"",""['object', 'gridsize']"",,,,,,"
-"pixel_out_with_uncovered_neighbors_with_diagonal,""(typing.Set[typing.Tuple[int, int, int]], typing.Set[typing.Tuple[int, int, int]])"",""['object', 'gridsize']"",,,,,,"
-"project_bigger,""typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"",""['object', 'gridsize']"",,,,,,"
-"project_smaller,""typing.Tuple[typing.Set[typing.Tuple[int, int, int]], typing.Tuple[int, int]]"",""['object', 'gridsize']"",,,,,,"
-x_max,<class 'int'>,['object'],,,,,,
-x_min,<class 'int'>,['object'],,,,,,
-y_max,<class 'int'>,['object'],,,,,,
-y_min,<class 'int'>,['object'],,,,,,
-"function_name_here,,""['input1', 'input2', 'input3']"",,,,,,"
+function_name;DSL;output;inputs;requires_grid;requires_color;grid_level;grid_size_change;color_change;description;additional_comments;object_level
+add_border_around_object;1;object;object;1;1;0;0;1;surronding adjacent pxiels of an object are added;;
+add_corners_around_object;1;object;object;1;1;0;0;1;surronding diagonal pixells  of an objectare added;;
+add_star_around_object;1;object;object;1;1;0;0;1;surronding adjacent and diagonal pxiels of an object are added;;
+change_color_pixel_out;1;object;object;0;1;0;0;1;"Changes every ""edge"" pixel of an object. Note that a grid next to the edge of an object is not an edge";;
+change_color_pixel_in;1;object;object;0;1;0;0;1;Changes every pixel inside of an object;;
+color_max;0;color;object;0;0;1;0;0;Determines the max. used color of an object;support function;
+color_min;0;color;object;0;0;1;0;0;Determiens the min. used color of an object;support function;
+color_object_max;1;object;object;0;0;1;0;1;Colors an object by the most used color;;
+color_object_min;1;object;object;0;0;1;0;1;Corors an object by the least used color (note: color has to be used at least once);;
+color_order;0;list[color];object;0;0;1;0;0;Provides a ranking of most used colors;;
+fill_pixel;1;object;object;1;1;0;0;1;Changes the color of every 1-pixel hole;;
+fill_pixel_down;1;object;object;1;1;0;0;1;Changes the color of every y-axis hole;;
+fill_pixel_right;1;object;object;1;1;0;0;1;Changes the color of every x-axis hole;;
+flip_xax;1;object;object;1;0;1;0;0;Flip of the x-values;;
+flip_yax;1;object;object;1;0;1;0;0;Flip of the y-values;;
+grid_add_down;1;grid;grid;1;1;1;1;1;A uniform colored line is added left ;;
+grid_add_left;1;grid;grid;1;1;1;1;1;A uniform colored line is added down ;;
+grid_add_left_and_right;1;grid;grid;1;1;1;1;1;A uniform colored line is added left and right;;
+grid_add_right;1;grid;grid;1;1;1;1;1;A uniform colored line is added right;;
+grid_add_up;1;grid;grid;1;1;1;1;1;A uniform colored line is added top;;
+grid_add_up_and_down;1;grid;grid;1;1;1;1;1;A uniform colored line is added down and top;;
+grid_duplicate_down;1;grid;grid;1;0;1;1;1;down line is duplicated;;
+grid_duplicate_left;1;grid;grid;1;0;1;1;1;left line is duplicated;;
+grid_duplicate_left_and_right;1;grid;grid;1;0;1;1;1;left and right line is duplicated;;
+grid_duplicate_right;1;grid;grid;1;0;1;1;1;right line is duplicated;;
+grid_duplicate_up;1;grid;grid;1;0;1;1;1;up line is duplicated;;
+grid_duplicate_up_and_down;1;grid;grid;1;0;1;1;1;up and down line is duplicated;;
+holes;0;object;object;1;0;0;0;0;Determines the 1-pixel holes of an object;support function;
+isolate;1;grid;object;0;0;1;1;0;Isolates an object as an grid;;
+move_down;1;object;object;1;0;0;0;0;An object is moved down  w.r.t. the grid;;
+move_down_edge;1;object;object;1;0;0;0;0;An object is moved to the bottom edge;;
+move_left;1;object;object;0;0;0;0;0;An object is moved to the left w.r.t. the grid;;
+move_left_edge;1;object;object;0;0;0;0;0;An object is moved to the left edge;;
+move_right;1;object;object;1;0;0;0;0;An object is moved to the right w.r.t. the grid;;
+move_right_edge;1;object;object;1;0;0;0;0;An object is moved to the right edge;;
+move_up;1;object;object;0;0;0;0;0;An object is moved up  w.r.t. the grid;;
+move_up_edge;1;object;object;0;0;0;0;0;An object is moved to the top edge;;
+neighborhood;0;object;object;1;0;0;0;0;Function detemines the adjacent pixels;support function for pixel_out functions;
+neighborhood_with_diagonals;0;object;object;1;0;0;0;0;Function detemines the adjacent + diagonal pixels;support function for pixel_out functions;
+only_diagonal_neighborhood;0;object;object;1;0;0;0;0;Function detemines  diagonal pixels;support function for pixel_out functions;
+pixel_in;0;object;object;1;0;0;0;0;"Determines the ""inside"" pixel of an object; i.e. pixel surronded by other pixels of the object";support function;
+pixel_out;0;object;object;1;0;0;0;0;"Determines the ""outside"" pixel of an object; i.e. pixel with at least one adjacent pixel which is not an element of the object";support function;
+pixel_out_with_uncovered_neighbors;0;object, object;object;1;0;0;0;0;Determines the pixels surronding (adjeceent) an object which are not covered by the object itself;support function;
+pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood;0;object, object;object;1;0;0;0;0;Determines the pixels surronding (diagonal + adjacent) an object which are not covered by the object itself;support function;
+pixel_out_with_uncovered_neighbors_with_diagonal;0;object, object;object;1;0;0;0;0;Determines the pixels surronding (diagonal) an object which are not covered by the object itself;support function;
+project_bigger;1;grid;object;1;0;1;1;0;Projects an object (grid) on a bigger grid;"gridsize is here used as ""to-be gridsize""";
+project_smaller;1;grid;object;1;0;1;1;0;Projects an object (grid) on a smaller grid;"gridsize is here used as ""to-be gridsize""";
+x_max;0;coordinate;object;0;0;1;0;0;Determines the corrdinate wht the max x-value of an object;support function;
+x_min;0;coordinate;object;0;0;1;0;0;Determines the corrdinate wht the min x-value of an object;support function;
+y_max;0;coordinate;object;0;0;1;0;0;Determines the corrdinate wht the max y-value of an object;support function;
+y_min;0;coordinate;object;0;0;1;0;0;Determines the corrdinate wht the min y-value of an object;support function;
+function_name_here;;;;;;;;;;;
