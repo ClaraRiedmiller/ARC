@@ -44,10 +44,13 @@ pixel_out;0;object;object;1;0;0;0;0;"Determines the ""outside"" pixel of an obje
 pixel_out_with_uncovered_neighbors;0;object, object;object;1;0;0;0;0;Determines the pixels surrounding (adjecent) an object which are not covered by the object itself;support function;
 pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood;0;object, object;object;1;0;0;0;0;Determines the pixels surrounding (diagonal + adjacent) an object which are not covered by the object itself;support function;
 pixel_out_with_uncovered_neighbors_with_diagonal;0;object, object;object;1;0;0;0;0;Determines the pixels surrounding (diagonal) an object which are not covered by the object itself;support function;
-project_bigger;1;grid;object;1;0;1;1;0;Projects an object (grid) on a bigger grid;"gridsize is here used as ""to-be gridsize""";
-project_smaller;1;grid;object;1;0;1;1;0;Projects an object (grid) on a smaller grid;"gridsize is here used as ""to-be gridsize""";
 x_max;0;coordinate;object;0;0;1;0;0;Determines the co-ordinate what the max x-value of an object;support function;
 x_min;0;coordinate;object;0;0;1;0;0;Determines the co-ordinate what the min x-value of an object;support function;
 y_max;0;coordinate;object;0;0;1;0;0;Determines the co-ordinate what the max y-value of an object;support function;
 y_min;0;coordinate;object;0;0;1;0;0;Determines the co-ordinate what the min y-value of an object;support function;
-function_name_here;;;;;;;;;;;
+project_dupliate;1;grid;grid;1;0;1;1;0;Duplicates a grid;;
+project_triplicate;1;grid;grid;1;0;1;1;0;Triplicates;;
+project_quintuplicate;1;grid;grid;1;0;1;1;0;Quintuplicate a grid;;
+project_half;1;grid;grid;1;0;1;1;0;Scale down grid to an half;;
+project_third;1;grid;grid;1;0;1;1;0;Scale down grid to an third;;
+project_fifth;1;grid;grid;1;0;1;1;0;Scale down grid to an fifth;;

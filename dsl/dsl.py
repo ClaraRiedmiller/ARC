@@ -167,7 +167,7 @@ class Transformer:
                 x_max = pixel[0]
         return x_max
 
-    def x_min(self, bject: Object) -> coordinate:
+    def x_min(self, object: Object) -> coordinate:
         # x_min = object[0][0]            # Initialize with the x-coordinate of the first pixel
         x_min =  next(iter(object))[0]  
         for pixel in object:
