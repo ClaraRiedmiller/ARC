@@ -8,14 +8,13 @@ from arckit_handler.arckit_handler import drawGrid, getGrid
 
 def convert_grid_format(grid):
 
-    # convert into Lorenz' prefered format
-
     # empty Object
     object = []
 
     for row_index, row in enumerate(grid):
         for column_index, column in enumerate(row):
-            object.append([column_index, row_index, column])
+            if not column is None:
+                object.append([column_index, row_index, column])
 
     # the above creates a list of lists. The dsl though uses sets of touples. Since we are typing, this is an important distiction! Thus, we convert to a set of touples
     object = {tuple(pixel) for pixel in object}
@@ -23,20 +22,16 @@ def convert_grid_format(grid):
     return object
 
 
-def reconvert_grid_format(formatted_grid):
-
-    # get grid dimensions
-    width = max(sublist[1] for sublist in formatted_grid) +1
-    height = max(sublist[0] for sublist in formatted_grid) +1
+def reconvert_grid_format(formatted_grid, grid_width, grid_height):
     
     # Create an empty grid (numpy array; empty here means filled with 0, which is the bg color in most cases.) with the specified dimensions
-    grid = np.array([[0 for _ in range(height)] for _ in range(width)])
+    grid = np.array([[None for _ in range(grid_height)] for _ in range(grid_width)]).astype(object)
 
 
     # Iterate over the formatted grid and place the values back into the correct positions
     for item in formatted_grid:
-        row_index, column_index, color = item
-        grid[column_index][row_index] = color
+        column_index, row_index, color = item
+        grid[row_index][column_index] = color
 
     return grid
 
@@ -117,6 +112,29 @@ def visualize_transformation(grid, transgrid, transformation_name, grid_title, s
         combined_image.show()
 
 
+
+def remove_bg(grid):
+
+    # replaces all 0s in grid with None values (inverse of add_bg)
+
+    # Convert to dtype=object to allow None values
+    grid = grid.astype(object)
+
+    # Replace 0 with None
+    grid[grid == 0] = None
+
+    return grid
+
+
+def add_bg(grid):
+
+    # replaces all None values in grid with 0s (inverse of remove_bg)
+    grid[grid == None] = 0
+
+    return grid
+
+
+
 def apply_transformation(grid, grid_name, transformation_name, terminal_visualize = True, image_visualize = True, show=True):
 
     
@@ -135,7 +153,12 @@ def apply_transformation(grid, grid_name, transformation_name, terminal_visualiz
     formatted_grid = convert_grid_format(grid)
 
 
-    transgrid = reconvert_grid_format(transformation(formatted_grid))
+    # apply the transformation, reconvert format.
+    transgrid = reconvert_grid_format(transformation(formatted_grid), grid_width = grid_width, grid_height = grid_height)
+
+
+    # add in the background (for composite programs, we will only do this after recombining the single transformed objects)
+    transgrid = add_bg(transgrid)
 
 
     if terminal_visualize:

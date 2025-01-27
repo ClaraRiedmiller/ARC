@@ -92,7 +92,7 @@ class Transformer:
                 below = (x, y - 1) in object_xy
 
                 if left and right and above and below:
-                    self.holes.add((x,y))
+                    outcome.add((x,y)) #@Clara changed this to outcome from holes
         return outcome 
 
     def pixel_out_with_uncovered_neighbors(self, object: Object) -> Tuple[Object, Object]:
@@ -438,7 +438,7 @@ class Transformer:
 
     def add_border_around_object(self, object: Object) -> Object: # add boundary
         outcome = set()
-        for pixel in object: # first we add all the pixels of the object
+        for pixel in object: # first we add all the pixels of the object @Lorenz: again, is this loop necessary?
             outcome.add(pixel)
         out_pixels = self.pixel_out_with_uncovered_neighbors_with_diagonal(object) # then we add the surronding corners
         for pixel in out_pixels:
@@ -464,10 +464,10 @@ class Transformer:
 
     def fill_pixel(self, object: Object) -> Object: # fill pixel within an object
         outcome = set()
-        holes = holes(object)
+        holes = self.holes(object)
         for pixel in object:
             outcome.add(pixel)
-        for pixel in object:
+        for pixel in holes: #@Clara I changed object here to holes
             outcome.add((pixel[0], pixel[1], self.color))
         return outcome
 
