@@ -327,25 +327,35 @@ class Transformer:
             outcome.add((pixel[0], pixel[1], tobecolor))
         return outcome
 
-    def project_bigger(self, object: Object) -> Object: #project object on bigger grid, assumes that same ratio for x and y coordinate
-        outcome = set()
-        grid_x_value = self.x_max(object) - self.x_min(object) + 1
-        # grid_y_value = max_y(object) - min_y(object) + 1
-        grid_ratio = self.grid_width / grid_x_value #we assume that gridsize value is bigger (because of project_bigger) @Lorenz what if we resize the grid before, is this just a separate operation? 
+    def project_dupliate(self, object: Object) -> Object: #duplication of an object
+    outcome = set()
+    for (pixel) in object: 
+        for x_value in range(0,2):
+            for y_value in range(0,2):
+                newpixel = (pixel[0] * 2 + x_value, pixel[1] * 2 + y_value, pixel[2]) 
+                outcome.add(newpixel)
+    return outcome
 
-        if not grid_ratio.is_integer():
-            return object
-        
-        for pixel in object: # duplicates the pixel into multiple pixels according to the ratio
-            for x_value in range(0,grid_ratio): 
-                for y_value in range(0,grid_ratio):
-                        outcome.add((pixel[0]*grid_ratio - x_value,pixel[1]*grid_ratio - y_value,pixel[3]))
-        
-        # outcome_grid_size = (x_max(outcome) - x_min(outcome) +1, y_max(outcome) - y_min(outcome) + 1)
-        return outcome
+    def project_triplicate(self, object: Object) -> Object: #triplication of an object
+    outcome = set()
+    for (pixel) in object: 
+        for x_value in range(0,3):
+            for y_value in range(0,3):
+                newpixel = (pixel[0] * 3 + x_value, pixel[1] * 3 + y_value, pixel[2]) 
+                outcome.add(newpixel)
+    return outcome
+    
+    def project_quintuplicate(self, object: Object) -> Object: #quintuplication of an object
+    outcome = set()
+    for (pixel) in object: 
+        for x_value in range(0,5):
+            for y_value in range(0,5):
+                newpixel = (pixel[0] * 5 + x_value, pixel[1] *5 + y_value, pixel[2]) 
+                outcome.add(newpixel)
+    return outcome
         
 
-    def project_smaller(self, object: Object) -> Object: #object object on smaller grid, assumes that same ratio for x and y coordinate
+    def project_half(self, object: Object) -> Object: #project on grid of half size
         outcome = set()
         grid_x_value = self.x_max(object) - self.x_min(object) + 1
         # grid_y_value = max_y(object) - min_y(object) + 1
