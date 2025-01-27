@@ -328,68 +328,93 @@ class Transformer:
         return outcome
 
     def project_dupliate(self, object: Object) -> Object: #duplication of an object
-    outcome = set()
-    for (pixel) in object: 
-        for x_value in range(0,2):
-            for y_value in range(0,2):
-                newpixel = (pixel[0] * 2 + x_value, pixel[1] * 2 + y_value, pixel[2]) 
-                outcome.add(newpixel)
-    return outcome
+        outcome = set()
+        for (pixel) in object: 
+            for x_value in range(0,2):
+                for y_value in range(0,2):
+                    newpixel = (pixel[0] * 2 + x_value, pixel[1] * 2 + y_value, pixel[2]) 
+                    outcome.add(newpixel)
+        return outcome
 
     def project_triplicate(self, object: Object) -> Object: #triplication of an object
-    outcome = set()
-    for (pixel) in object: 
-        for x_value in range(0,3):
-            for y_value in range(0,3):
-                newpixel = (pixel[0] * 3 + x_value, pixel[1] * 3 + y_value, pixel[2]) 
-                outcome.add(newpixel)
-    return outcome
+        outcome = set()
+        for (pixel) in object: 
+            for x_value in range(0,3):
+                for y_value in range(0,3):
+                    newpixel = (pixel[0] * 3 + x_value, pixel[1] * 3 + y_value, pixel[2]) 
+                    outcome.add(newpixel)
+        return outcome
     
     def project_quintuplicate(self, object: Object) -> Object: #quintuplication of an object
-    outcome = set()
-    for (pixel) in object: 
-        for x_value in range(0,5):
-            for y_value in range(0,5):
-                newpixel = (pixel[0] * 5 + x_value, pixel[1] *5 + y_value, pixel[2]) 
-                outcome.add(newpixel)
-    return outcome
+        outcome = set()
+        for (pixel) in object: 
+            for x_value in range(0,5):
+                for y_value in range(0,5):
+                    newpixel = (pixel[0] * 5 + x_value, pixel[1] *5 + y_value, pixel[2]) 
+                    outcome.add(newpixel)
+        return outcome
         
 
     def project_half(self, object: Object) -> Object: #project on grid of half size
         outcome = set()
         grid_x_value = self.x_max(object) - self.x_min(object) + 1
-        # grid_y_value = max_y(object) - min_y(object) + 1
-
-        # we do not want to resize the whole grid? I am not sure @Lorenz. This relates to the issue of reasoning about the object itself or relative to the whole grid
-        grid_ratio =  grid_x_value / self.grid_width
-        if not grid_ratio.is_integer() or int(grid_ratio) == 1:
+        grid_y_value = self.y_max(object) - self.y_min(object) + 1
+        
+        if grid_x_value % 2 != 0 or grid_y_value % 2 != 0:
             return object
-
-        grid_ratio = int(grid_ratio)
-        for value_1 in range(1,grid_ratio +1): #to shrink x-value
-            for value_2 in range(1, grid_ratio +1): # to shrink y-value
+    
+        for value_1 in range(2): #to shrink x-value
+            for value_2 in range(2): # to shrink y-value
                 subgrid = set()
                 for (x,y,c) in object:
-                    if x / grid_ratio < value_1 and y / grid_ratio < value_2:
+                   if value_1 <= x // 2 < value_1 + 1 and value_2 <= y // 2 < value_2 + 1:
                         subgrid.add((x,y,c))
-                if self.color_max(subgrid) is not None: # does this work??   
+                if self.color_max(subgrid) is not None:    
                     outcome.add((value_1, value_2, self.color_max(subgrid))) #add new pixel to final object
                 else:
                     outcome.add((value_1, value_2, 0))
         return outcome 
+
+    def project_third(self, object: Object) -> Object: #project on grid of third size
+        outcome = set()
+        grid_x_value = self.x_max(object) - self.x_min(object) + 1
+        grid_y_value = self.y_max(object) - self.y_min(object) + 1
         
-        # for value_1 in range(1,grid_ratio +1): #to shrink x-value
-        #     for value_2 in range(1, grid_ratio +1): # to shrink y-value
-        #         subgrid = set()
-        #         for pixel in object:
-        #             if pixel[0] / grid_ratio < value_1 and pixel[1] / grid_ratio < value_2:
-        #                 print(type(pixel))
-        #                 subgrid.add(pixel)
-        #         if color_max(subgrid) is not None: # does this work??   
-        #             outcome.add(value_1, value_2, color_max(subgrid)) #add new pixel to final object
-        #         else:
-        #             outcome.add(value_1, value_2, 0)
-        # return outcome 
+        if grid_x_value % 3 != 0 or grid_y_value % 3 != 0:
+            return object
+    
+        for value_1 in range(3): #to shrink x-value
+            for value_2 in range(3): # to shrink y-value
+                subgrid = set()
+                for (x,y,c) in object:
+                   if value_1 <= x // 3 < value_1 + 1 and value_2 <= y // 3 < value_2 + 1:
+                        subgrid.add((x,y,c))
+                if self.color_max(subgrid) is not None:    
+                    outcome.add((value_1, value_2, self.color_max(subgrid))) #add new pixel to final object
+                else:
+                    outcome.add((value_1, value_2, 0))
+        return outcome 
+
+    def project_fifth(self, object: Object) -> Object: #project on grid of fith size
+        outcome = set()
+        grid_x_value = self.x_max(object) - self.x_min(object) + 1
+        grid_y_value = self.y_max(object) - self.y_min(object) + 1
+        
+        if grid_x_value % 5 != 0 or grid_y_value % 5 != 0:
+            return object
+    
+        for value_1 in range(5): #to shrink x-value
+            for value_2 in range(5): # to shrink y-value
+                subgrid = set()
+                for (x,y,c) in object:
+                   if value_1 <= x // 5 < value_1 + 1 and value_2 <= y // 5 < value_2 + 1:
+                        subgrid.add((x,y,c))
+                if self.color_max(subgrid) is not None:    
+                    outcome.add((value_1, value_2, self.color_max(subgrid))) #add new pixel to final object
+                else:
+                    outcome.add((value_1, value_2, 0))
+        return outcome 
+    
 
     def add_star_around_object(self, object: Object) -> Object: # add star-like pixels
         outcome = set()
