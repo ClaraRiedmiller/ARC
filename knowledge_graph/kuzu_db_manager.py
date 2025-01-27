@@ -95,7 +95,7 @@ class KuzuDBManager:
             "id": id,
             "example_id": example_id,
             "color": color,
-           # "shape": self.serialize_shape(shape),  # Serialize as JSON
+            "shape": self.serialize_shape(shape),  # Serialize as JSON
             "bbox_x": bbox_x,
             "bbox_y": bbox_y,
             "bbox_width": bbox_width,
