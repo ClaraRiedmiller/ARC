@@ -5,17 +5,6 @@ from scipy.optimize import linear_sum_assignment
 import arckit
 
 def get_highest_similarity_pairs(shared_properties):
-    """
-    Finds the input-output object pair with the highest similarity for each input object.
-
-    Parameters:
-        shared_properties (list[dict]): A list of dictionaries containing input-output pairs 
-                                         and their similarity scores.
-
-    Returns:
-        dict: A dictionary where the keys are `input_id` and the values are the 
-              corresponding dictionary for the best matching `output_id`.
-    """
     # Create a dictionary to store the best match for each input_id
     best_pairs = {}
 
@@ -32,19 +21,6 @@ def get_highest_similarity_pairs(shared_properties):
     return best_pairs
 
 def create_similarity_matrix(shared_properties):
-    """
-    Creates a similarity matrix from a list of shared properties dictionaries.
-
-    Parameters:
-        shared_properties (list[dict]): A list of dictionaries containing input_id, output_id, 
-                                         and their similarity scores.
-
-    Returns:
-        tuple: (similarity_matrix, input_ids, output_ids)
-               - similarity_matrix (2D np.array): A 2D numpy array representing the similarity matrix.
-               - input_ids (list): List of unique input object IDs (row labels).
-               - output_ids (list): List of unique output object IDs (column labels).
-    """
     # Extract unique input and output IDs
     input_ids = sorted(set(match['input_id'] for match in shared_properties))
     output_ids = sorted(set(match['output_id'] for match in shared_properties))
@@ -126,7 +102,7 @@ def optimal_one_to_one_assignment_with_dummy(shared_properties):
 
 
 train_set, eval_set = arckit.load_data()
-task = train_set[0]
+task = train_set[4]
 task.show()
 db_manager = create_knowledge_graph(task)
 
