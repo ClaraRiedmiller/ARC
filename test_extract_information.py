@@ -41,13 +41,17 @@ def create_similarity_matrix(shared_properties):
     return similarity_matrix, input_ids, output_ids
 
 
-def optimal_one_to_one_assignment_with_dummy(shared_properties):
+from scipy.optimize import linear_sum_assignment
+import numpy as np
+
+def optimal_one_to_one_assignment_with_threshold_and_dummies(shared_properties, similarity_threshold=0.2):
     """
     Finds the optimal one-to-one assignment of input-output pairs that maximizes the overall similarity,
-    while handling unmatched outputs by assigning them a most likely origin.
+    while handling unmatched outputs by assigning them to dummy inputs and including them in the output.
 
     Parameters:
         shared_properties (list[dict]): A list of dictionaries containing input-output pairs and their similarity scores.
+        similarity_threshold (float): The minimum similarity required for an assignment.
 
     Returns:
         list[dict]: A list of dictionaries containing the optimal assignments, including dummy assignments
@@ -69,35 +73,40 @@ def optimal_one_to_one_assignment_with_dummy(shared_properties):
     # Solve the assignment problem using the Hungarian algorithm
     row_indices, col_indices = linear_sum_assignment(cost_matrix)
 
-    # Extract the optimal pairs while ignoring dummy matches (padded rows/columns)
-    optimal_pairs = []
-    unmatched_outputs = set(range(len(output_ids)))  # Track unmatched output indices
+    # Extract matched pairs and identify unmatched outputs
+    matched_outputs = set()
+    unmatched_outputs = set(range(len(output_ids)))  # Initially, all outputs are unmatched
+
+    results = []
 
     for i, j in zip(row_indices, col_indices):
-        if i < len(input_ids) and j < len(output_ids):  # Exclude dummy rows/columns
-            optimal_pairs.append({
-                "input_id": input_ids[i],
-                "output_id": output_ids[j],
-                "similarity": similarity_matrix[i, j],
-                "marker": "matched"
-            })
-            unmatched_outputs.discard(j)  # Remove matched output from the unmatched set
+        if i < len(input_ids) and j < len(output_ids):  # Real input-output match
+            similarity = similarity_matrix[i, j]
+            if similarity >= similarity_threshold:
+                results.append({
+                    "input_id": input_ids[i],
+                    "output_id": output_ids[j],
+                    "similarity": similarity,
+                    "marker": "matched"
+                })
+                matched_outputs.add(j)
+            else:
+                # Below the threshold; treat as unmatched
+                unmatched_outputs.add(j)
+        elif j < len(output_ids):  # Dummy input-output match
+            unmatched_outputs.add(j)
 
-    # Handle unmatched outputs by assigning them to a most likely origin
+    # Add unmatched outputs with dummy input assignments
     for unmatched_index in unmatched_outputs:
-        # Find the most likely origin (highest similarity from any input)
-        similarities_for_output = similarity_matrix[:, unmatched_index]
-        most_likely_input_index = np.argmax(similarities_for_output)
-        most_likely_input_id = input_ids[most_likely_input_index] if similarities_for_output[most_likely_input_index] > 0 else None
-
-        optimal_pairs.append({
-            "input_id": most_likely_input_id,
+        results.append({
+            "input_id": None,  # Dummy input
             "output_id": output_ids[unmatched_index],
-            "similarity": similarities_for_output[most_likely_input_index],
+            "similarity": 0.0,
             "marker": "unmatched"
         })
 
-    return optimal_pairs
+    return results
+
 
 
 
@@ -127,7 +136,7 @@ print("Similarity Matrix:")
 print(similarity_matrix)
 
 
-optimal_pairs = optimal_one_to_one_assignment_with_dummy(shared_properties)
+optimal_pairs = optimal_one_to_one_assignment_with_threshold_and_dummies(shared_properties)
 
 # Print the results
 for pair in optimal_pairs:

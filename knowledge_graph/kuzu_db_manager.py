@@ -198,7 +198,7 @@ class KuzuDBManager:
             CASE WHEN i.bbox_height = o.bbox_height THEN 2.5 ELSE 0 END +
             CASE WHEN i.shape = o.shape THEN 5 ELSE 0 END) * 1.0 / 25 AS normalized_similarity
         """
-        # !!!!We want to check whether we combine bbox_width and bbox_height!!!!
+        # !!!! We want to check whether we should combine bbox_width and bbox_height !!!!
 
         # Parameters for filtering by example_id
         parameters = {"example_id": example_id} if example_id is not None else {}
