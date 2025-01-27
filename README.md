@@ -39,9 +39,6 @@ conda active arc
 pip install -r requirements.txt
 
 
-
-
-
 #### install the arckit library (pip is a python package manager)
 pip install -U arckit
 
@@ -54,7 +51,25 @@ conda env list
 #### see all packages in your current environment
 conda list
 
+### Setup docker
 
+Follow the instructions for installing [docker desktop](https://docs.docker.com/desktop/setup/install/mac-install/) for your os. 
+
+Docker desktop is used to visualize the knowledge graph (implemented as a Kuzu database) - this is helpful for development.  
+
+Once docker desktop is running you can use the following command to launch the visualization software:
+
+```sh
+docker run -p 8000:8000 \
+    -v /absolute/path/to/demo_db:/database \
+    --rm kuzudb/explorer:latest
+```
+The query that lets you view the entire knowledge graph is:
+
+```sql
+MATCH (a)-[b]->(c)
+RETURN *;
+```
 
 ### our packages
 
