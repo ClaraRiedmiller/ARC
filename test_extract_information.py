@@ -44,10 +44,10 @@ def create_similarity_matrix(shared_properties):
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 
-def optimal_one_to_one_assignment_with_threshold_and_dummies(shared_properties, similarity_threshold=0.2):
+def optimal_one_to_one_assignment_with_valid_dummies(shared_properties, similarity_threshold=0.2):
     """
     Finds the optimal one-to-one assignment of input-output pairs that maximizes the overall similarity,
-    while handling unmatched outputs by assigning them to dummy inputs and including them in the output.
+    while handling unmatched outputs by assigning them a dummy input, ensuring no duplicates for matched outputs.
 
     Parameters:
         shared_properties (list[dict]): A list of dictionaries containing input-output pairs and their similarity scores.
@@ -55,7 +55,7 @@ def optimal_one_to_one_assignment_with_threshold_and_dummies(shared_properties, 
 
     Returns:
         list[dict]: A list of dictionaries containing the optimal assignments, including dummy assignments
-                    for unmatched outputs.
+                    only for unmatched outputs.
     """
     # Create the similarity matrix and extract input/output IDs
     similarity_matrix, input_ids, output_ids = create_similarity_matrix(shared_properties)
@@ -74,7 +74,7 @@ def optimal_one_to_one_assignment_with_threshold_and_dummies(shared_properties, 
     row_indices, col_indices = linear_sum_assignment(cost_matrix)
 
     # Extract matched pairs and identify unmatched outputs
-    matched_outputs = set()
+    matched_outputs = set()  # Tracks outputs that are properly matched
     unmatched_outputs = set(range(len(output_ids)))  # Initially, all outputs are unmatched
 
     results = []
@@ -89,21 +89,22 @@ def optimal_one_to_one_assignment_with_threshold_and_dummies(shared_properties, 
                     "similarity": similarity,
                     "marker": "matched"
                 })
-                matched_outputs.add(j)
+                matched_outputs.add(j)  # Mark this output as matched
+                unmatched_outputs.discard(j)  # Remove from unmatched
             else:
-                # Below the threshold; treat as unmatched
-                unmatched_outputs.add(j)
+                unmatched_outputs.add(j)  # Below threshold, treat as unmatched
         elif j < len(output_ids):  # Dummy input-output match
             unmatched_outputs.add(j)
 
     # Add unmatched outputs with dummy input assignments
     for unmatched_index in unmatched_outputs:
-        results.append({
-            "input_id": None,  # Dummy input
-            "output_id": output_ids[unmatched_index],
-            "similarity": 0.0,
-            "marker": "unmatched"
-        })
+        if unmatched_index not in matched_outputs:  # Ensure no duplicate dummies for matched outputs
+            results.append({
+                "input_id": None,  # Dummy input
+                "output_id": output_ids[unmatched_index],
+                "similarity": 0.0,
+                "marker": "unmatched"
+            })
 
     return results
 
@@ -136,7 +137,7 @@ print("Similarity Matrix:")
 print(similarity_matrix)
 
 
-optimal_pairs = optimal_one_to_one_assignment_with_threshold_and_dummies(shared_properties)
+optimal_pairs = optimal_one_to_one_assignment_with_valid_dummies(shared_properties)
 
 # Print the results
 for pair in optimal_pairs:
