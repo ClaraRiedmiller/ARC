@@ -7,6 +7,7 @@ from dsl.dsl import *
 from dsl.hodel_hardness import upper_bound_hardness
 from dsl.dsl_dictionary import get_dsl_dict
 from arckit_handler.arckit_handler import getGrid, get_problem
+from dsl.test_grids import grid1
 
 
 # # apply the transformation move_left to an example grid. We could extend this to take a specific grid as an input as well
@@ -88,8 +89,7 @@ def test_object_level_dimensions():
 
 
     # for this, we make an example first:
-    grid = np.array([[None,None,None,None,None, None, None], [None,3,2,3,None, None, None], [None,3,None,3,3, None, None], [None,3,3,4,None, None, None], [None,None,None,None,None, None, None]]).astype(object)
-
+    grid = grid1
     grid_name = 'test_object_transformation'
 
 
