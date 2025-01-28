@@ -339,6 +339,57 @@ class KuzuDBManager:
             print(f"Error during query execution: {e}")
 
         return matches
+    
+    def task_not_solvable(self):
+    # Initialize counters
+        unmatched_counter = 0
+        many_objects_counter = 0
+        
+        # check for unmatched objects and too many matched objects
+        for i in range(1, 4):  # Loop over 3, 2, 1
+            # Obtain properties
+            props = db_manager.get_shared_properties(example_id=i, batch_size=100)
+            
+            # Do matching on the properties
+            matchings = optimal_one_to_one_assignment_with_valid_dummies(props)
+            
+            # Count unmatched and matched objects
+            unmatched_count = sum(1 for item in matchings if item['marker'] == 'unmatched')
+            matched_count = sum(1 for item in matchings if item['marker'] == 'matched')
+            
+            if unmatched_count > 0:
+                unmatched_counter += 1
+            if matched_count > 5:
+                many_objects_counter += 1
+
+        # If the majority of the examples have unmatched objects, disregard task
+        if unmatched_counter > 1:
+            return "Task not solvable, non-trackable objects appear"
+        # If the majority of the examples have too many objects, disregard task
+        elif many_objects_counter > 1:
+            return "Task not solvable, too many objects"
+
+        #check for low similarity on the top 5 objects
+        low_similarity_counter = 0
+        for j in range(1, 4):  # Loop over 3, 2, 1
+            # Obtain properties
+            props = db_manager.get_shared_properties(example_id=j, batch_size=100)
+            
+            # Do matching on the properties
+            matchings = optimal_one_to_one_assignment_with_valid_dummies(props)
+            
+            # Count how many objects have a low similarity score
+            low_similarity_count = sum(1 for item in matchings if item['similarity'] < 0.2)
+            
+            # If all top 5 objects have a low similarity count
+            if low_similarity_count >= 5:
+                low_similarity_counter += 1
+
+        # If the majority of examples have low similarity between input and output, disregard task
+        if low_similarity_counter > 1:
+            return "Task not solvable, output cannot be tracked from input"
+        else:
+            return "We can attempt to solve this task!"
 
 
 

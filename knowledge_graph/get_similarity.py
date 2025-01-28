@@ -319,48 +319,4 @@ def get_properties_for_matched_pairs(self, optimal_pairs, batch_size=100):
 
     return matches
 
-def task_not_solvable(db_manager):
-    # if there are unmatched objects in the output (they appear and we can't track why)
-    # if there are more than 5 matched objects 
-    i = 3 
-    unmatched_counter = 0
-    many_objects_counter = 0
-    while i > 0: 
-    #obtain properties
-        props =  get_shared_properties(db_manager, example_id=i, batch_size=100)
-      #do matching on the properties 
-        matchings = optimal_one_to_one_assignment_with_valid_dummies(props)
-      #count how many outputs are unmatched 
-        unmatched_count = sum(1 for item in matchings if item['marker'] == 'unmatched')
-        matched_count = sum(1 for item in matchings if item['marker'] == 'matched')
-        if unmatched_count > 0:
-            unmatched_counter += 1 
-        if matched_count > 5:
-            many_objects_counter += 1
-        i = i -1 
-    if unmatched_counter > 1: 
-        return "Task not solvable, non-trackable objects appear"
-    elif many_objects_counter > 1:
-        return "Task not solvable, too many objects"
-    else: 
-        continue 
-    j = 3
-    low_similarity_counter = 0 
-    while i > 0: 
-        #obtain properties
-        props =  get_shared_properties(db_manager, example_id=i, batch_size=100)
-      #do matching on the properties 
-        matchings = optimal_one_to_one_assignment_with_valid_dummies(props)
-        #check for how low the similarity indices are for the top 5 objects
-        low_similarity_count = sum(1 for item in data if item['similarity'] < 0.2)
-        #if all top 5 objects have a low similarity count
-        if low_similarity_count >= 5:
-            low_similarity_counter += 1
-        else: 
-            continue 
-        j = j-1
-    
-    if low_similarity_counter > 1:    
-        return "Task not solvable, output cannot be tracked from input"
-    else: 
-        return "We can attempt to solve this task!"
+
