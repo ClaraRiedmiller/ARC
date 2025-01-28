@@ -260,6 +260,86 @@ class KuzuDBManager:
 
         return matches
 
+    def shared_properties_across_input(self, example_id_1, example_id_2, batch_size=100):
+        query = f"""
+        MATCH (i:input_object), (j:input_object)
+        WHERE i.example_id <> j.example_id {f"AND i.example_id = $example_id_1" if example_id_1 else ""} {f"AND j.example_id = $example_id_2" if example_id_2 else ""}
+        RETURN 
+            i.id AS input_i_id, 
+            j.id AS input_j_id,
+            (CASE WHEN i.color = j.color THEN 1 ELSE 0 END +
+            CASE WHEN i.bbox_x = j.bbox_x THEN 1 ELSE 0 END +
+            CASE WHEN i.bbox_y = j.bbox_y THEN 1 ELSE 0 END +
+            CASE WHEN i.bbox_width = j.bbox_width THEN 1 ELSE 0 END +
+            CASE WHEN i.bbox_height = j.bbox_height THEN 1 ELSE 0 END +
+            CASE WHEN i.shape = j.shape THEN 1 ELSE 0 END) AS num_matching_properties,
+            [
+                CASE WHEN i.color = j.color THEN 'color' ELSE NULL END,
+                CASE WHEN i.bbox_x = j.bbox_x THEN 'bbox_x' ELSE NULL END,
+                CASE WHEN i.bbox_y = j.bbox_y THEN 'bbox_y' ELSE NULL END,
+                CASE WHEN i.bbox_width = j.bbox_width THEN 'bbox_width' ELSE NULL END,
+                CASE WHEN i.bbox_height = j.bbox_height THEN 'bbox_height' ELSE NULL END,
+                CASE WHEN i.shape = j.shape THEN 'shape' ELSE NULL END
+            ] AS matching_properties,
+            (CASE WHEN i.color = j.color THEN 5 ELSE 0 END +
+            CASE WHEN i.bbox_x = j.bbox_x THEN 5 ELSE 0 END +
+            CASE WHEN i.bbox_y = j.bbox_y THEN 5 ELSE 0 END +
+            CASE WHEN i.bbox_width = j.bbox_width THEN 2.5 ELSE 0 END +
+            CASE WHEN i.bbox_height = j.bbox_height THEN 2.5 ELSE 0 END +
+            CASE WHEN i.shape = j.shape THEN 5 ELSE 0 END) * 1.0 / 25 AS normalized_similarity
+        """
+        parameters = {}
+        if example_id_1 is not None:
+            parameters["example_id_1"] = example_id_1
+        if example_id_2 is not None:
+            parameters["example_id_2"] = example_id_2
+
+        # Result storage
+        matches = []
+        try:
+            # Execute the query
+            result = self.conn.execute(query, parameters=parameters)
+            batch = []
+            while result.has_next():
+                row = result.get_next()
+
+                # Adjust based on `row` structure
+                if isinstance(row, (list, tuple)):
+                    # Access values positionally
+                    input_i_id, input_j_id, num_matching_properties, matching_properties, normalized_similarity = row
+                    matching_properties = [prop for prop in matching_properties if prop is not None]
+                elif isinstance(row, dict):
+                    # Access values using keys
+                    input_i_id = row["input_i_id"]
+                    output_i_id = row["input_j_id"]
+                    num_matching_properties = row["num_matching_properties"]
+                    matching_properties = [prop for prop in row["matching_properties"] if prop is not None]
+                    normalized_similarity = row["normalized_similarity"]
+                else:
+                    raise ValueError("Unexpected row format returned from query.")
+
+                # Add processed result to the batch
+                batch.append({
+                    "input_i_id": input_id,
+                    "input_j_id": output_id,
+                    "num_matching_properties": num_matching_properties,
+                    "matching_properties": matching_properties,
+                    "normalized_similarity": normalized_similarity
+                })
+
+                # If batch size is reached, process and reset the batch
+                if len(batch) >= batch_size:
+                    matches.extend(batch)
+                    batch = []
+
+            # Add remaining rows
+            matches.extend(batch)
+        
+        except Exception as e:
+            print(f"Error during query execution: {e}")
+
+        return matches
+
 
 
 
