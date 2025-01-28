@@ -12,6 +12,7 @@ Pixel: TypeAlias = Tuple[coordinate, coordinate, color]
 Object: TypeAlias = Set[Pixel]  # Note that any grid is hence an object
 # Gridsize: TypeAlias = Tuple[coordinate, coordinate] # this is the type for the whole grid
 
+
 class Constraints:
     def __init__(self, color : color, grid_width : coordinate, grid_height : coordinate):
         self.color : color  = color
