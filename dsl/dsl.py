@@ -12,21 +12,22 @@ Pixel: TypeAlias = Tuple[coordinate, coordinate, color]
 Object: TypeAlias = Set[Pixel]  # Note that any grid is hence an object
 # Gridsize: TypeAlias = Tuple[coordinate, coordinate] # this is the type for the whole grid
 
-
-class Transformer:
+class Constraints:
     def __init__(self, color : color, grid_width : coordinate, grid_height : coordinate):
         self.color : color  = color
         self.grid_width : coordinate = grid_width
         self.grid_height : coordinate = grid_height
 
+class Transformer:
+    
 
     #Core functions: these functions are not part of the DSL but enable us to detect elements of a structure:
-    def neighborhood(self, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
+    def neighborhood(properties: Properties, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
         neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1)]
         outcome = set()
         for pixel in object:
             for change in neighbor:
-                if 0 <= pixel[0] + change[0] <= self.grid_width and  0 <= pixel[1] + change[1] <= self.grid_height:
+                if 0 <= pixel[0] + change[0] <= properties.grid_width and  0 <= pixel[1] + change[1] <= self.grid_height:
                     outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
         return outcome
 
@@ -116,7 +117,6 @@ class Transformer:
 
         return outside_pixels, uncovered_neighbors
 
-
     def pixel_out_with_uncovered_neighbors_with_diagonal(self, object: Object) -> Tuple[Object, Object]:
         outside_pixels = set()
         uncovered_neighbors = set()
@@ -203,7 +203,6 @@ class Transformer:
                 max_count = count
         return max_color
 
-
     def color_min(self, object: Object) -> color:
         colorlist = [pixel[2] for pixel in object]  # Collect all colors
         colorcounts = Counter(colorlist)            # Count occurrences of each color
@@ -222,7 +221,6 @@ class Transformer:
         sorted_colors = sorted([(farbe, count) for farbe, count in colorcounts.items() if farbe != 1], key=lambda x: x[1], reverse=True) #sorts color and cound by decending order
         
         return [farbe for farbe, count in sorted_colors] #return only color
-
 
     # mirrors on x axis
     def flip_xax(self, object: Object) -> Object: #we want to flip the y-value of the pixels

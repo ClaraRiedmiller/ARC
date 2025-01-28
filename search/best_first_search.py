@@ -1,12 +1,13 @@
 import heapq
 from typing import Any, Callable, List, Tuple
 
+from dsl.dsl import Constraints
 from search.node import Node
 
 class BestFirstSearch:
     def __init__(
         self,
-        initial_state: Any,
+        problem: Tuple[List[Tuple[Any, Any]], Constraints],
         goal_test: Callable[[Any], bool],
         heuristic: Callable[[Any], float],
         expand: Callable[[Any], List[Tuple[Any, float]]]
@@ -20,7 +21,7 @@ class BestFirstSearch:
             heuristic: A function to compute the estimated cost to the goal from a given state.
             expand: A function to generate successor states and their associated costs.
         """
-        self.initial_state = initial_state
+        self.problem = problem
         self.goal_states = goal_test
         self.heuristic = heuristic
         self.expand = expand
@@ -45,7 +46,7 @@ class BestFirstSearch:
             current_program = current_node.program
 
             # Check if the current program solves the synthesis problem
-            if self.goal_test(current_program):
+            if self.goal_test(self.initial_goal_pairs, current_program):
                 return current_program
 
             # Mark the current program as visited
