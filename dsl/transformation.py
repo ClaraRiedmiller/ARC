@@ -144,8 +144,6 @@ def apply_transformation(grid, grid_name, transformation_name, terminal_visualiz
     # this dimensionality as input to the transformation only works when reasoning on the grid level. after, we would not be able to read the size from an object and have to pass it along another way
 
     grid_height, grid_width = np.shape(grid)
-    print('\ngrid width:', grid_width,'\ngrid height:', grid_height)
-
 
     # # specify the context for the dsl. Within that context, get the functions.
     # transformer = Transformer(color = 1, grid_width = grid_width, grid_height = grid_height)
@@ -159,14 +157,8 @@ def apply_transformation(grid, grid_name, transformation_name, terminal_visualiz
     # Get the specific function we want
     transformation = getattr(dsl, transformation_name, None)
 
-    if transformation:
-        print('\ntransformation:\n',transformation)
-    else:
-        print(f"Function {transformation_name} not found.")
-
 
     formatted_grid = convert_grid_format(grid)
-    print('\nformatted grid:\n', formatted_grid)
 
     # appy transformation with the specified constraints
     transgrid = transformation(constraints, formatted_grid)
