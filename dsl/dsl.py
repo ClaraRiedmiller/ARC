@@ -13,7 +13,7 @@ Object: TypeAlias = Set[Pixel]  # Note that any grid is hence an object
 # Gridsize: TypeAlias = Tuple[coordinate, coordinate] # this is the type for the whole grid
 
 class Constraints:
-    def __init__(self, color : color, grid_width : coordinate, grid_height : coordinate):
+    def __init__(constraints, color : color, grid_width : coordinate, grid_height : coordinate):
         self.color : color  = color
         self.grid_width : coordinate = grid_width
         self.grid_height : coordinate = grid_height
@@ -28,7 +28,7 @@ def neighborhood(constraints, pixel: Pixel) -> Object:     #We want to determine
             outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
-# def neighborhood_with_diagonals(self, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
+# def neighborhood_with_diagonals(constraints, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
 #     neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1), (1,1), (1, -1), (-1,1), (-1,-1)]
 #     outcome = set()
 #     for pixel in object:
@@ -39,7 +39,7 @@ def neighborhood(constraints, pixel: Pixel) -> Object:     #We want to determine
 #     return outcome
 
 #@Lorenz this is my attempt at doing what I think this function should do. Please confirm! The iteration over the pixels should then be done 
-def neighborhood_with_diagonals(self, pixel: Pixel) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
+def neighborhood_with_diagonals(constraints, pixel: Pixel) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
     neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1), (1,1), (1, -1), (-1,1), (-1,-1)]
     outcome = set()
     for change in neighbor:
@@ -47,7 +47,7 @@ def neighborhood_with_diagonals(self, pixel: Pixel) -> Object:     #We want to d
             outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
-def only_diagonal_neighborhood(self, pixel: Pixel) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
+def only_diagonal_neighborhood(constraints, pixel: Pixel) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
     neighbor = [(1,1), (1, -1), (-1,1), (-1,-1)]
     outcome = set()
     for change in neighbor:
@@ -55,7 +55,7 @@ def only_diagonal_neighborhood(self, pixel: Pixel) -> Object:     #We want to de
             outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
-def pixel_out(self, object: Object) -> Object:             # Given an object, we want to the pixels on the outside
+def pixel_out(constraints, object: Object) -> Object:             # Given an object, we want to the pixels on the outside
     outcome = set()
     for pixel_1 in object:
         neighborhood_pixel_1 = neighborhood(pixel_1)
@@ -69,7 +69,7 @@ def pixel_out(self, object: Object) -> Object:             # Given an object, we
             outcome.add(pixel_1)
     return outcome
 
-def pixel_in(self, object: Object) -> Object:             # Given an object, we want to the pixels in the inside
+def pixel_in(constraints, object: Object) -> Object:             # Given an object, we want to the pixels in the inside
     result = object
     outcome = set()
     for pixel_1 in object:
@@ -86,7 +86,7 @@ def pixel_in(self, object: Object) -> Object:             # Given an object, we 
         result.remove(pixel)
     return result
 
-def holes(self, object: Object) -> Object:  # outputs a set containing pixel-holes of an object
+def holes(constraints, object: Object) -> Object:  # outputs a set containing pixel-holes of an object
     outcome = set()
     object_xy = set((x,y) for x,y,c in object)
     for x in range(constraints.grid_width):
@@ -102,7 +102,7 @@ def holes(self, object: Object) -> Object:  # outputs a set containing pixel-hol
                 outcome.add((x,y)) #@Clara changed this to outcome from holes
     return outcome 
 
-def pixel_out_with_uncovered_neighbors(self, object: Object) -> Tuple[Object, Object]:
+def pixel_out_with_uncovered_neighbors(constraints, object: Object) -> Tuple[Object, Object]:
     outside_pixels = set()
     uncovered_neighbors = set()
 
@@ -123,7 +123,7 @@ def pixel_out_with_uncovered_neighbors(self, object: Object) -> Tuple[Object, Ob
 
     return outside_pixels, uncovered_neighbors
 
-def pixel_out_with_uncovered_neighbors_with_diagonal(self, object: Object) -> Tuple[Object, Object]:
+def pixel_out_with_uncovered_neighbors_with_diagonal(constraints, object: Object) -> Tuple[Object, Object]:
     outside_pixels = set()
     uncovered_neighbors = set()
 
@@ -144,7 +144,7 @@ def pixel_out_with_uncovered_neighbors_with_diagonal(self, object: Object) -> Tu
 
     return outside_pixels, uncovered_neighbors
 
-def pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(self, object: Object) -> Tuple[Object, Object]:
+def pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(constraints, object: Object) -> Tuple[Object, Object]:
     outside_pixels = set()
     uncovered_neighbors = set()
 
@@ -165,7 +165,7 @@ def pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(self, object: 
 
     return outside_pixels, uncovered_neighbors
 
-def x_max(self, object: Object) -> coordinate:
+def x_max(constraints, object: Object) -> coordinate:
     # x_max = object[0][0]            # Initialize with the x-coordinate of the first pixel
     x_max =  next(iter(object))[0]  
     for pixel in object:
@@ -173,7 +173,7 @@ def x_max(self, object: Object) -> coordinate:
             x_max = pixel[0]
     return x_max
 
-def x_min(self, object: Object) -> coordinate:
+def x_min(constraints, object: Object) -> coordinate:
     # x_min = object[0][0]            # Initialize with the x-coordinate of the first pixel
     x_min =  next(iter(object))[0]  
     for pixel in object:
@@ -181,7 +181,7 @@ def x_min(self, object: Object) -> coordinate:
             x_min = pixel[0]
     return x_min   
 
-def y_max(self, object: Object) -> coordinate:
+def y_max(constraints, object: Object) -> coordinate:
     # y_max = object[0][1]            # Initialize with the y-coordinate of the first pixel
     y_max =  next(iter(object))[1]  
     for pixel in object:
@@ -189,7 +189,7 @@ def y_max(self, object: Object) -> coordinate:
             y_max = pixel[1]
     return y_max
 
-def y_min(self, object: Object) -> coordinate:
+def y_min(constraints, object: Object) -> coordinate:
     # y_min = object[0][1]            # Initialize with the y-coordinate of the first pixel @Lorenz: object is a set, not a list! You cannot refer to it like this, instead we just draw an element from the set. I changed it below:
     y_min =  next(iter(object))[1]   
     
@@ -198,7 +198,7 @@ def y_min(self, object: Object) -> coordinate:
             y_min = pixel[1]
     return y_min  
 
-def color_max(self, object: Object) -> color:
+def color_max(constraints, object: Object) -> color:
     colorlist = [pixel[2] for pixel in object]  # Collect all colors
     colorcounts = Counter(colorlist)           # Count occurrences of each color
     max_count = 0
@@ -209,7 +209,7 @@ def color_max(self, object: Object) -> color:
             max_count = count
     return max_color
 
-def color_min(self, object: Object) -> color:
+def color_min(constraints, object: Object) -> color:
     colorlist = [pixel[2] for pixel in object]  # Collect all colors
     colorcounts = Counter(colorlist)            # Count occurrences of each color
     min_count = float('inf')
@@ -220,7 +220,7 @@ def color_min(self, object: Object) -> color:
             min_count = count
     return min_color
 
-def color_order(self, object: Object) -> list[color]: # Generalisation of min, max
+def color_order(constraints, object: Object) -> list[color]: # Generalisation of min, max
     colorlist = [pixel[2] for pixel in object]  # Collect all colors
     colorcounts = Counter(colorlist)            # Count occurrences of each color
     
@@ -229,7 +229,7 @@ def color_order(self, object: Object) -> list[color]: # Generalisation of min, m
     return [farbe for farbe, count in sorted_colors] #return only color
 
 # mirrors on x axis
-def flip_xax(self, object: Object) -> Object: #we want to flip the y-value of the pixels
+def flip_xax(constraints, object: Object) -> Object: #we want to flip the y-value of the pixels
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0], constraints.grid_height - pixel[1] - 1, pixel[2])
@@ -237,14 +237,14 @@ def flip_xax(self, object: Object) -> Object: #we want to flip the y-value of th
     return outcome
 
 # mirrors on y axis
-def flip_yax(self, object: Object) -> Object: #we want to flip the x-value of the pixels
+def flip_yax(constraints, object: Object) -> Object: #we want to flip the x-value of the pixels
     outcome = set()
     for pixel in object:
         newpixel = (constraints.grid_width - pixel[0] -1, pixel[1], pixel[2])
         outcome.add(newpixel) 
     return outcome
 
-def move_right(self, object: Object) -> Object: #we want to move the object one pixel to the right 
+def move_right(constraints, object: Object) -> Object: #we want to move the object one pixel to the right 
     outcome = set()
     for pixel in object:
         if pixel[0] + 1 <= constraints.grid_width:  
@@ -252,7 +252,7 @@ def move_right(self, object: Object) -> Object: #we want to move the object one 
             outcome.add(newpixel) 
     return outcome
 
-def move_left(self, object: Object) -> Object:  #we want tot move the object one pixel to the right 
+def move_left(constraints, object: Object) -> Object:  #we want tot move the object one pixel to the right 
     outcome = set()
     for pixel in object:
         if pixel[0] - 1 >= 0:  
@@ -260,7 +260,7 @@ def move_left(self, object: Object) -> Object:  #we want tot move the object one
             outcome.add(newpixel) 
     return outcome
 
-def move_down(self, object: Object) -> Object: #we want tot move the object one pixel up 
+def move_down(constraints, object: Object) -> Object: #we want tot move the object one pixel up 
     outcome = set()
     for pixel in object:
         if pixel[1] + 1 <= constraints.grid_height:  
@@ -268,7 +268,7 @@ def move_down(self, object: Object) -> Object: #we want tot move the object one 
             outcome.add(newpixel) 
     return outcome
 
-def move_up(self, object: Object) -> Object:  #we want to move the object one pixel down
+def move_up(constraints, object: Object) -> Object:  #we want to move the object one pixel down
     outcome = set()
     for pixel in object:
         if pixel[1] - 1 >= 0:  
@@ -276,7 +276,7 @@ def move_up(self, object: Object) -> Object:  #we want to move the object one pi
             outcome.add(newpixel) 
     return outcome
 
-def move_left_edge(self, object: Object) -> Object: # move to left edge
+def move_left_edge(constraints, object: Object) -> Object: # move to left edge
     outcome = set()
     min_x_value = x_min(object)
     for pixel in object:
@@ -284,7 +284,7 @@ def move_left_edge(self, object: Object) -> Object: # move to left edge
         outcome.add(newpixel)
     return outcome 
 
-def move_right_edge(self, object: Object) -> Object: #move to right edge
+def move_right_edge(constraints, object: Object) -> Object: #move to right edge
     outcome = set()
     max_x_value = x_max(object)
     for pixel in object:
@@ -292,7 +292,7 @@ def move_right_edge(self, object: Object) -> Object: #move to right edge
         outcome.add(newpixel)
     return outcome 
 
-def move_up_edge(self, object: Object) -> Object: # move to bottom edge
+def move_up_edge(constraints, object: Object) -> Object: # move to bottom edge
     outcome = set()
     min_y_value = y_min(object)
     for pixel in object:
@@ -300,7 +300,7 @@ def move_up_edge(self, object: Object) -> Object: # move to bottom edge
         outcome.add(newpixel)
     return outcome 
 
-def move_down_edge(self, object: Object) -> Object: # move to top edge
+def move_down_edge(constraints, object: Object) -> Object: # move to top edge
     outcome = set()
     max_y_value = y_max(object)
     for pixel in object:
@@ -309,7 +309,7 @@ def move_down_edge(self, object: Object) -> Object: # move to top edge
     return outcome 
 
 ### DSL Transform 
-def isolate(self, object: Object) -> (Object): #isolate an object
+def isolate(constraints, object: Object) -> (Object): #isolate an object
     outcome= set()
     for pixel in object:
         newpixel = (pixel[0] - x_min(object), pixel[1] - y_min(object), pixel[2])
@@ -320,21 +320,21 @@ def isolate(self, object: Object) -> (Object): #isolate an object
     constraints.grid_height = y_max(object) - y_min(object) +1               # to be checked @Natasha
     return outcome
 
-def color_object_max(self, object: Object) -> (Object):
+def color_object_max(constraints, object: Object) -> (Object):
     outcome = set()
     tobecolor = color_max(object)
     for pixel in object:
         outcome.add((pixel[0], pixel[1], tobecolor))
     return outcome
 
-def color_object_min(self, object: Object) -> (Object):
+def color_object_min(constraints, object: Object) -> (Object):
     outcome = set()
     tobecolor = color_min(object)
     for pixel in object:
         outcome.add((pixel[0], pixel[1], tobecolor))
     return outcome
 
-def project_dupliate(self, object: Object) -> Object: #duplication of an object
+def project_dupliate(constraints, object: Object) -> Object: #duplication of an object
     outcome = set()
     for (pixel) in object: 
         for x_value in range(0,2):
@@ -345,7 +345,7 @@ def project_dupliate(self, object: Object) -> Object: #duplication of an object
     constraints.grid_width = constraints.grid_width *2
     return outcome
 
-def project_triplicate(self, object: Object) -> Object: #triplication of an object
+def project_triplicate(constraints, object: Object) -> Object: #triplication of an object
     outcome = set()
     for (pixel) in object: 
         for x_value in range(0,3):
@@ -356,7 +356,7 @@ def project_triplicate(self, object: Object) -> Object: #triplication of an obje
     constraints.grid_width = constraints.grid_width *3
     return outcome
 
-def project_quintuplicate(self, object: Object) -> Object: #quintuplication of an object
+def project_quintuplicate(constraints, object: Object) -> Object: #quintuplication of an object
     outcome = set()
     for (pixel) in object: 
         for x_value in range(0,5):
@@ -368,7 +368,7 @@ def project_quintuplicate(self, object: Object) -> Object: #quintuplication of a
     return outcome
     
 
-def project_half(self, object: Object) -> Object: #project on grid of half size
+def project_half(constraints, object: Object) -> Object: #project on grid of half size
     outcome = set()
     grid_x_value = x_max(object) - x_min(object) + 1
     grid_y_value = y_max(object) - y_min(object) + 1
@@ -391,7 +391,7 @@ def project_half(self, object: Object) -> Object: #project on grid of half size
     constraints.grid_width = int(constraints.grid_width /2)
     return outcome 
 
-def project_third(self, object: Object) -> Object: #project on grid of third size
+def project_third(constraints, object: Object) -> Object: #project on grid of third size
     outcome = set()
     grid_x_value = x_max(object) - x_min(object) + 1
     grid_y_value = y_max(object) - y_min(object) + 1
@@ -414,7 +414,7 @@ def project_third(self, object: Object) -> Object: #project on grid of third siz
     constraints.grid_width = int(constraints.grid_width /3)
     return outcome 
 
-def project_fifth(self, object: Object) -> Object: #project on grid of fifth size
+def project_fifth(constraints, object: Object) -> Object: #project on grid of fifth size
     outcome = set()
     grid_x_value = x_max(object) - x_min(object) + 1
     grid_y_value = y_max(object) - y_min(object) + 1
@@ -435,7 +435,7 @@ def project_fifth(self, object: Object) -> Object: #project on grid of fifth siz
     return outcome 
 
 
-def add_star_around_object(self, object: Object) -> Object: # add star-like pixels
+def add_star_around_object(constraints, object: Object) -> Object: # add star-like pixels
     outcome = object
     outside_pixels, uncovered_neighbors = pixel_out_with_uncovered_neighbors(object) # then we add the surronding objects
     for pixel in uncovered_neighbors:
@@ -443,7 +443,7 @@ def add_star_around_object(self, object: Object) -> Object: # add star-like pixe
     
     return object
 
-def add_corners_around_object(self, object: Object) -> Object: # add diagonal corners
+def add_corners_around_object(constraints, object: Object) -> Object: # add diagonal corners
     outcome = object
     outside_pixels, uncovered_neighbors = pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(object) # then we add the surronding corners
     for pixel in uncovered_neighbors:
@@ -451,7 +451,7 @@ def add_corners_around_object(self, object: Object) -> Object: # add diagonal co
     
     return object
 
-def add_border_around_object(self, object: Object) -> Object: # add boundary
+def add_border_around_object(constraints, object: Object) -> Object: # add boundary
     outcome = object
     outside_pixels, uncovered_neighbors = pixel_out_with_uncovered_neighbors_with_diagonal(object) # then we add the surronding corners
     for pixel in uncovered_neighbors:
@@ -459,7 +459,7 @@ def add_border_around_object(self, object: Object) -> Object: # add boundary
     
     return outcome
 
-def change_color_pixel_out(self, object: Object) -> Object: # only change the color of pixels classified as out-side pixels 
+def change_color_pixel_out(constraints, object: Object) -> Object: # only change the color of pixels classified as out-side pixels 
     outcome = set()
     for pixel in pixel_in(object):
         outcome.add(pixel)
@@ -467,7 +467,7 @@ def change_color_pixel_out(self, object: Object) -> Object: # only change the co
         outcome.add((pixel[0], pixel [1], constraints.color))
     return outcome
 
-def change_color_pixel_in(self, object: Object) -> (Object): # only change the color of pixels classified as in-side pixels 
+def change_color_pixel_in(constraints, object: Object) -> (Object): # only change the color of pixels classified as in-side pixels 
     outcome = set()
     for pixel in pixel_in(object):
         outcome.add((pixel[0], pixel [1], constraints.color))
@@ -475,7 +475,7 @@ def change_color_pixel_in(self, object: Object) -> (Object): # only change the c
         outcome.add(pixel)
     return outcome
 
-def fill_pixel(self, object: Object) -> Object: # fill pixel within an object
+def fill_pixel(constraints, object: Object) -> Object: # fill pixel within an object
     outcome = set()
     holes = holes(object)
     for pixel in object:
@@ -484,7 +484,7 @@ def fill_pixel(self, object: Object) -> Object: # fill pixel within an object
         outcome.add((pixel[0], pixel[1], constraints.color))
     return outcome
 
-def fill_pixel_right(self, object: Object) -> Object: # combine pixels on the same x-value but with a gap 
+def fill_pixel_right(constraints, object: Object) -> Object: # combine pixels on the same x-value but with a gap 
     outcome = set()
     gaps = set()
     for y_value in range(0,constraints.grid_width):
@@ -502,7 +502,7 @@ def fill_pixel_right(self, object: Object) -> Object: # combine pixels on the sa
         outcome.add((pixel[0], pixel[1], constraints.color))
     return outcome
 
-def fill_pixel_down(self, object: Object) -> Object: # combine pixels on the same y-value but with a gap
+def fill_pixel_down(constraints, object: Object) -> Object: # combine pixels on the same y-value but with a gap
     outcome = set()
     gaps = set()
     for x_value in range(0,constraints.grid_height):
@@ -522,7 +522,7 @@ def fill_pixel_down(self, object: Object) -> Object: # combine pixels on the sam
 
 
 # DSL grid modifications
-def grid_add_down(self, object: Object) -> Object: #add one more gridline at the bottom
+def grid_add_down(constraints, object: Object) -> Object: #add one more gridline at the bottom
     outcome = set()
     for pixel in object:
         outcome.add(pixel) # @Lorenz, why not outcome=object instead of this loop?
@@ -533,7 +533,7 @@ def grid_add_down(self, object: Object) -> Object: #add one more gridline at the
     constraints.grid_height = constraints.grid_height +1
     return outcome
 
-def grid_add_up(self, object: Object) -> Object: #add one more gridline at the top
+def grid_add_up(constraints, object: Object) -> Object: #add one more gridline at the top
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
@@ -544,7 +544,7 @@ def grid_add_up(self, object: Object) -> Object: #add one more gridline at the t
     constraints.grid_height = constraints.grid_height +1
     return outcome
 
-def grid_add_right(self, object: Object) -> Object: #add one more gridline right
+def grid_add_right(constraints, object: Object) -> Object: #add one more gridline right
     outcome = set()
     for pixel in object:
         outcome.add(pixel)
@@ -554,7 +554,7 @@ def grid_add_right(self, object: Object) -> Object: #add one more gridline right
     constraints.grid_width = constraints.grid_width +1
     return outcome
 
-def grid_add_left(self, object: Object) -> Object: #add one more gridline left
+def grid_add_left(constraints, object: Object) -> Object: #add one more gridline left
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] +1, pixel[1], pixel[2])
@@ -565,7 +565,7 @@ def grid_add_left(self, object: Object) -> Object: #add one more gridline left
     constraints.grid_width = constraints.grid_width +1
     return outcome
 
-def grid_add_up_and_down (self, object: Object) -> Object: #add one more gridline at top and bottom
+def grid_add_up_and_down (constraints, object: Object) -> Object: #add one more gridline at top and bottom
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
@@ -578,7 +578,7 @@ def grid_add_up_and_down (self, object: Object) -> Object: #add one more gridlin
     constraints.grid_height = constraints.grid_height +2
     return outcome
 
-def grid_add_left_and_right (self, object: Object) -> Object: #add one more gridline at left and right 
+def grid_add_left_and_right (constraints, object: Object) -> Object: #add one more gridline at left and right 
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] + 1, pixel[1], pixel[2])
@@ -591,7 +591,7 @@ def grid_add_left_and_right (self, object: Object) -> Object: #add one more grid
     constraints.grid_width = constraints.grid_width +2
     return outcome
 
-def grid_duplicate_down(self, object: Object) -> Object: #add one more gridline by duplication the bottom line
+def grid_duplicate_down(constraints, object: Object) -> Object: #add one more gridline by duplication the bottom line
     outcome = set()
     for pixel in object:
         outcome.add(pixel)
@@ -602,7 +602,7 @@ def grid_duplicate_down(self, object: Object) -> Object: #add one more gridline 
     constraints.grid_height = constraints.grid_height +1
     return outcome
 
-def grid_duplicate_up(self, object: Object) -> Object: #add one more gridline by duplication the top line
+def grid_duplicate_up(constraints, object: Object) -> Object: #add one more gridline by duplication the top line
     outcome = set()
     for pixel in object:      
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
@@ -614,7 +614,7 @@ def grid_duplicate_up(self, object: Object) -> Object: #add one more gridline by
     constraints.grid_height = constraints.grid_height +1
     return outcome
 
-def grid_duplicate_right(self, object: Object) -> Object: #add one more gridline by duplication the right line
+def grid_duplicate_right(constraints, object: Object) -> Object: #add one more gridline by duplication the right line
     outcome = set()
     for pixel in object:
         outcome.add(pixel)
@@ -625,7 +625,7 @@ def grid_duplicate_right(self, object: Object) -> Object: #add one more gridline
     constraints.grid_width = constraints.grid_width +1
     return outcome
 
-def grid_duplicate_left(self, object: Object) -> Object: ##add one more gridline by duplication the left line
+def grid_duplicate_left(constraints, object: Object) -> Object: ##add one more gridline by duplication the left line
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] +1, pixel[1], pixel[2])
@@ -638,7 +638,7 @@ def grid_duplicate_left(self, object: Object) -> Object: ##add one more gridline
     return outcome
 
 
-def grid_duplicate_up_and_down (self, object: Object) -> Object: #duplication of top and bottom
+def grid_duplicate_up_and_down (constraints, object: Object) -> Object: #duplication of top and bottom
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0], pixel[1] + 1, pixel[2])
@@ -654,7 +654,7 @@ def grid_duplicate_up_and_down (self, object: Object) -> Object: #duplication of
     constraints.grid_height = constraints.grid_height +2
     return outcome
 
-def grid_duplicate_left_and_right (self, object: Object) -> Object: #duplication of left and right
+def grid_duplicate_left_and_right (constraints, object: Object) -> Object: #duplication of left and right
     outcome = set()
     for pixel in object:
         newpixel = (pixel[0] + 1, pixel[1], pixel[2])
