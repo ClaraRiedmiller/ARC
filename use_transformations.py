@@ -13,7 +13,7 @@ from arckit_handler.arckit_handler import getGrid, get_problem
 # apply_transformation(move_left)
 
 # # print all problems whose hardness (under hodel) is upper bounded by the paramter specified
-# print(upper_bound_hardness(2)) 
+# print(upper_bound_hardness(3)) 
 
 # # get problem from arckit handler
 # get_problem('68b16354')
