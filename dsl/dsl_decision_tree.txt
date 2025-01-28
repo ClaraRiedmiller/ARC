@@ -1,0 +1,74 @@
+Idea:
+- We are trying to minimize the DSL if we know that a condition is given by the KG
+- Thus, given the complete DSL, we will remove parts if possible
+
+Check if object is a grid
+Ask: Is bbox, bboy of object equivalent to grid weight, grid height
+    If Yes: DSL_GRID  
+    If No: DSL_OBJECT
+
+
+DSL_GRID:
+
+Check: Change of Height
+Ask:  Check if adding n to the input grid height (e.g., increasing by a fixed amount, such as 1 <= n <= 4) will match the the output grid height
+    If NO: Remove DSL_GRID_MUTATION_METHODS_ONELINE_HEIGHT
+    If Yes: #I don't think that the required information for this is given, so possibly to be ignored
+        1. Check whether uniformly coloured top / bottom lines:
+            If No: Remove DSL_GRID_MUTATION_METHODS_ONELINE_HEIGHT_UNIFROM
+        2. Check whether same color for x coordinate at top / bottom lines:
+            If No: Remove DSL_GRID_MUTATION_METHODS_ONELINE_HEIGHT_NONUNIFORM
+
+Check: Change of Width
+Ask:  Check if adding n to the input grid width (e.g., increasing by a fixed amount, such as 1 <= n <= 4) will match the the output grid width
+    If NO: Remove DSL_GRID_MUTATION_METHODS_ONELINE_WIDTH
+    If Yes: #I don't think that the required information for this is given, so possibly to be ignored
+        1. Check whether uniformly coloured left / right lines:
+            If No: Remove DSL_GRID_MUTATION_METHODS_ONELINE_WIDTH_UNIFROM
+        2. Check whether same color for x coordinate at left / bottom lines:
+            If No: Remove DSL_GRID_MUTATION_METHODS_ONELINE_WIDTH_NONUNIFORM
+
+Check: Multiplication
+Ask: Is the INPUT grid height and width, when multiplied by 2, 3,4, or 5, matches the OUTPUT grid height and width?
+    If Yes: Remove DSL_GRID_MUTATION_DIVISION
+Ask: Is the OUTPUT grid height and width, when multiplied by 2, 3,4, or 5, matches the INPUT grid height and width?
+    If Yes: Remove DSL_GRID_MUTATION_MULTIPLICATION
+
+
+DSL_OBJECT:
+
+Does Object Shape change: 
+    If Yes: 
+        1. Check if INPUT bbox/bboy is multitplied by 2, 3,4, or 5, matches the dimensions of the OUTPUT bbox/bboy
+            If Yes: Remove DSL_OBJECT_SHAPE_MUTATION_METHODS_PROJECT_DIV
+        2. Check if OUTPUT bbox/bboy is multitplied by 2, 3,4, or 5, matches the dimensions of the INPUT bbox/bboy
+            If Yes: Remove SL_OBJECT_SHAPE_MUTATION_METHODS_PROJECT_MUL
+        3. Check if bbox/bboy stay the same and the amout of pixels increase
+            If Yes: Remove DSL_OBJECT_SHAPE_MUTATION_METHODS_ADD
+        4. if bbox/bboy stay the same and the amout of pixels does not increase
+            If Yes: Remove DSL_OBJECT_SHAPE_MUTATION_METHODS_FILL
+    If No:
+        Remove DSL_OBJECT_SHAPE_MUTATION_METHODS
+
+Does Object  Move (change of coordinates):
+    If Yes:
+        1. Increase of x-coordinates: (object moves to right)
+            If Yes: Remove DSL_OBJECT_MOVE_LEFT_METHODS
+        2. Decrease of x-coordinates: (object moves to left)
+            If Yes: Remove DSL_OBJECT_MOVE_RIGHT_METHODS
+        3. Increase of y-coordinates: (object moves down)
+            If Yes: Remove DSL_OBJECT_MOVE_UP_METHODS
+        4. Decrease of y-coordinates: (object moves up)
+            If Yes: Remove DSL_OBJECT_MOVE_UP_METHODS
+        
+
+For Object and Grid:
+
+Does Obejct change color:
+    Check: IS the number of pixels per color unchanged?
+    If Yes: Remove DSL_COLOR_METHODS
+
+
+
+
+
