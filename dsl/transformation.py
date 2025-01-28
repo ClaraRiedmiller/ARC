@@ -25,7 +25,7 @@ def convert_grid_format(grid):
 def reconvert_grid_format(formatted_grid, grid_width, grid_height):
     
     # Create an empty grid (numpy array; empty here means filled with 0, which is the bg color in most cases.) with the specified dimensions
-    grid = np.array([[None for _ in range(grid_height)] for _ in range(grid_width)]).astype(object)
+    grid = np.array([[None for _ in range(grid_width)] for _ in range(grid_height)]).astype(object)
 
 
     # Iterate over the formatted grid and place the values back into the correct positions
@@ -128,10 +128,12 @@ def remove_bg(grid):
 
 def add_bg(grid):
 
-    # replaces all None values in grid with 0s (inverse of remove_bg)
-    grid[grid == None] = 0
+    bg_grid = np.copy(grid)
 
-    return grid
+    # replaces all None values in grid with 0s (inverse of remove_bg)
+    bg_grid[bg_grid == None] = 0
+
+    return bg_grid
 
 
 
@@ -140,7 +142,8 @@ def apply_transformation(grid, grid_name, transformation_name, terminal_visualiz
     
     # this dimensionality as input to the transformation only works when reasoning on the grid level. after, we would not be able to read the size from an object and have to pass it along another way
 
-    grid_width, grid_height = np.shape(grid)
+    grid_height, grid_width = np.shape(grid)
+    print('\ngrid width:', grid_width,'\ngrid height:', grid_height)
 
 
     # specify the context for the dsl. Within that context, get the functions.
@@ -154,7 +157,7 @@ def apply_transformation(grid, grid_name, transformation_name, terminal_visualiz
 
 
     # apply the transformation, reconvert format.
-    transgrid = reconvert_grid_format(transformation(formatted_grid), grid_width = grid_width, grid_height = grid_height)
+    transgrid = reconvert_grid_format(transformation(formatted_grid), grid_width = transformer.grid_width, grid_height = transformer.grid_height)
 
 
     # add in the background (for composite programs, we will only do this after recombining the single transformed objects)
@@ -166,6 +169,6 @@ def apply_transformation(grid, grid_name, transformation_name, terminal_visualiz
         print('\n', 'Transformed Grid:\n', transgrid)
 
     if image_visualize:
-        visualize_transformation(grid, transgrid, transformation.__name__ , grid_name, show)
+        visualize_transformation(add_bg(grid), transgrid, transformation.__name__ , grid_name, show)
 
     return(transgrid)

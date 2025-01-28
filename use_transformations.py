@@ -52,28 +52,72 @@ def test_grid_level():
 def test_object_level():
 
 
-    # for this, we make an example first: (this one is the same as Lorenz' test object just in a different format)
-    grid = np.array([[0,0,0,0,0], [0,3,3,3,0], [0,3,0,3,0], [0,3,3,3,0], [0,0,0,0,0]])
-
-    # this step is only necessary in case the kg gives us the objects with the background when we dont want to reason about it!
-    grid = remove_bg(grid)
-
+    # for this, we make an example first:
+    grid = np.array([[None,None,None,None,None, None, None], [None,3,2,3,None, None, None], [None,3,None,3,None, None, None], [None,3,3,4,None, None, None], [None,None,None,None,None, None, None]]).astype(object)
+    # , [None,None,None,None,None, None, None], [None,None,None,None,None, None, None]
 
     grid_name = 'test_object_transformation'
 
-    function = 'fill_pixel'
+    function = 'color_object_max'
 
-    apply_transformation(grid, grid_name, function, image_visualize=False)
+    # apply_transformation(grid, grid_name, function)
 
     
     # this gets me all the dsl functions (by default excluding the auxiliary ones). In this case, we want to only have ones that work on the object level
     dsl_functions = get_dsl_dict(excludeObjectOnly=True)
 
+    print(dsl_functions)
 
-    # # apply all the dsl functions to our object
-    # for function, type in dsl_functions.items():
-    #     print('\n', function)
-    #     apply_transformation(grid, grid_name, function, image_visualize=False)
+    # for now, exclude operations that resize the grid (as far as I can tell, main issue with reconverting the grid rn. But at the latest when it comes to search, we need to figure out how to adjust the meta paramters (grid dimensions) after applying a transformation)
+    dsl_functions = {key: value for key, value in dsl_functions.items() if value.get('grid_size_change') == '0'}
+
+    # apply all the dsl functions to our object
+    for function, type in dsl_functions.items():
+        print('\n', function)
+        apply_transformation(grid, grid_name, function)
 
 
-test_object_level()
+
+
+
+
+
+def test_object_level_dimensions():
+
+        # this test the dsl functions that manipulate and object but also affect the grid size. I think I need to modify the dsl in a way that changes its own parameters (width and height)
+
+
+    # for this, we make an example first:
+    grid = np.array([[None,None,None,None,None, None, None], [None,3,2,3,None, None, None], [None,3,None,3,3, None, None], [None,3,3,4,None, None, None], [None,None,None,None,None, None, None]]).astype(object)
+
+    grid_name = 'test_object_transformation'
+
+
+    # this gets me all the dsl functions (by default excluding the auxiliary ones). In this case, we want to only have ones that work on the object level
+    dsl_functions = get_dsl_dict()
+        
+
+    # function = 'add_border_around_object'
+
+    # apply_transformation(grid, grid_name, function)
+
+    
+
+    # #@Lorenz these all rely on the neighborhood functions. there is a type issue that i marked in the dsl
+    # forbidden_functions = ['add_border_around_object', 'add_corners_around_object', 'add_star_around_object', 'change_color_pixel_out', 'change_color_pixel_in']
+
+    # # filter out the forbidden functions (Lorenz needs to look over them)
+    # dsl_functions = {key: value for key, value in dsl_functions.items() if key not in forbidden_functions}
+    
+
+    # apply all the dsl functions to our object
+    for function, type in dsl_functions.items():
+        print('\n', function)
+        apply_transformation(grid, grid_name, function)
+
+
+test_object_level_dimensions()
+
+# test_grid_level()
+
+
