@@ -90,6 +90,8 @@ def test_object_level_dimensions():
 
     # for this, we make an example first:
     grid = grid1
+    print(grid1)
+
     grid_name = 'test_object_transformation'
 
 

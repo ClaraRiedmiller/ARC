@@ -4,7 +4,7 @@ import csv
 import pprint
 import inspect
 
-from .dsl import Transformer
+import dsl
 
 def get_dsl_dict(excludeAuxiliary = True, excludeObjectOnly=False):
 
@@ -44,7 +44,7 @@ def generate_new_dict():
 
     # Create the funciton dictionary
     dsl_functions = {}
-    for name, func in inspect.getmembers(Transformer, inspect.isfunction):
+    for name, func in inspect.getmembers(dsl, inspect.isfunction):
         dsl_functions[name] = {                         
         'description' : None,                      
         'requires_grid_size' : None,               

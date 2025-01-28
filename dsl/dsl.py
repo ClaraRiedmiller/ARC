@@ -13,7 +13,7 @@ Object: TypeAlias = Set[Pixel]  # Note that any grid is hence an object
 # Gridsize: TypeAlias = Tuple[coordinate, coordinate] # this is the type for the whole grid
 
 class Constraints:
-    def __init__(constraints, color : color, grid_width : coordinate, grid_height : coordinate):
+    def __init__(self, color : color, grid_width : coordinate, grid_height : coordinate):
         self.color : color  = color
         self.grid_width : coordinate = grid_width
         self.grid_height : coordinate = grid_height
@@ -28,17 +28,6 @@ def neighborhood(constraints, pixel: Pixel) -> Object:     #We want to determine
             outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
     return outcome
 
-# def neighborhood_with_diagonals(constraints, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
-#     neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1), (1,1), (1, -1), (-1,1), (-1,-1)]
-#     outcome = set()
-#     for pixel in object:
-#         print(pixel, type(pixel))
-#         for change in neighbor:
-#             if 0 <= pixel[0] + change[0] <= constraints.grid_width  and   0 <= pixel[1] + change[1] <= constraints.grid_height:
-#                 outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
-#     return outcome
-
-#@Lorenz this is my attempt at doing what I think this function should do. Please confirm! The iteration over the pixels should then be done 
 def neighborhood_with_diagonals(constraints, pixel: Pixel) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
     neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1), (1,1), (1, -1), (-1,1), (-1,-1)]
     outcome = set()
@@ -58,7 +47,7 @@ def only_diagonal_neighborhood(constraints, pixel: Pixel) -> Object:     #We wan
 def pixel_out(constraints, object: Object) -> Object:             # Given an object, we want to the pixels on the outside
     outcome = set()
     for pixel_1 in object:
-        neighborhood_pixel_1 = neighborhood(pixel_1)
+        neighborhood_pixel_1 = neighborhood(constraints, pixel_1)
         for pixel_2 in object:
             pixel_2_check = (pixel_2[0],pixel_2[1], pixel_1[2])     # We want to check whether an object is in the 
             if  pixel_2_check in neighborhood_pixel_1:
@@ -73,7 +62,7 @@ def pixel_in(constraints, object: Object) -> Object:             # Given an obje
     result = object
     outcome = set()
     for pixel_1 in object:
-        neighborhood_pixel_1 = neighborhood(pixel_1)
+        neighborhood_pixel_1 = neighborhood(constraints, pixel_1)
         for pixel_2 in object:
             pixel_2_check = (pixel_2[0],pixel_2[1], pixel_1[2])     # We want to check whether an object is in the  neighborhood of pixel_1
             if  pixel_2_check in neighborhood_pixel_1:
@@ -85,6 +74,7 @@ def pixel_in(constraints, object: Object) -> Object:             # Given an obje
     for pixel in outcome:
         result.remove(pixel)
     return result
+
 
 def holes(constraints, object: Object) -> Object:  # outputs a set containing pixel-holes of an object
     outcome = set()
@@ -99,7 +89,7 @@ def holes(constraints, object: Object) -> Object:  # outputs a set containing pi
             below = (x, y - 1) in object_xy
 
             if left and right and above and below:
-                outcome.add((x,y)) #@Clara changed this to outcome from holes
+                outcome.add((x,y,constraints.color)) #@Lorenz changed this to outcome from holes. Also, colored it bc otherwise with only coordinates, it is not a set of pixels and hence not an object!
     return outcome 
 
 def pixel_out_with_uncovered_neighbors(constraints, object: Object) -> Tuple[Object, Object]:
@@ -107,7 +97,7 @@ def pixel_out_with_uncovered_neighbors(constraints, object: Object) -> Tuple[Obj
     uncovered_neighbors = set()
 
     for pixel_1 in object:
-        neighborhood_pixel_1 = constraints.neighborhood(pixel_1)
+        neighborhood_pixel_1 = neighborhood(constraints,pixel_1)
         local_uncovered = set(neighborhood_pixel_1)  # Start with all neighbors.
 
         for pixel_2 in object:
@@ -128,7 +118,7 @@ def pixel_out_with_uncovered_neighbors_with_diagonal(constraints, object: Object
     uncovered_neighbors = set()
 
     for pixel_1 in object: 
-        neighborhood_pixel_1 = neighborhood_with_diagonals(pixel_1) #@Lorenz this requires an object, you are giving it a pixel. I changed the function.
+        neighborhood_pixel_1 = neighborhood_with_diagonals(constraints, pixel_1) #@Lorenz this requires an object, you are giving it a pixel. I changed the function.
         local_uncovered = set(neighborhood_pixel_1)  # Start with all neighbors.
 
         for pixel_2 in object:
@@ -149,7 +139,7 @@ def pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(constraints, o
     uncovered_neighbors = set()
 
     for pixel_1 in object:
-        neighborhood_pixel_1 = constraints.only_diagonal_neighborhood(pixel_1)
+        neighborhood_pixel_1 = only_diagonal_neighborhood(constraints, pixel_1)
         local_uncovered = set(neighborhood_pixel_1)  # Start with all neighbors.
 
         for pixel_2 in object:
@@ -165,7 +155,7 @@ def pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(constraints, o
 
     return outside_pixels, uncovered_neighbors
 
-def x_max(constraints, object: Object) -> coordinate:
+def x_max(object: Object) -> coordinate:
     # x_max = object[0][0]            # Initialize with the x-coordinate of the first pixel
     x_max =  next(iter(object))[0]  
     for pixel in object:
@@ -173,7 +163,7 @@ def x_max(constraints, object: Object) -> coordinate:
             x_max = pixel[0]
     return x_max
 
-def x_min(constraints, object: Object) -> coordinate:
+def x_min(object: Object) -> coordinate:
     # x_min = object[0][0]            # Initialize with the x-coordinate of the first pixel
     x_min =  next(iter(object))[0]  
     for pixel in object:
@@ -181,7 +171,7 @@ def x_min(constraints, object: Object) -> coordinate:
             x_min = pixel[0]
     return x_min   
 
-def y_max(constraints, object: Object) -> coordinate:
+def y_max(object: Object) -> coordinate:
     # y_max = object[0][1]            # Initialize with the y-coordinate of the first pixel
     y_max =  next(iter(object))[1]  
     for pixel in object:
@@ -189,7 +179,7 @@ def y_max(constraints, object: Object) -> coordinate:
             y_max = pixel[1]
     return y_max
 
-def y_min(constraints, object: Object) -> coordinate:
+def y_min(object: Object) -> coordinate:
     # y_min = object[0][1]            # Initialize with the y-coordinate of the first pixel @Lorenz: object is a set, not a list! You cannot refer to it like this, instead we just draw an element from the set. I changed it below:
     y_min =  next(iter(object))[1]   
     
@@ -198,7 +188,7 @@ def y_min(constraints, object: Object) -> coordinate:
             y_min = pixel[1]
     return y_min  
 
-def color_max(constraints, object: Object) -> color:
+def color_max(object: Object) -> color:
     colorlist = [pixel[2] for pixel in object]  # Collect all colors
     colorcounts = Counter(colorlist)           # Count occurrences of each color
     max_count = 0
@@ -209,7 +199,7 @@ def color_max(constraints, object: Object) -> color:
             max_count = count
     return max_color
 
-def color_min(constraints, object: Object) -> color:
+def color_min(object: Object) -> color:
     colorlist = [pixel[2] for pixel in object]  # Collect all colors
     colorcounts = Counter(colorlist)            # Count occurrences of each color
     min_count = float('inf')
@@ -220,7 +210,7 @@ def color_min(constraints, object: Object) -> color:
             min_count = count
     return min_color
 
-def color_order(constraints, object: Object) -> list[color]: # Generalisation of min, max
+def color_order(object: Object) -> list[color]: # Generalisation of min, max
     colorlist = [pixel[2] for pixel in object]  # Collect all colors
     colorcounts = Counter(colorlist)            # Count occurrences of each color
     
@@ -437,7 +427,7 @@ def project_fifth(constraints, object: Object) -> Object: #project on grid of fi
 
 def add_star_around_object(constraints, object: Object) -> Object: # add star-like pixels
     outcome = object
-    outside_pixels, uncovered_neighbors = pixel_out_with_uncovered_neighbors(object) # then we add the surronding objects
+    outside_pixels, uncovered_neighbors = pixel_out_with_uncovered_neighbors(constraints, object) # then we add the surronding objects
     for pixel in uncovered_neighbors:
         outcome.add((pixel[0],pixel[1], constraints.color)) #they get the assigned color
     
@@ -445,7 +435,7 @@ def add_star_around_object(constraints, object: Object) -> Object: # add star-li
 
 def add_corners_around_object(constraints, object: Object) -> Object: # add diagonal corners
     outcome = object
-    outside_pixels, uncovered_neighbors = pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(object) # then we add the surronding corners
+    outside_pixels, uncovered_neighbors = pixel_out_with_uncovered_neighbors_only_diagonal_neighborhood(constraints, object) # then we add the surronding corners
     for pixel in uncovered_neighbors:
         outcome.add((pixel[0],pixel[1], constraints.color)) #they get the assigned color
     
@@ -453,7 +443,7 @@ def add_corners_around_object(constraints, object: Object) -> Object: # add diag
 
 def add_border_around_object(constraints, object: Object) -> Object: # add boundary
     outcome = object
-    outside_pixels, uncovered_neighbors = pixel_out_with_uncovered_neighbors_with_diagonal(object) # then we add the surronding corners
+    outside_pixels, uncovered_neighbors = pixel_out_with_uncovered_neighbors_with_diagonal(constraints, object) # then we add the surronding corners
     for pixel in uncovered_neighbors:
         outcome.add((pixel[0],pixel[1], constraints.color)) #they get the assigned color
     
@@ -461,26 +451,26 @@ def add_border_around_object(constraints, object: Object) -> Object: # add bound
 
 def change_color_pixel_out(constraints, object: Object) -> Object: # only change the color of pixels classified as out-side pixels 
     outcome = set()
-    for pixel in pixel_in(object):
+    for pixel in pixel_in(constraints, object):
         outcome.add(pixel)
-    for  pixel in pixel_out(object):
+    for  pixel in pixel_out(constraints, object):
         outcome.add((pixel[0], pixel [1], constraints.color))
     return outcome
 
 def change_color_pixel_in(constraints, object: Object) -> (Object): # only change the color of pixels classified as in-side pixels 
     outcome = set()
-    for pixel in pixel_in(object):
+    for pixel in pixel_in(constraints, object):
         outcome.add((pixel[0], pixel [1], constraints.color))
-    for  pixel in pixel_out(object):
+    for  pixel in pixel_out(constraints, object):
         outcome.add(pixel)
     return outcome
 
 def fill_pixel(constraints, object: Object) -> Object: # fill pixel within an object
     outcome = set()
-    holes = holes(object)
+    detected_holes = holes(constraints, object)
     for pixel in object:
         outcome.add(pixel)
-    for pixel in holes: #@Lorenz I changed object here to holes
+    for pixel in detected_holes: #@Lorenz I changed object here to holes
         outcome.add((pixel[0], pixel[1], constraints.color))
     return outcome
 
