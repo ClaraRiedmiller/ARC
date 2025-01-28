@@ -360,7 +360,7 @@ def task_not_solvable(db_manager):
             continue 
         j = j-1
     
-        if low_similarity_counter > 1:    
-            return "Task not solvable, output cannot be tracked from input"
-        else: 
-            return "We can attempt to solve this task!"
+    if low_similarity_counter > 1:    
+        return "Task not solvable, output cannot be tracked from input"
+    else: 
+        return "We can attempt to solve this task!"
