@@ -1,4 +1,5 @@
 from typing import List, Callable
+from dsl import DSL_METHODS
 
 def _goal_test(initial_state, goal_state, constraints, program) -> bool:
     outcome = initial_state
@@ -20,5 +21,5 @@ def heuristic(program):
 def expand(program: List[Callable]):
     # Generate possible expansions of the current program
     # Each expansion is a tuple (new_program, cost_of_expansion)
-    candidates = [(program + "A", 1), (program + "B", 2)]
+    candidates = [program.copy().append() for func in DSL_METHODS]
     return candidates
