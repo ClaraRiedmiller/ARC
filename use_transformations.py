@@ -85,7 +85,7 @@ def test_object_level():
 
 def test_object_level_dimensions():
 
-        # this test the dsl functions that manipulate and object but also affect the grid size. I think I need to modify the dsl in a way that changes its own parameters (width and height)
+    # this test the dsl functions that manipulate and object but also affect the grid size. I think I need to modify the dsl in a way that changes its own parameters (width and height)
 
 
     # for this, we make an example first:

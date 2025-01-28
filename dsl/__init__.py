@@ -1,4 +1,4 @@
-from dsl import (
+from dsl.dsl import (
     add_border_around_object,
     add_corners_around_object,
     add_star_around_object,
