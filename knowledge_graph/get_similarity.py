@@ -319,4 +319,123 @@ def get_properties_for_matched_pairs(self, optimal_pairs, batch_size=100):
 
     return matches
 
+def get_properties_for_top_n_matches(self, top_n_matches, batch_size=100):
+    """
+    Fetches input and output object properties for the top N matches.
 
+    Parameters
+    ----------
+    top_n_matches : dict
+        A dictionary with input IDs as keys and their associated top N matches as values.
+        Example:
+        {
+            12001: [{"output_id": 12001, "similarity": 0.7}, ...],
+            13001: [{"output_id": 13001, "similarity": 0.8}, ...],
+            ...
+        }
+    batch_size : int
+        Number of results to process in each batch (to avoid memory overflow).
+
+    Returns
+    -------
+    list of dict
+        List of matched pairs with input and output object properties:
+        [
+            {
+                "input_id": ...,
+                "output_id": ...,
+                "input_properties": {"color": ..., "bbox_x": ..., "bbox_y": ..., "shape": ...},
+                "output_properties": {"color": ..., "bbox_x": ..., "bbox_y": ..., "shape": ...}
+            },
+            ...
+        ]
+    """
+    # Prepare a list of (input_id, output_id) tuples from the dictionary
+    matched_pairs = [
+        (input_id, match["output_id"])
+        for input_id, match_list in top_n_matches.items()
+        for match in match_list
+    ]
+
+    # Handle cases where there are no matched pairs
+    if not matched_pairs:
+        print("No matched pairs found.")
+        return []
+
+    # Construct the query to fetch all input-output object properties
+    query = f"""
+    MATCH (i:input_object), (o:output_object)
+    WHERE i.id IN {[input_id for input_id, _ in matched_pairs]}
+      AND o.id IN {[output_id for _, output_id in matched_pairs]}
+    RETURN 
+        i.id AS input_id, 
+        o.id AS output_id,
+        i.color AS input_color,
+        o.color AS output_color,
+        i.bbox_x AS input_bbox_x,
+        o.bbox_x AS output_bbox_x,
+        i.bbox_y AS input_bbox_y,
+        o.bbox_y AS output_bbox_y,
+        i.shape AS input_shape,
+        o.shape AS output_shape
+    """
+
+    # Result storage
+    matches = []
+    try:
+        # Execute the query using self.conn
+        result = self.conn.execute(query)
+        batch = []
+        while result.has_next():
+            row = result.get_next()
+
+            # Adjust based on row structure
+            if isinstance(row, (list, tuple)):
+                # Access values positionally
+                input_id, output_id, input_color, output_color, input_bbox_x, output_bbox_x, \
+                input_bbox_y, output_bbox_y, input_shape, output_shape = row
+            elif isinstance(row, dict):
+                # Access values using keys
+                input_id = row["input_id"]
+                output_id = row["output_id"]
+                input_color = row["input_color"]
+                output_color = row["output_color"]
+                input_bbox_x = row["input_bbox_x"]
+                output_bbox_x = row["output_bbox_x"]
+                input_bbox_y = row["input_bbox_y"]
+                output_bbox_y = row["output_bbox_y"]
+                input_shape = row["input_shape"]
+                output_shape = row["output_shape"]
+            else:
+                raise ValueError("Unexpected row format returned from query.")
+
+            # Add processed result to the batch
+            batch.append({
+                "input_id": input_id,
+                "output_id": output_id,
+                "input_properties": {
+                    "color": input_color,
+                    "bbox_x": input_bbox_x,
+                    "bbox_y": input_bbox_y,
+                    "shape": input_shape
+                },
+                "output_properties": {
+                    "color": output_color,
+                    "bbox_x": output_bbox_x,
+                    "bbox_y": output_bbox_y,
+                    "shape": output_shape
+                }
+            })
+
+            # If batch size is reached, process and reset the batch
+            if len(batch) >= batch_size:
+                matches.extend(batch)
+                batch = []
+
+        # Add remaining rows
+        matches.extend(batch)
+
+    except Exception as e:
+        print(f"Error during query execution: {e}")
+
+    return matches

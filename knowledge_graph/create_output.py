@@ -81,3 +81,26 @@ def get_top_n_matches(possibly_matches, n=5):
 
     # Return the top N matches
     return all_matches[:n]
+
+
+def get_top_n_matches_dict(possibly_matches, n=5):
+
+    # Initialize a new dictionary to store the top N matches per input ID
+    top_n_matches = {}
+
+    # Iterate over each input ID and its list of matches
+    for input_id, match_list in possibly_matches.items():
+        # Sort the matches by similarity in descending order
+        sorted_matches = sorted(match_list, key=lambda x: x['similarity'], reverse=True)
+
+        # Keep only the top N matches
+        top_n_matches[input_id] = sorted_matches[:n]
+
+    return top_n_matches
+
+
+def property_difference_between_matches(input_output_grid_pairs):
+    # takes the matched objects and return which list of truthvalues for
+    # color changed, scaled, position x changed, position y changed, 
+    return True
+
