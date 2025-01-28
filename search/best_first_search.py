@@ -34,7 +34,7 @@ class BestFirstSearch:
         """
         # Priority queue for managing the frontier
         frontier = []
-        heapq.heappush(frontier, Node(self.initial_state, self.heuristic(self.initial_state)))
+        heapq.heappush(frontier, Node(self.initial_state, 0, self.heuristic(self.initial_state)))
 
         # Set for visited states to avoid redundant work
         visited = set()
@@ -52,9 +52,9 @@ class BestFirstSearch:
             visited.add(current_program)
 
             # Expand the current node to generate successors
-            for successor, cost in self.expand(current_program):
+            for successor, generation_cost in self.expand(current_program):
                 if successor not in visited:
-                    heapq.heappush(frontier, Node(successor, cost + self.heuristic(successor)))
+                    heapq.heappush(frontier, Node(successor, current_node.cost + generation_cost, self.heuristic(successor)))
 
         # Return None if no solution is found
         return None
