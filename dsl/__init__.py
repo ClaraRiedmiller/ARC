@@ -94,6 +94,21 @@ DSL_GRID_MUTATION_METHODS_ONELINE_HEIGHT =[
     grid_duplicate_up_and_down
 ]
 
+# Check if the the added line is uniformly colored
+DSL_GRID_MUTATION_METHODS_ONELINE_HEIGHT_UNIFROM =[
+    grid_add_down,
+    grid_add_up,
+    grid_add_up_and_down
+]
+
+# Check if the the added line is uniformly colored
+DSL_GRID_MUTATION_METHODS_ONELINE_HEIGHT_NONUNIFORM =[
+    grid_duplicate_down,
+    grid_duplicate_up,
+    grid_duplicate_up_and_down
+]
+
+
 # Check if adding a line to the input grid width (e.g., increasing by a fixed amount, such as 1 or 2) will match the dimensions of the output grid width.
 DSL_GRID_MUTATION_METHODS_ONELINE_WIDTH =[
     grid_add_left,
@@ -120,6 +135,7 @@ DSL_GRID_MUTATION_DIVISION = [
 ]
 
 
+
 DSL_OBJECT_SHAPE_MUTATION_METHODS = [
     project_dupliate,
     project_triplicate,
@@ -134,6 +150,21 @@ DSL_OBJECT_SHAPE_MUTATION_METHODS = [
     fill_pixel_down,
     fill_pixel_right
 ]
+
+# Check if bbox/bboy does NOT stay the same and the amout of pixels increase
+DSL_OBJECT_SHAPE_MUTATION_METHODS_ADD = [,
+    add_border_around_object,
+    add_corners_around_object,
+    add_star_around_object
+]
+
+# Check if bbox/bboy stays the same and the amout of pixels increase
+DSL_OBJECT_SHAPE_MUTATION_METHODS_FILL = [,
+    fill_pixel,
+    fill_pixel_down,
+    fill_pixel_right
+]
+
 
 DSL_OBJECT_MOVE_METHODS = [
     move_down,
