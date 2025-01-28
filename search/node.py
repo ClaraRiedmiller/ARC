@@ -1,8 +1,8 @@
-from typing import Any
+from typing import Callable, List
 
 class Node:
-    def __init__(self, program: Any, cost: float, heuristic_value: float):
-        self.program = program
+    def __init__(self, program: List[Callable], cost: float, heuristic_value: float):
+        self.program = program 
         self.cost = cost
         self.heuristic_value = heuristic_value
         self.f_value = cost + heuristic_value
