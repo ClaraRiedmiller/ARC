@@ -5,13 +5,24 @@ import json
 
 class KuzuDBManager:
     def __init__(self, db_path=''):
-       self.db_path = db_path
-       self.db = kuzu.Database(db_path)
-       self.conn = kuzu.Connection(self.db)
+        self.db_path = db_path
+        self.db = kuzu.Database(db_path)
+        self.conn = kuzu.Connection(self.db)
 
-       # Configure DB to allow for json storage type
-       self.conn.execute('INSTALL json;')
-       self.conn.execute('LOAD EXTENSION json;')
+        # Configure DB to allow for JSON storage type
+        self.conn.execute('INSTALL json;')
+        self.conn.execute('LOAD EXTENSION json;')
+
+    def __enter__(self):
+        # Return the instance when entering the context
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # Close the connection or clean up resources
+        if self.conn:
+            self.conn.close()
+        if self.db:
+            del self.db  # Free up database resources if needed
 
     def create_schema(self):
         
