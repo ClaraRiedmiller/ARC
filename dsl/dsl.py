@@ -18,18 +18,17 @@ class Constraints:
         self.grid_width : coordinate = grid_width
         self.grid_height : coordinate = grid_height
 
-class Transformer:
     
 
-    #Core functions: these functions are not part of the DSL but enable us to detect elements of a structure:
-    def neighborhood(properties: Properties, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
-        neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1)]
-        outcome = set()
-        for pixel in object:
-            for change in neighbor:
-                if 0 <= pixel[0] + change[0] <= properties.grid_width and  0 <= pixel[1] + change[1] <= self.grid_height:
-                    outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
-        return outcome
+#Core functions: these functions are not part of the DSL but enable us to detect elements of a structure:
+def neighborhood(constraints: Constraints, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
+    neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+    outcome = set()
+    for pixel in object:
+        for change in neighbor:
+            if 0 <= pixel[0] + change[0] <= constraints.grid_width and  0 <= pixel[1] + change[1] <= self.grid_height:
+                outcome.add((pixel[0] + change[0], pixel[1] + change[1], pixel[2]))
+    return outcome
 
     def neighborhood_with_diagonals(self, object: Object) -> Object:     #We want to determine the neighbourhood pixels of a pixel. 
         neighbor = [(-1, 0), (0, -1), (1, 0), (0, 1), (1,1), (1, -1), (-1,1), (-1,-1)]
