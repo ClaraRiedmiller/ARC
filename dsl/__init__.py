@@ -83,6 +83,18 @@ DSL_OBJECT_SHAPE_MUTATION_METHODS = [
     fill_pixel_right
 ]
 
+DSL_OBJECT_SHAPE_MUTATION_INSIDE_METHODS = [
+    fill_pixel,
+    fill_pixel_down,
+    fill_pixel_right
+]
+
+DSL_OBJECT_SHAPE_MUTATION_OUTSIDE_METHODS = [
+     add_border_around_object,
+    add_corners_around_object,
+    add_star_around_object
+]
+
 DSL_OBJECT_MOVE_METHODS = [
     move_down,
     move_down_edge,
@@ -99,11 +111,27 @@ DSL_OBJECT_MOVE_METHODS = [
 DSL_OBJECT_MOVE_DOWN_METHODS = [
     move_down,
     move_down_edge,
+    flip_xax,
+
 ]
 
 DSL_OBJECT_MOVE_UP_METHODS = [
     move_up,
     move_up_edge,
+    flip_xax,
+]
+
+DSL_OBJECT_MOVE_LEFT_METHODS = [
+    move_left,
+    move_left_edge,
+    flip_yax,
+
+]
+
+DSL_OBJECT_MOVE_RIGHT_METHODS = [
+    move_right,
+    move_right_edge,
+    flip_yax,
 ]
 
 DSL_IGNORE = [
