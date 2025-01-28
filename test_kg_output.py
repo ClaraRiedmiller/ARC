@@ -20,7 +20,7 @@ similarity_matrix, input_ids, output_ids = create_similarity_matrix(shared_prope
 optimal_pairs = optimal_one_to_one_assignment_with_valid_dummies(shared_properties)
 possibly_matches = one_to_many_matches_dict(shared_properties)
 
-# print(possibly_matches)
+print(possibly_matches)
 
 
 # Print the results
@@ -44,10 +44,21 @@ for in_id, out_id, sim in top_5:
 
 
 
-print(create_isolated_object_grid((20,20), {'color': 2, 'bbox_x': 10, 'bbox_y': 6, 'shape': '[[1, 1, 1]]'}))
+
+possibly_matches = one_to_many_matches_dict(shared_properties, similarity_threshold=0.1)
+
+# 2) Fetch the top 5 properties for matched pairs
+top_5_properties = db_manager.get_properties_for_top_n_matches(possibly_matches, n=5)
+
+# 3) Inspect the result
+for pair in top_5_properties:
+    print(f"Input {pair['input_id']} => Output {pair['output_id']}")
+    print("Input Properties:", pair['input_properties'])
+    print("Output Properties:", pair['output_properties'])
+    print()
 
 
 # For instance, create 20x20 input grids and 25x25 output grids:
-all_pairs = create_input_output_grid_pairs((20, 20), (25, 25), get_properties_for_matched_pairs(db_manager, optimal_pairs))
+all_pairs = create_input_output_grid_pairs((20, 20), (25, 25), get_properties_for_matched_pairs(db_manager, possibly_matches))
 
-print(all_pairs)
+# print(all_pairs)
