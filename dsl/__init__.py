@@ -40,6 +40,7 @@ from dsl.dsl import (
     project_fifth
 )
 
+#check whether color of a pixel is changed
 DSL_COLOR_METHODS = [
     change_color_pixel_out,
     change_color_pixel_in,
@@ -48,6 +49,7 @@ DSL_COLOR_METHODS = [
 ]
 
 
+#somehow check wheter the grid istself is an object
 DSL_GRID_MUTATION_METHODS = [
     grid_add_down,
     grid_add_left,
@@ -108,7 +110,6 @@ DSL_GRID_MUTATION_METHODS_ONELINE_HEIGHT_NONUNIFORM =[
     grid_duplicate_up_and_down
 ]
 
-
 # Check if adding a line to the input grid width (e.g., increasing by a fixed amount, such as 1 or 2) will match the dimensions of the output grid width.
 DSL_GRID_MUTATION_METHODS_ONELINE_WIDTH =[
     grid_add_left,
@@ -136,6 +137,7 @@ DSL_GRID_MUTATION_DIVISION = [
 
 
 
+# check whether shape is not the same
 DSL_OBJECT_SHAPE_MUTATION_METHODS = [
     project_dupliate,
     project_triplicate,
@@ -151,21 +153,36 @@ DSL_OBJECT_SHAPE_MUTATION_METHODS = [
     fill_pixel_right
 ]
 
-# Check if bbox/bboy does NOT stay the same and the amout of pixels increase
-DSL_OBJECT_SHAPE_MUTATION_METHODS_ADD = [,
+
+# Check if INPUT bbox/bboy is multitplied by 2, 3,4, or 5, matches the dimensions of the OUTPUT bbox/bboy
+DSL_OBJECT_SHAPE_MUTATION_METHODS_PROJECT_MUL = [
+    project_dupliate,
+    project_triplicate,
+    project_quintuplicate
+]
+
+# Check if OUTPUT bbox/bboy is multitplied by 2, 3,4, or 5, matches the dimensions of the INPUT bbox/bboy
+DSL_OBJECT_SHAPE_MUTATION_METHODS_PROJECT_DIV = [
+    project_half,
+    project_third,
+    project_fifth,
+]
+
+# Check if bbox/bboy does NOT stay the same (increased by at most 4) and the amout of pixels increase
+DSL_OBJECT_SHAPE_MUTATION_METHODS_ADD = [
     add_border_around_object,
     add_corners_around_object,
     add_star_around_object
 ]
 
 # Check if bbox/bboy stays the same and the amout of pixels increase
-DSL_OBJECT_SHAPE_MUTATION_METHODS_FILL = [,
+DSL_OBJECT_SHAPE_MUTATION_METHODS_FILL = [
     fill_pixel,
     fill_pixel_down,
     fill_pixel_right
 ]
 
-
+#Check wheter the coordinates of the object change
 DSL_OBJECT_MOVE_METHODS = [
     move_down,
     move_down_edge,
@@ -175,20 +192,36 @@ DSL_OBJECT_MOVE_METHODS = [
     move_right_edge,
     move_up,
     move_up_edge,
-    flip_xax,
+    flip_xax,                   
     flip_yax,
 ]
 
+# decrease of y values
 DSL_OBJECT_MOVE_DOWN_METHODS = [
     move_down,
     move_down_edge,
-    
+    flip_xax 
 ]
-
+# increase of y values
 DSL_OBJECT_MOVE_UP_METHODS = [
     move_up,
     move_up_edge,
+    flip_xax
 ]
+# increase of x values
+DSL_OBJECT_MOVE_RIGHT_METHODS =[
+    move_right_edge,
+    move_up,
+    flip_yax
+]
+
+# decrease of x values
+DSL_OBJECT_MOVE_LEFT_METHODS =[
+    move_left_edge,
+    move_left,
+    flip_yax
+]
+
 
 DSL_IGNORE = [
     isolate,
