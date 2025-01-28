@@ -1,12 +1,20 @@
 from best_first_search import BestFirstSearch
-from program_search_problem import example_goal_test, example_heuristic, example_expand
+from program_search_problem import goal_test, heuristic, expand
+from dsl.dsl import Constraints
 
-initial_state = ""
+import arckit
+
+train_set, eval_set = arckit.load_data()
+task = train_set[4]
+
+constraints = Constraints()
+initial_goal_state_pairs = [(None, None)]
+problem = (initial_goal_state_pairs,constraints)
 bfs = BestFirstSearch(
-    initial_state,
-    example_goal_test,
-    example_heuristic,
-    example_expand
+    problem,
+    goal_test,
+    heuristic,
+    expand
 )
 result = bfs.search()
 print("Synthesized Program:", result)
