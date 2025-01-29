@@ -99,9 +99,13 @@ def test_object_level_dimensions():
     dsl_functions = get_dsl_dict()
         
 
+<<<<<<< Updated upstream
     # function = 'flip_object_around_own_xax'
+=======
+    function = 'flip_object_around_own_xax'
+>>>>>>> Stashed changes
 
-    # apply_transformation(grid, grid_name, function)
+    apply_transformation(grid, grid_name, function)
 
     
 
@@ -112,10 +116,10 @@ def test_object_level_dimensions():
     # dsl_functions = {key: value for key, value in dsl_functions.items() if key not in forbidden_functions}
     
 
-    # apply all the dsl functions to our object
-    for function, type in dsl_functions.items():
-        print('\n', function)
-        apply_transformation(grid, grid_name, function)
+    # # apply all the dsl functions to our object
+    # for function, type in dsl_functions.items():
+    #     print('\n', function)
+    #     apply_transformation(grid, grid_name, function)
 
 
 test_object_level_dimensions()
