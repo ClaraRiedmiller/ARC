@@ -12,15 +12,6 @@ import numpy as np
 import networkx as nx
 
 def create_knowledge_graph(task: Task) -> KuzuDBManager:
-    """
-    Creates a knowledge graph from the given task.
-    
-    Parameters:
-    task (Task): A Task object containing training and test data.
-    
-    Returns:
-    KuzuDBManager: An instance of KuzuDBManager with the knowledge graph.
-    """
     db_folder = "kuzudb"
     remove_folder_if_exists(db_folder)
     db_manager = KuzuDBManager(db_folder)
@@ -281,4 +272,39 @@ class KnowledgeGraphBuilder:
                     self.db_manager.insert_output_contains_relationship(group_id, object_id)
 
             # TODO: Extend to add task.test to the knowledge graph so we can make predictions
+        
+        test_example_id = 999  # Use a unique identifier to differentiate test cases
+
+        if task.test:
+            test_input_grid, test_output_grid = task.test[0]  
+
+            test_input_objects = self.extract_objects(test_input_grid, test_example_id)
+            for obj in test_input_objects:
+                self.db_manager.insert_input_object(**obj)
+
+            # Create and insert group-level nodes 
+            test_input_group_object_mapping, test_input_groups = self.extract_groups(test_input_objects, test_example_id)
+            for group in test_input_groups:
+                self.db_manager.insert_input_group(**group)
+
+            # Insert contains relations for test input groups
+            for group_id, objects in test_input_group_object_mapping:
+                for object_id in objects:
+                    self.db_manager.insert_input_contains_relationship(group_id, object_id)
+
+            # Now, process the test output grid as an **extra output grid**
+            test_output_objects = self.extract_objects(test_output_grid, test_example_id)
+            for obj in test_output_objects:
+                self.db_manager.insert_output_object(**obj)
+
+            # Create and insert group-level nodes for the test output grid
+            test_output_group_object_mapping, test_output_groups = self.extract_groups(test_output_objects, test_example_id)
+            for group in test_output_groups:
+                self.db_manager.insert_output_group(**group)
+
+            # Insert contains relations for test output groups
+            for group_id, objects in test_output_group_object_mapping:
+                for object_id in objects:
+                    self.db_manager.insert_output_contains_relationship(group_id, object_id)
+
         return self.db_manager

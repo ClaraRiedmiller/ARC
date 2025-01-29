@@ -78,43 +78,6 @@ def create_isolated_object_grid(grid_size, prop_dict):
     return grid
 
 
-# def get_top_n_matches(possibly_matches, n=5):
-#     all_matches = []
-
-#     # Flatten the dictionary into a list of tuples
-#     for input_id, match_list in possibly_matches.items():
-#         for match_info in match_list:
-#             all_matches.append(
-#                 (input_id, match_info['output_id'], match_info['similarity'])
-#             )
-
-#     # Sort by similarity in descending order
-#     all_matches.sort(key=lambda x: x[2], reverse=True)
-
-#     # Return the top N matches
-#     return all_matches[:n]
-
-
-# def get_top_n_matches_dict(possibly_matches, n=5):
-
-#     # Initialize a new dictionary to store the top N matches per input ID
-#     top_n_matches = {}
-
-#     # Iterate over each input ID and its list of matches
-#     for input_id, match_list in possibly_matches.items():
-#         # Sort the matches by similarity in descending order
-#         sorted_matches = sorted(match_list, key=lambda x: x['similarity'], reverse=True)
-
-#         # Keep only the top N matches
-#         top_n_matches[input_id] = sorted_matches[:n]
-
-#     return top_n_matches
-
-
-def property_difference_between_matches(input_output_grid_pairs):
-    # takes the matched objects and return which list of truthvalues for
-    # color changed, scaled, position x changed, position y changed, 
-    return True
 
 def get_top_n_pairs_exact(shared_properties, n=5, similarity_threshold=0.1):
     """
@@ -138,28 +101,6 @@ def get_top_n_pairs_exact(shared_properties, n=5, similarity_threshold=0.1):
     # Return top N
     return valid_matches[:n]
 
-
-def get_top_n_pairs_exact(shared_properties, n=5, similarity_threshold=0.1):
-    """
-    Returns a *list* of exactly the top-n highest-similarity rows 
-    from `shared_properties`, each row containing at least:
-      {
-        "input_id": <int>, 
-        "output_id": <int>, 
-        "normalized_similarity": <float>,
-        ...
-      }
-    filtered by similarity >= `similarity_threshold`.
-    """
-    # Filter out any matches below threshold
-    valid_matches = [
-        sp for sp in shared_properties
-        if sp["normalized_similarity"] >= similarity_threshold
-    ]
-    # Sort by descending similarity
-    valid_matches.sort(key=lambda x: x["normalized_similarity"], reverse=True)
-    # Return top N
-    return valid_matches[:n]
 
 
 def get_properties_for_exact_pairs(db_manager, top_pairs):

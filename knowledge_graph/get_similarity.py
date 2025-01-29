@@ -114,6 +114,37 @@ def one_to_many_matches_dict(shared_properties, similarity_threshold=0.1):
 
     return matches_by_input
 
+def one_to_many_matches_overall_top5(shared_properties, top_n=5, similarity_threshold=0.1):
+    all_matches = []
+
+    # Collect all valid matches
+    for match in shared_properties:
+        if match['normalized_similarity'] >= similarity_threshold:
+            all_matches.append({
+                "input_id": match['input_id'],
+                "output_id": match['output_id'],
+                "similarity": match['normalized_similarity']
+            })
+
+    # Sort all matches in descending order based on similarity
+    all_matches.sort(key=lambda x: x['similarity'], reverse=True)
+
+    # Keep only the top N matches
+    top_matches = all_matches[:top_n]  # **Ensuring only the top 5 matches are kept**
+
+    # Convert to dictionary format with limited pairs
+    top_n_matches_dict = {}
+    for match in top_matches:
+        input_id = match["input_id"]
+        if input_id not in top_n_matches_dict:
+            top_n_matches_dict[input_id] = []
+        top_n_matches_dict[input_id].append({
+            "output_id": match["output_id"],
+            "similarity": match["similarity"]
+        })
+
+    return top_n_matches_dict  # **Now this dictionary contains at most 5 total pairs**
+
 def get_unshared_properties_for_matched_pairs(
     shared_properties,
     matched_pairs,
