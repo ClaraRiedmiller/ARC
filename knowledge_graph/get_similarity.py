@@ -118,39 +118,7 @@ def get_unshared_properties_for_matched_pairs(
     matched_pairs,
     considered_properties=None
 ):
-    """
-    Returns a list of dicts describing which properties are unshared 
-    for each *matched* pair in `matched_pairs`.
 
-    :param shared_properties: The full list from `db_manager.get_shared_properties(...)`, 
-        each dict having at least:
-        {
-          "input_id": <int>,
-          "output_id": <int>,
-          "matching_properties": <list of strings> ...,
-        }
-    :param matched_pairs: A list of dicts with keys:
-        {
-          "input_id": <int or None>,
-          "output_id": <int>,
-          "similarity": <float>,
-          "marker": "matched" or "unmatched"
-        }
-      Typically from `optimal_one_to_one_assignment_with_valid_dummies`.
-    :param considered_properties: The full set of properties to check 
-        (e.g. ["color", "bbox_x", "bbox_y", "bbox_width", "bbox_height", "shape"]).
-        If None, defaults to the usual 6 property names used in matching.
-    
-    :return: A list of dicts, one per matched pair, e.g.:
-        [
-          {
-            "input_id": <int>,
-            "output_id": <int>,
-            "unshared_properties": [...],
-          },
-          ...
-        ]
-    """
 
     # 1) Define default properties if not provided
     if considered_properties is None:
