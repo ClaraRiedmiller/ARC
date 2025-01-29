@@ -80,6 +80,7 @@ def search_program(problem):
 
         # print(f'Testing program{program}: ...\n')
 
+<<<<<<< Updated upstream
         # see whether our prediction is correct
         success = np.array_equal(test_output, output_guess)
 
@@ -91,6 +92,10 @@ def search_program(problem):
 
     else:
         print('\nI was not able to find a candidate program for the training examples :(')
+=======
+
+
+>>>>>>> Stashed changes
 
 
 
@@ -103,12 +108,22 @@ def main():
     # problem = get_arc_problem(task_id)
 
     # from our test problems
+<<<<<<< Updated upstream
     problem = get_problem_3()
 
 
     print(problem)
 
     search_program(problem)
+=======
+    problem = problem2
+
+    print(problem)
+    print(problem.train)
+    print(problem.test)
+
+    # search_program(problem)
+>>>>>>> Stashed changes
 
 
 main()
