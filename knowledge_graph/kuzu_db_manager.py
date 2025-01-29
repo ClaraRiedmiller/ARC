@@ -1,7 +1,6 @@
 import kuzu
 import numpy as np
 
-
 class KuzuDBManager:
     def __init__(self, db_path=''):
         self.db_path = db_path
@@ -344,7 +343,7 @@ class KuzuDBManager:
         # check for unmatched objects and too many matched objects
         for i in range(1, 4):  # Loop over 3, 2, 1
             # Obtain properties
-            props = db_manager.get_shared_properties(example_id=i, batch_size=100)
+            props = self.get_shared_properties(example_id=i, batch_size=100)
             
             # Do matching on the properties
             matchings = optimal_one_to_one_assignment_with_valid_dummies(props)
@@ -369,13 +368,16 @@ class KuzuDBManager:
         low_similarity_counter = 0
         for j in range(1, 4):  # Loop over 3, 2, 1
             # Obtain properties
-            props = db_manager.get_shared_properties(example_id=j, batch_size=100)
+            props = self.get_shared_properties(example_id=j, batch_size=100)
             
-            # Do matching on the properties
+            # Do matching on the properties and take the first five objects
             matchings = optimal_one_to_one_assignment_with_valid_dummies(props)
             
+            sorted_matchings = sorted(my_list, key=lambda x: x['similarity'])
+
+            first_five = sorted_matchings[:5]
             # Count how many objects have a low similarity score
-            low_similarity_count = sum(1 for item in matchings if item['similarity'] < 0.2)
+            low_similarity_count = sum(1 for item in first_five if item['similarity'] < 0.2)
             
             # If all top 5 objects have a low similarity count
             if low_similarity_count >= 5:
