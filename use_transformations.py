@@ -100,7 +100,11 @@ def test_object_level_dimensions():
         
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     # function = 'flip_object_around_own_xax'
+=======
+    function = 'flip_object_around_own_xax'
+>>>>>>> Stashed changes
 =======
     function = 'flip_object_around_own_xax'
 >>>>>>> Stashed changes
