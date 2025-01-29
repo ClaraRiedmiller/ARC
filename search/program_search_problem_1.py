@@ -8,8 +8,8 @@ def _goal_test(initial_state, goal_state, constraints, program) -> bool:
     return outcome == goal_state
 
 def goal_test(problem, program):
-    initial_goal_state_pairs, constraints = problem
-    for initial_state, goal_state in initial_goal_state_pairs:
+    initial_goal_state_pairs = problem
+    for initial_state, goal_state, constraints in initial_goal_state_pairs:
         if not _goal_test(initial_state, goal_state, constraints, program):
             return False 
     return True
