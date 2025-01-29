@@ -20,7 +20,7 @@ class BreadthFirstSearch:
             expand: A function to generate successor states and their associated costs.
         """
         self.problem = problem
-        self.goal_states = goal_test
+        self.goal_test = goal_test
         self.operators = operators
         self.max_depth = max_depth
 
@@ -36,7 +36,7 @@ class BreadthFirstSearch:
         while queue:
             current_program = queue.popleft()
         
-            # Check if the current program solves the synthesis problem
+            # Check if the current program solves the synthesis problem            
             if self.goal_test(self.problem, current_program):
                 return current_program
 

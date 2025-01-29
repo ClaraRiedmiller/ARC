@@ -22,7 +22,7 @@ class BestFirstSearch:
             expand: A function to generate successor states and their associated costs.
         """
         self.problem = problem
-        self.goal_states = goal_test
+        self.goal_test = goal_test
         self.heuristic = heuristic
         self.expand = expand
 
