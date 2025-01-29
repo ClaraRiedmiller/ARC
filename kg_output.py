@@ -15,7 +15,7 @@ def get_example_object_mappings(task, db_manager, example_id):
 
     
     shared_properties = db_manager.get_shared_properties(example_id=example_id +1, batch_size=50) #@Paul @Lucrezia: Did you start counting the examples from one instead of 0? it looks like it
-    print("Total rows in shared_properties:", len(shared_properties))
+    # print("Total rows in shared_properties:", len(shared_properties))
 
 
     # get the dimensions of the input and output array
@@ -71,7 +71,7 @@ def get_example_object_mappings(task, db_manager, example_id):
         max_pairs=5
     )
 
-    print('\nmappigs of one exmaple:\n', pairs_top_5)
+    # print('\nmappigs of one exmaple:\n', pairs_top_5)
     return(one_to_one_grids)
 
 
@@ -85,9 +85,9 @@ def get_task_object_mappings(task):
 
     # iterate over the trainnig examples and see which program produces the correct output
     for no, ex in enumerate(task.train):
-        print('example number: ', no)
+        # print('example number: ', no)
         example_object_mappings = get_example_object_mappings(task=task, db_manager=db_manager, example_id=no)
-        task_object_mappings.append(example_object_mappings)
+        task_object_mappings.extend(example_object_mappings)
 
     return(task_object_mappings)
 

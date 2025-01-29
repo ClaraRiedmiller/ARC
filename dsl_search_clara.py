@@ -19,7 +19,7 @@ from pprint import pprint
 from arckit_handler.arckit_handler import getGrid
 from dsl.transformation import apply_transformation
 from dsl.test_problems import *
-from test_kg_output import *
+from kg_output import *
 
 
 def get_arc_problem(task_id):
@@ -115,7 +115,7 @@ def main():
 
     object_mappings = get_task_object_mappings(problem)
 
-    # pprint(object_mappings)
+    pprint(object_mappings)
     # pprint(object_mappings)
 
     # search_program(problem)
