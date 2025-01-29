@@ -9,28 +9,41 @@ import json
 
 
 def create_isolated_object(grid_size, prop_dict):
-    # Create an empty (zeroed) grid
+    """
+    Creates an empty grid (zeros) and places a single object in it
+    based on the bounding box and shape properties in `prop_dict`.
+    """
     grid = np.zeros(grid_size, dtype=int)
 
     color = prop_dict["color"]
     bbox_x = prop_dict["bbox_x"]
     bbox_y = prop_dict["bbox_y"]
     
-    # Convert shape from JSON string to a 2D NumPy array
-    shape_str = prop_dict["shape"]
-    shape_2d = np.array(json.loads(shape_str))
+    shape_data = prop_dict["shape"]
     
-    # "Stamp" the color into the grid wherever shape_2d == 1
+    # Ensure shape_data is a list before converting it to a NumPy array
+    if isinstance(shape_data, str):
+        shape_2d = np.array(json.loads(shape_data))  # If it's a JSON string, load it
+    else:
+        shape_2d = np.array(shape_data)  # Otherwise, assume it's already a list
+
     for row in range(shape_2d.shape[0]):
         for col in range(shape_2d.shape[1]):
             if shape_2d[row, col] == 1:
                 grid[bbox_x + row, bbox_y + col] = color
-    
+
     return grid
 
-def create_input_output_grid_pairs(input_grid_size, output_grid_size, pairs_info):
+
+def create_input_output_grid_pairs(input_grid_size, output_grid_size, pairs_info, max_pairs=5):
     results = []
-    for info in pairs_info:
+    
+    print(f"Processing {len(pairs_info)} pairs (before limiting to {max_pairs})")
+
+    for idx, info in enumerate(pairs_info):
+        if idx >= max_pairs:
+            break  # Stop after processing the top 5 pairs
+        
         input_obj_props = info["input_properties"]
         output_obj_props = info["output_properties"]
         
@@ -41,7 +54,6 @@ def create_input_output_grid_pairs(input_grid_size, output_grid_size, pairs_info
         results.append((input_grid, output_grid))
     
     return results
-
 
 
 def create_isolated_object_grid(grid_size, prop_dict):
@@ -66,41 +78,260 @@ def create_isolated_object_grid(grid_size, prop_dict):
     return grid
 
 
-def get_top_n_matches(possibly_matches, n=5):
-    all_matches = []
+# def get_top_n_matches(possibly_matches, n=5):
+#     all_matches = []
 
-    # Flatten the dictionary into a list of tuples
-    for input_id, match_list in possibly_matches.items():
-        for match_info in match_list:
-            all_matches.append(
-                (input_id, match_info['output_id'], match_info['similarity'])
-            )
+#     # Flatten the dictionary into a list of tuples
+#     for input_id, match_list in possibly_matches.items():
+#         for match_info in match_list:
+#             all_matches.append(
+#                 (input_id, match_info['output_id'], match_info['similarity'])
+#             )
 
-    # Sort by similarity in descending order
-    all_matches.sort(key=lambda x: x[2], reverse=True)
+#     # Sort by similarity in descending order
+#     all_matches.sort(key=lambda x: x[2], reverse=True)
 
-    # Return the top N matches
-    return all_matches[:n]
+#     # Return the top N matches
+#     return all_matches[:n]
 
 
-def get_top_n_matches_dict(possibly_matches, n=5):
+# def get_top_n_matches_dict(possibly_matches, n=5):
 
-    # Initialize a new dictionary to store the top N matches per input ID
-    top_n_matches = {}
+#     # Initialize a new dictionary to store the top N matches per input ID
+#     top_n_matches = {}
 
-    # Iterate over each input ID and its list of matches
-    for input_id, match_list in possibly_matches.items():
-        # Sort the matches by similarity in descending order
-        sorted_matches = sorted(match_list, key=lambda x: x['similarity'], reverse=True)
+#     # Iterate over each input ID and its list of matches
+#     for input_id, match_list in possibly_matches.items():
+#         # Sort the matches by similarity in descending order
+#         sorted_matches = sorted(match_list, key=lambda x: x['similarity'], reverse=True)
 
-        # Keep only the top N matches
-        top_n_matches[input_id] = sorted_matches[:n]
+#         # Keep only the top N matches
+#         top_n_matches[input_id] = sorted_matches[:n]
 
-    return top_n_matches
+#     return top_n_matches
 
 
 def property_difference_between_matches(input_output_grid_pairs):
     # takes the matched objects and return which list of truthvalues for
     # color changed, scaled, position x changed, position y changed, 
     return True
+
+def get_top_n_pairs_exact(shared_properties, n=5, similarity_threshold=0.1):
+    """
+    Returns a *list* of exactly the top-n highest-similarity rows 
+    from `shared_properties`, each row containing at least:
+      {
+        "input_id": <int>, 
+        "output_id": <int>, 
+        "normalized_similarity": <float>,
+        ...
+      }
+    filtered by similarity >= `similarity_threshold`.
+    """
+    # Filter out any matches below threshold
+    valid_matches = [
+        sp for sp in shared_properties
+        if sp["normalized_similarity"] >= similarity_threshold
+    ]
+    # Sort by descending similarity
+    valid_matches.sort(key=lambda x: x["normalized_similarity"], reverse=True)
+    # Return top N
+    return valid_matches[:n]
+
+def get_properties_for_exact_pairs(db_manager, top_pairs):
+    """
+    top_pairs is a list of dicts, e.g.:
+      [
+        {"input_id": 101, "output_id": 201, "normalized_similarity": 0.87, ...},
+        ...
+      ]
+    Returns a list of dicts with 'input_properties' and 'output_properties'.
+    Exactly one row per pair (no duplicates).
+    """
+    if not top_pairs:
+        return []
+
+    # Build the WHERE clause with OR conditions
+    # e.g. (i.id=101 AND o.id=201) OR (i.id=102 AND o.id=210) ...
+    conditions = []
+    for pair in top_pairs:
+        in_id = pair["input_id"]
+        out_id = pair["output_id"]
+        conditions.append(f"(i.id = {in_id} AND o.id = {out_id})")
+
+    # Combine them
+    where_clause = " OR ".join(conditions)
+
+    query = f"""
+    MATCH (i:input_object), (o:output_object)
+    WHERE {where_clause}
+    RETURN
+        i.id AS input_id,
+        o.id AS output_id,
+        i.color AS input_color,
+        o.color AS output_color,
+        i.bbox_x AS input_bbox_x,
+        o.bbox_x AS output_bbox_x,
+        i.bbox_y AS input_bbox_y,
+        o.bbox_y AS output_bbox_y,
+        i.shape AS input_shape,
+        o.shape AS output_shape
+    """
+
+    results = []
+    try:
+        res = db_manager.conn.execute(query)
+        while res.has_next():
+            row = res.get_next()
+
+            # Row could be a list/tuple or dict, depending on Kùzu configuration
+            if isinstance(row, (list, tuple)):
+                (input_id, output_id,
+                 input_color, output_color,
+                 input_bbox_x, output_bbox_x,
+                 input_bbox_y, output_bbox_y,
+                 input_shape, output_shape) = row
+            elif isinstance(row, dict):
+                input_id = row["input_id"]
+                output_id = row["output_id"]
+                input_color = row["input_color"]
+                output_color = row["output_color"]
+                input_bbox_x = row["input_bbox_x"]
+                output_bbox_x = row["output_bbox_x"]
+                input_bbox_y = row["input_bbox_y"]
+                output_bbox_y = row["output_bbox_y"]
+                input_shape = row["input_shape"]
+                output_shape = row["output_shape"]
+            else:
+                raise ValueError("Unexpected row type from db query.")
+
+            # Store the properties in the exact format needed by create_input_output_grid_pairs
+            results.append({
+                "input_properties": {
+                    "color": input_color,
+                    "bbox_x": input_bbox_x,
+                    "bbox_y": input_bbox_y,
+                    "shape": input_shape
+                },
+                "output_properties": {
+                    "color": output_color,
+                    "bbox_x": output_bbox_x,
+                    "bbox_y": output_bbox_y,
+                    "shape": output_shape
+                }
+            })
+    except Exception as e:
+        print(f"Error during query execution: {e}")
+
+    return results
+
+def get_top_n_pairs_exact(shared_properties, n=5, similarity_threshold=0.1):
+    """
+    Returns a *list* of exactly the top-n highest-similarity rows 
+    from `shared_properties`, each row containing at least:
+      {
+        "input_id": <int>, 
+        "output_id": <int>, 
+        "normalized_similarity": <float>,
+        ...
+      }
+    filtered by similarity >= `similarity_threshold`.
+    """
+    # Filter out any matches below threshold
+    valid_matches = [
+        sp for sp in shared_properties
+        if sp["normalized_similarity"] >= similarity_threshold
+    ]
+    # Sort by descending similarity
+    valid_matches.sort(key=lambda x: x["normalized_similarity"], reverse=True)
+    # Return top N
+    return valid_matches[:n]
+
+
+def get_properties_for_exact_pairs(db_manager, top_pairs):
+    """
+    top_pairs is a list of dicts, e.g.:
+      [
+        {"input_id": 101, "output_id": 201, "normalized_similarity": 0.87, ...},
+        ...
+      ]
+    Returns a list of dicts with 'input_properties' and 'output_properties'.
+    Exactly one row per pair (no duplicates).
+    """
+    if not top_pairs:
+        return []
+
+    # Build the WHERE clause with OR conditions
+    # e.g. (i.id=101 AND o.id=201) OR (i.id=102 AND o.id=210) ...
+    conditions = []
+    for pair in top_pairs:
+        in_id = pair["input_id"]
+        out_id = pair["output_id"]
+        conditions.append(f"(i.id = {in_id} AND o.id = {out_id})")
+
+    # Combine them
+    where_clause = " OR ".join(conditions)
+
+    query = f"""
+    MATCH (i:input_object), (o:output_object)
+    WHERE {where_clause}
+    RETURN
+        i.id AS input_id,
+        o.id AS output_id,
+        i.color AS input_color,
+        o.color AS output_color,
+        i.bbox_x AS input_bbox_x,
+        o.bbox_x AS output_bbox_x,
+        i.bbox_y AS input_bbox_y,
+        o.bbox_y AS output_bbox_y,
+        i.shape AS input_shape,
+        o.shape AS output_shape
+    """
+
+    results = []
+    try:
+        res = db_manager.conn.execute(query)
+        while res.has_next():
+            row = res.get_next()
+
+            # Row could be a list/tuple or dict, depending on Kùzu configuration
+            if isinstance(row, (list, tuple)):
+                (input_id, output_id,
+                 input_color, output_color,
+                 input_bbox_x, output_bbox_x,
+                 input_bbox_y, output_bbox_y,
+                 input_shape, output_shape) = row
+            elif isinstance(row, dict):
+                input_id = row["input_id"]
+                output_id = row["output_id"]
+                input_color = row["input_color"]
+                output_color = row["output_color"]
+                input_bbox_x = row["input_bbox_x"]
+                output_bbox_x = row["output_bbox_x"]
+                input_bbox_y = row["input_bbox_y"]
+                output_bbox_y = row["output_bbox_y"]
+                input_shape = row["input_shape"]
+                output_shape = row["output_shape"]
+            else:
+                raise ValueError("Unexpected row type from db query.")
+
+            # Store the properties in the exact format needed by create_input_output_grid_pairs
+            results.append({
+                "input_properties": {
+                    "color": input_color,
+                    "bbox_x": input_bbox_x,
+                    "bbox_y": input_bbox_y,
+                    "shape": input_shape
+                },
+                "output_properties": {
+                    "color": output_color,
+                    "bbox_x": output_bbox_x,
+                    "bbox_y": output_bbox_y,
+                    "shape": output_shape
+                }
+            })
+    except Exception as e:
+        print(f"Error during query execution: {e}")
+
+    return results
 
