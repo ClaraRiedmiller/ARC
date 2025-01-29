@@ -1,0 +1,27 @@
+
+1. DSL-Grid Search:
+    Search if any program purely based on grid-manipulations (DSL_GRID_MUTATION_METHODS and DSL_COLOR_METHODS)  results in the right solution
+    Parameters:
+        - For each example define Pair_Example = (Example_Input, Example_Output)
+        - Start with Pair_1, check whether a program can be found
+        - If yes: Store Program, check whether program applied on Pair_2, ... 
+            - If yes: Return program
+            - If no: Check for new rule until timeout
+    
+    If no found rule that works for all: Go to DSL Object Search
+
+2. DSL-Oject Search: 
+    (1) Input: #
+        1. Classes of Object-pairs (Object of input, object of output) across examples determined by similarity measure
+            # We expect that these objects across the examples are manipulated uniformly
+        2. For each Class: Answer of Object Question to determine fragment of Object-DSL: DSL_OBJECT_SHAPE_METHODS, DSL_OBJECT_MOVE_METHODS and DSL_COLOR_METHODS
+        3. For each object in task_input, predict to which class it belongs. 
+
+    (2) For each Class of Object-Pairs such that at least one task_input is associated with:
+        Search if any program purely based on object-manipulations (fragments of DSL determiend by questions)  results in the right solution
+        Return: program 
+    
+    (3) Predict Solution:
+        For each object in task_input, predict task_output of this object   
+        Combine objects
+

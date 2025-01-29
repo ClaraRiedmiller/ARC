@@ -235,6 +235,24 @@ def flip_yax(constraints, object: Object) -> Object: #we want to flip the x-valu
         outcome.add(newpixel) 
     return outcome
 
+def flip_object_around_own_xax(constraints, object: Object) -> Object:
+    outcome = set()
+    max_y_value =  y_max(object)
+    min_y_value =  y_min(object)
+    for pixel in object:
+        newpixel = (pixel[0], max_y_value + min_y_value - pixel[1], pixel[2])
+        outcome.add(newpixel)
+    return outcome
+
+def flip_object_around_own_yax(constraints, object: Object) -> Object:
+    outcome = set()
+    max_x_value =  x_max(object)
+    min_x_value =  x_min(object)
+    for pixel in object:
+        newpixel = (max_x_value + min_x_value - pixel[0],pixel[1], pixel[2])
+        outcome.add(newpixel)
+    return outcome
+
 def move_right(constraints, object: Object) -> Object: #we want to move the object one pixel to the right 
     outcome = set()
     for pixel in object:
