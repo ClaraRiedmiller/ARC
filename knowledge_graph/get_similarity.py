@@ -2,6 +2,7 @@
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 import arckit
+from typing import List, Dict
 
 
 def get_highest_similarity_pairs(shared_properties):
@@ -310,3 +311,34 @@ def get_top_n_pairs_exact(shared_properties, n=5, similarity_threshold=0.1):
     # Return top N
     return valid_matches[:n]
 
+
+def get_top_n_pairs_unique_output(shared_properties: List[Dict], n: int = 5, similarity_threshold: float = 0.1) -> List[Dict]:
+    # Step 1: Filter out matches below the similarity threshold
+    valid_matches = [
+        sp for sp in shared_properties
+        if sp.get("normalized_similarity", 0) >= similarity_threshold
+    ]
+    
+    # Step 2: Sort the valid matches in descending order of similarity
+    valid_matches.sort(key=lambda x: x["normalized_similarity"], reverse=True)
+    
+    # Step 3: Select top-n matches with unique output_ids
+    top_matches = []
+    seen_output_ids = set()
+    
+    for match in valid_matches:
+        output_id = match.get("output_id")
+        
+        # Skip if this output_id has already been included
+        if output_id in seen_output_ids:
+            continue
+        
+        # Add the match to top_matches and mark the output_id as seen
+        top_matches.append(match)
+        seen_output_ids.add(output_id)
+        
+        # Stop if we've collected n matches
+        if len(top_matches) == n:
+            break
+    
+    return top_matches
