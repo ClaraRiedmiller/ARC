@@ -18,6 +18,7 @@ import numpy as np
 from arckit_handler.arckit_handler import getGrid
 from dsl.transformation import apply_transformation
 from dsl.test_problems import *
+from test_kg_output import print_kg_output
 
 
 def get_arc_problem(task_id):
@@ -107,7 +108,11 @@ def main():
     problem = get_problem_3()
 
 
+
+
     print(problem)
+
+    print_kg_output(problem)
 
     search_program(problem)
 

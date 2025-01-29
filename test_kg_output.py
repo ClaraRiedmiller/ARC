@@ -8,15 +8,25 @@ from knowledge_graph.kuzu_db_manager import KuzuDBManager
 from knowledge_graph.get_similarity import *
 from knowledge_graph.create_output import *
 
-def main():
-    train_set, eval_set = arckit.load_data()
-    task = train_set[4]
-    task.show()  # Just to visualize the puzzle
+def print_kg_output(task):
+
+    # train_set, eval_set = arckit.load_data()
+    # task = train_set[4]
+    # task.show()  # Just to visualize the puzzle
 
     db_manager = create_knowledge_graph(task)
+
+    example_id = 1
     
-    shared_properties = db_manager.get_shared_properties(example_id=1, batch_size=50)
+    shared_properties = db_manager.get_shared_properties(example_id=example_id, batch_size=50)
     print("Total rows in shared_properties:", len(shared_properties))
+
+
+    # get the dimensions of the input and output array
+    training_examples = task.train
+    dim_input = tuple(np.shape(training_examples[example_id][0]))
+    dim_output = tuple(np.shape(training_examples[example_id][1]))
+
 
     top_5_pairs = get_top_n_pairs_exact(
         shared_properties,
@@ -33,8 +43,8 @@ def main():
     print(f"\nWe have {len(top_5_with_props)} property rows for the top 5 matches.")
 
     pairs_top_5 = create_input_output_grid_pairs(
-        input_grid_size=(30, 30),
-        output_grid_size=(30, 30),
+        input_grid_size=dim_input,
+        output_grid_size=dim_output,
         pairs_info=top_5_with_props,
         max_pairs=5
     )
@@ -59,8 +69,8 @@ def main():
 
     # B4) Build up to 5 grid pairs for these matched objects
     one_to_one_grids = create_input_output_grid_pairs(
-        input_grid_size=(30, 30),
-        output_grid_size=(30, 30),
+        input_grid_size=dim_input,
+        output_grid_size=dim_output,
         pairs_info=matched_props,
         max_pairs=5
     )
@@ -74,5 +84,5 @@ def main():
         if i >= 5:
             break  
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
