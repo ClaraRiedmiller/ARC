@@ -24,6 +24,9 @@ train_set, eval_set = arckit.load_data()
 
 # iterate over the problems
 for problem in eval_set:
+
+    
+
     # pred = solve(problem)
     pred = [[1],[2]]
 
@@ -42,6 +45,7 @@ for problem in eval_set:
     #         print(len(problem.test))
     #         fd.write(f'{problem.id}_0'+ flattened_pred + ' ' + flattened_pred)
 
+    # if we need two, just skip
 
     with open('submission.csv','a') as sbm:
         writer = csv.writer(sbm)
@@ -54,7 +58,10 @@ for problem in eval_set:
             writer.writerow([f'{problem.id}_0,'+ flattened_pred + ' ' + flattened_pred])
 
     
-        # writer.writerow(line)
+    # remove "" from the csv file
+
+
+
 
 
 
