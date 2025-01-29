@@ -1,4 +1,3 @@
-from knowledge_graph.create_kg import create_knowledge_graph, visualize_knowledge_graph
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment

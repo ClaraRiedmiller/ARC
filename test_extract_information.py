@@ -1,6 +1,8 @@
-from knowledge_graph.create_kg import create_knowledge_graph, visualize_knowledge_graph
-from knowledge_graph.kuzu_db_manager import *
+from knowledge_graph.create_kg import KnowledgeGraphBuilder
+from knowledge_graph.kuzu_db_manager import KuzuDBManager
 from knowledge_graph.get_similarity import *
+from knowledge_graph.utils import remove_folder_if_exists
+
 import arckit
 
 
@@ -12,12 +14,18 @@ similarity_matrices = {}
 # Loop over the first 20 training sets
 for i in range(min(20, len(train_set))):
 
-
-    task = train_set[1]
+    task = train_set[i]
     print(f"Processing training set {i + 1}")
-
+    
+    db_folder = "kuzudb"
+    remove_folder_if_exists(db_folder)
+    
     # Use context manager to create knowledge graph
-    with create_knowledge_graph(task) as db_manager:
+    with KuzuDBManager(db_folder) as db_manager:
+        db_manager.create_schema()
+        kg_builder = KnowledgeGraphBuilder(db_manager)
+        kg_builder.build_knowledge_graph(task)
+
 
         # Get shared properties for the specific example_id
         shared_properties = db_manager.get_shared_properties(example_id=1, batch_size=50)
@@ -62,5 +70,7 @@ for i in range(min(20, len(train_set))):
 
         # Print properties for matched pairs
         print(get_properties_for_matched_pairs(db_manager, optimal_pairs))
+
+        
 
 # The similarity_matrices dictionary contains the matrices for the first 20 training sets

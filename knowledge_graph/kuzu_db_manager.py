@@ -1,6 +1,5 @@
 import kuzu
 import numpy as np
-import json
 
 
 class KuzuDBManager:
@@ -8,10 +7,6 @@ class KuzuDBManager:
         self.db_path = db_path
         self.db = kuzu.Database(db_path)
         self.conn = kuzu.Connection(self.db)
-
-        # Configure DB to allow for JSON storage type
-        self.conn.execute('INSTALL json;')
-        self.conn.execute('LOAD EXTENSION json;')
 
     def __enter__(self):
         # Return the instance when entering the context
@@ -22,7 +17,8 @@ class KuzuDBManager:
         if self.conn:
             self.conn.close()
         if self.db:
-            del self.db  # Free up database resources if needed
+            self.db.close()
+        del self
 
     def create_schema(self):
         
@@ -32,7 +28,7 @@ class KuzuDBManager:
                                    id INT32 PRIMARY KEY,
                                    example_id INT32,
                                    color INT32, 
-                                   shape JSON, 
+                                   shape INT64[][], 
                                    bbox_x INT32,
                                    bbox_y INT32,
                                    bbox_width INT32,
@@ -46,7 +42,7 @@ class KuzuDBManager:
                                    id INT32 PRIMARY KEY,
                                    example_id INT32,
                                    color INT32, 
-                                   shape JSON, 
+                                   shape INT64[][], 
                                    bbox_x INT32,
                                    bbox_y INT32,
                                    bbox_width INT32,
@@ -78,11 +74,11 @@ class KuzuDBManager:
         self.conn.execute('CREATE REL TABLE input_contains(FROM input_group TO input_object, edge_class STRING);')
         self.conn.execute('CREATE REL TABLE output_contains(FROM output_group TO output_object, edge_class STRING);')
 
-    def deserialize_shape(self, shape_json):
-        return np.array(json.loads(shape_json))
+    def deserialize_shape(self, shape_list):
+        return np.array(shape_list)
     
     def serialize_shape(self, shape_array):
-        return json.dumps(shape_array.tolist())
+        return shape_array.tolist()
     
     def insert_object(self, table_name, id, example_id, color, shape, bbox_x, bbox_y, bbox_width, bbox_height, adjacency):
 
@@ -106,7 +102,7 @@ class KuzuDBManager:
             "id": id,
             "example_id": example_id,
             "color": color,
-            "shape": self.serialize_shape(shape),  # Serialize as JSON
+            "shape": self.serialize_shape(shape),  
             "bbox_x": bbox_x,
             "bbox_y": bbox_y,
             "bbox_width": bbox_width,
