@@ -289,6 +289,29 @@ def get_properties_for_matched_pairs(self, optimal_pairs, batch_size=100):
 
 
 
+def get_top_n_pairs_exact(shared_properties, n=5, similarity_threshold=0.1):
+    """
+    Returns a *list* of exactly the top-n highest-similarity rows 
+    from `shared_properties`, each row containing at least:
+      {
+        "input_id": <int>, 
+        "output_id": <int>, 
+        "normalized_similarity": <float>,
+        ...
+      }
+    filtered by similarity >= `similarity_threshold`.
+    """
+    # Filter out any matches below threshold
+    valid_matches = [
+        sp for sp in shared_properties
+        if sp["normalized_similarity"] >= similarity_threshold
+    ]
+    # Sort by descending similarity
+    valid_matches.sort(key=lambda x: x["normalized_similarity"], reverse=True)
+    # Return top N
+    return valid_matches[:n]
+
+
 def get_top_n_pairs_unique_output(shared_properties: List[Dict], n: int = 5, similarity_threshold: float = 0.1) -> List[Dict]:
     # Step 1: Filter out matches below the similarity threshold
     valid_matches = [

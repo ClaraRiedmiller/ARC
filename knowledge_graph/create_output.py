@@ -317,6 +317,8 @@ def get_properties_for_exact_pairs(db_manager, top_pairs):
 
             # Store the properties in the exact format needed by create_input_output_grid_pairs
             results.append({
+                "input_id": input_id,  # Added top-level input_id
+                "output_id": output_id,  # Added top-level output_id
                 "input_properties": {
                     "color": input_color,
                     "bbox_x": input_bbox_x,
