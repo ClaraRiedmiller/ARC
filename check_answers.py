@@ -24,5 +24,6 @@ print(first_five_props)
 
 print(questions(task,db_manager,1))
 whatever = questions(task,db_manager,1)
+print(whatever)
 
 print(majority_answers(whatever, db_manager ))

@@ -23,7 +23,7 @@ def questions(task, db_manager, ex):
     first_five_props = get_properties_for_exact_pairs(db_manager, top_5_pairs)
     print(first_five_props)
     j = 0
-    while j < 5:
+    while j < 5 and j < len(first_five_props):
         obj_pair = first_five_props[j]
         print(obj_pair)
         object_1 = obj_pair['input_properties']
@@ -38,7 +38,7 @@ def questions(task, db_manager, ex):
         shape2 = object_2.get('shape')
         shape_2 = np.array(shape2)
         if is_same_shape(shape_1, shape_2): 
-            changes["shape"] = "No"
+            changes["shape"] = "No change"
         elif is_scaled_quadratic(shape_1,shape_2): 
             changes["shape"] = "Scaled x2"
         elif is_scaled_quadratic_inverse(shape_1, shape_2):
@@ -71,7 +71,7 @@ def questions(task, db_manager, ex):
         color_1 =  object_1.get('color')
         color_2 = object_2.get('color')
         if color_1 == color_2:
-            changes["color"] = "No"
+            changes["color"] = "No changes"
         else:
             changes["color"] = "Yes"
         
