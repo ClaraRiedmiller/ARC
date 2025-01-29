@@ -39,7 +39,7 @@ DSL_OBJECT:
 
 Does Object Shape change: 
     If Yes: 
-        1. Check if INPUT bbox/bboy is multitplied by 2, 3,4, or 5, matches the dimensions of the OUTPUT bbox/bboy
+        1. Check if INPUT bbox/bboy is multitplied by 2, 3, 4, or 5, matches the dimensions of the OUTPUT bbox/bboy
             If Yes: Remove DSL_OBJECT_SHAPE_MUTATION_METHODS_PROJECT_DIV
         2. Check if OUTPUT bbox/bboy is multitplied by 2, 3,4, or 5, matches the dimensions of the INPUT bbox/bboy
             If Yes: Remove SL_OBJECT_SHAPE_MUTATION_METHODS_PROJECT_MUL
