@@ -42,6 +42,11 @@ def main():
     # Print out how many we got
     print(f"\n--- Built {len(pairs_top_5)} (input, output) grids for global top-5 ---")
 
+    print(pairs_top_5)
+
+
+    #Now, we implement the one-to-one matches
+
     one_to_one_results = optimal_one_to_one_assignment_with_valid_dummies(
         shared_properties,
         similarity_threshold=0.2
