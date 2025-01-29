@@ -153,22 +153,7 @@ DSL_OBJECT_SHAPE_MUTATION_METHODS = [
     fill_pixel_right
 ]
 
-
-# Check if INPUT bbox/bboy is multitplied by 2, 3,4, or 5, matches the dimensions of the OUTPUT bbox/bboy
-DSL_OBJECT_SHAPE_MUTATION_METHODS_PROJECT_MUL = [
-    project_dupliate,
-    project_triplicate,
-    project_quintuplicate
-]
-
-# Check if OUTPUT bbox/bboy is multitplied by 2, 3,4, or 5, matches the dimensions of the INPUT bbox/bboy
-DSL_OBJECT_SHAPE_MUTATION_METHODS_PROJECT_DIV = [
-    project_half,
-    project_third,
-    project_fifth,
-]
-
-# Check if bbox/bboy does NOT stay the same (increased by at most 4) and the amout of pixels increase
+# Check if bbox/bboy does NOT stay the same and the amout of pixels increase
 DSL_OBJECT_SHAPE_MUTATION_METHODS_ADD = [
     add_border_around_object,
     add_corners_around_object,

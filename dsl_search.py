@@ -17,9 +17,17 @@ import numpy as np
 
 from arckit_handler.arckit_handler import getGrid
 from dsl.transformation import apply_transformation
+from dsl.test_problems import *
 
 
+def get_arc_problem(task_id):
 
+    # get example grid so we can test our transformations
+    train_set, eval_set = arckit.load_data() 
+
+    problem = train_set[task_id]
+
+    return(problem)
 
 
 def learn_example_program(input_grid, output_grid):
@@ -51,34 +59,56 @@ def learn_from_examples(training_examples):
         final_program = learn_example_program(ex[0], ex[1])
 
     # for now, the final program will just be the one the last training example produces. Later, they should build up on each other (or we learn separate programs for each example and simply see whether they can all agree on one)
-    return(final_program)
+    # return program if we find one, otherwise return nothing
+        return(final_program)
 
 
 
-def search_program():
-
-    # get example grid so we can test our transformations
-    train_set, eval_set = arckit.load_data() 
-
-    task_id = '68b16354'
-    problem = train_set[task_id]
+def search_program(problem):
 
     # get the training examples and learn a program from them
     training_examples = problem.train
     program = learn_from_examples(training_examples)
 
-    # get the test example and see whether the program above produces a correct prediction
-    test = problem.test
-    test_input = test[0][0]
-    test_output = test[0][1]
-    output_guess = apply_transformation(test_input, 'test_input', program, show=False, image_visualize=False, terminal_visualize=False)
+    if program:
 
-    # see whether our prediction is correct
-    success = np.array_equal(test_output, output_guess)
+        # get the test example and see whether the program above produces a correct prediction
+        test = problem.test
+        test_input = test[0][0]
+        test_output = test[0][1]
+        output_guess = apply_transformation(test_input, 'test_input', program, show=False, image_visualize=False, terminal_visualize=False)
 
-    if success:
-        print('Success! I learned working program!')
-    else: 
-        print('I was not able to learn a correct program :(')
+        # print(f'Testing program{program}: ...\n')
 
-search_program()
+        # see whether our prediction is correct
+        success = np.array_equal(test_output, output_guess)
+
+        if success:
+            print('\nSuccess! I learned working program!')
+        else: 
+            print('\nI was not able to generaliza a correct program :(')
+
+
+    else:
+        print('\nI was not able to find a candidate program for the training examples :(')
+
+
+
+def main():
+
+    # # specify how you want to get the problem:
+
+    # from arc by task_id
+    task_id = '68b16354'
+    problem = get_arc_problem(task_id)
+
+    # from our test problems
+    problem = get_problem_3()
+
+
+    print(problem)
+
+    search_program(problem)
+
+
+main()

@@ -3,7 +3,7 @@ import csv
 import numpy as np
 
 from dsl.transformation import apply_transformation, convert_grid_format, remove_bg, add_bg
-from dsl.dsl import *
+# from dsl.dsl import *
 from dsl.hodel_hardness import upper_bound_hardness
 from dsl.dsl_dictionary import get_dsl_dict
 from arckit_handler.arckit_handler import getGrid, get_problem
@@ -99,7 +99,7 @@ def test_object_level_dimensions():
     dsl_functions = get_dsl_dict()
         
 
-    # function = 'add_border_around_object'
+    # function = 'flip_object_around_own_xax'
 
     # apply_transformation(grid, grid_name, function)
 
