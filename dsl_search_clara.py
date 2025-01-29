@@ -115,7 +115,15 @@ def main():
 
     object_mappings = get_task_object_mappings(problem)
 
-    pprint(object_mappings)
+    # now, we only need to indentify whatever training input objects the test input objects are most similar to. then, we give these to the dsl and find a program for them, which we then apply to the test input objects.
+
+
+
+    # then, we combine the separate objects into a full grid again and apply a background. this is then our guess.
+
+
+    
+
     # pprint(object_mappings)
 
     # search_program(problem)
