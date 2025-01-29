@@ -98,9 +98,9 @@ def main():
 
     # # specify how you want to get the problem:
 
-    # from arc by task_id
-    task_id = '68b16354'
-    problem = get_arc_problem(task_id)
+    # # from arc by task_id
+    # task_id = '68b16354'
+    # problem = get_arc_problem(task_id)
 
     # from our test problems
     problem = get_problem_3()

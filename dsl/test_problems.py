@@ -48,8 +48,14 @@ def get_problem_3():
                                                      [0, 0, 0, 0, 0],
                                                      [0, 0, 0, 0, 0],
                                                      [0, 4, 0, 0, 0]]}]
-    test = [{'input': [[2]], 'output': [[2]]}]
+    test = [{'input': [[0, 0, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 4, 0]], 'output': [[0, 1, 0, 0],
+                                                  [0, 0, 0, 0],
+                                                  [0, 4, 0, 0]]}]
     problem3 = Task(id='0', test=test, train=train)
+
+    # edit test
 
     return(problem3)
 
