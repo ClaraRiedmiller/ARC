@@ -342,3 +342,14 @@ def get_top_n_pairs_unique_output(shared_properties: List[Dict], n: int = 5, sim
             break
     
     return top_matches
+
+def get_most_similar_to_test(db_manager): 
+    i = 1 
+    all_similarity = []
+    while i < 4: 
+        per_example = db_manager.shared_properties_across_input(i, 9)
+        all_similarity.extend(per_example)
+        i = i+1  
+    all_similarity.sort(key=lambda x: x["normalized_similarity"], reverse=True)
+    return all_similarity[:5]
+        
