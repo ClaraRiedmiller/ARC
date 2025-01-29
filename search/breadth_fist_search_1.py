@@ -5,7 +5,7 @@ from dsl.dsl import Constraints
 class BreadthFirstSearch:
     def __init__(
         self,
-        problem: Tuple[List[Tuple[Any, Any]], Constraints],
+        problem: List[Tuple[Any, Any, Constraints]],
         goal_test: Callable[[Any], bool],
         operators: List [Callable],
         max_depth: int
