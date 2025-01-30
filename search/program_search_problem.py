@@ -4,7 +4,7 @@ from dsl import DSL_METHODS
 def _goal_test(initial_state, goal_state, constraints, program) -> bool:
     outcome = initial_state
     for step in program:
-        outcome = step(constraints,outcome)
+        outcome = step(constraints, outcome)
     return outcome == goal_state
 
 def goal_test(problem, program):

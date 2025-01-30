@@ -5,7 +5,7 @@ from dsl.dsl import Constraints
 class BreadthFirstSearch:
     def __init__(
         self,
-        problem: Tuple[List[Tuple[Any, Any]], Constraints],
+        problem: List[Tuple[Any, Any, Constraints]],
         goal_test: Callable[[Any], bool],
         operators: List [Callable],
         max_depth: int
@@ -36,7 +36,7 @@ class BreadthFirstSearch:
         while queue:
             current_program = queue.popleft()
         
-            # Check if the current program solves the synthesis problem            
+            # Check if the current program solves the synthesis problem
             if self.goal_test(self.problem, current_program):
                 return current_program
 
