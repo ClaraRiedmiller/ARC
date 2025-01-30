@@ -1,11 +1,11 @@
 import arckit
 import csv
 
-from dsl import DSL_COLOR_METHODS, DSL_GRID_MUTATION_METHODS
+from dsl import DSL_COLOR_METHODS, DSL_GRID_MUTATION_METHODS, flip_xax
 from dsl.transformation import remove_bg, convert_grid_format
 from dsl.dsl import Constraints
 
-from dsl.test_problems import get_problem_3
+from dsl.test_problems import get_problem_1
 
 from kg_output import get_task_object_mappings
 
@@ -67,9 +67,9 @@ def run_grid_level_prediction(task):
     # Try search for programs only on the grid level
 
     problem =task['train'] #initial_state, goal_state, constraints
-    operators = DSL_COLOR_METHODS + DSL_COLOR_METHODS
+    operators = DSL_COLOR_METHODS + DSL_GRID_MUTATION_METHODS
     bfs = BreadthFirstSearch(
-        problem=problem, goal_test=goal_test, operators=operators, max_depth=4
+        problem=problem, goal_test=goal_test, operators=operators, max_depth=1
     )
     return bfs.search()
 
@@ -110,7 +110,7 @@ def predict_output(task):
     output = []
 
     if program := run_grid_level_prediction(dsl_fmt_task):
-        for test_input in task.test:
+        for test_input in dsl_fmt_task['test']:
             output_image = run_grid_level_program(test_input, program)
             output.append(output_image)
         return output
@@ -165,7 +165,7 @@ def training_run():
         writer.writerow(["output_id", "output"])
     
     for task in train_set:
-        task = get_problem_3()
+        task = get_problem_1()
         predictions = predict_output(task)
         submit_task(task, predictions)
         break

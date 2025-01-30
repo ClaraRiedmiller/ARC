@@ -108,7 +108,9 @@ DSL_GRID_MUTATION_METHODS = [
     project_quintuplicate,
     project_half,
     project_third,
-    project_fifth
+    project_fifth,
+    flip_xax,                   
+    flip_yax,
 ]
 
 # Check if adding a line to the input grid (e.g., increasing its width or height by a fixed amount, such as 1 or 2) will match the dimensions of the output grid.
