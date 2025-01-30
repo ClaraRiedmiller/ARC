@@ -127,7 +127,7 @@ def main():
 
 
 
-    # pprint(object_mappings)
+    pprint(object_mappings)
 
     # search_program(problem)
 
