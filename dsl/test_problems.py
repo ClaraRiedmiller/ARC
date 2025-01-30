@@ -61,6 +61,43 @@ def get_problem_3():
 
 
 
+# Problem 4:
+# More complex version of problem 2: More objects. 4 goes left, 5 goes right, 1 goes up
+def get_problem_4():
+    train = [{'input': [[0, 0, 4, 0],
+                        [0, 0, 0, 0],
+                        [0, 5, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 1, 0]], 'output': [[0, 4, 0, 0],
+                                                  [0, 0, 0, 0],
+                                                  [0, 0, 5, 0],
+                                                  [0, 0, 1, 0],
+                                                  [0, 0, 0, 0]]}, 
+            {'input': [[0, 0, 5, 0],
+                        [0, 4, 0, 0],
+                        [0, 0, 0, 1]], 'output': [[0, 0, 0, 5],
+                                                  [4, 0, 0, 1],
+                                                  [0, 0, 0, 0]]}, 
+            {'input': [[0, 5, 0, 0, 0],
+                        [0, 0, 0, 1, 0],
+                        [0, 0, 0, 0, 0],
+                        [0, 0, 4, 0, 0]], 'output': [[0, 0, 5, 1, 0],
+                                                     [0, 0, 0, 0, 0],
+                                                     [0, 0, 0, 0, 0],
+                                                     [0, 4, 0, 0, 0]]}]
+    test = [{'input': [[0, 0, 5, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 4, 0]], 'output': [[0, 1, 0, 0],
+                                                  [0, 0, 0, 0],
+                                                  [0, 4, 0, 0]]}]
+    problem3 = Task(id='0', test=test, train=train)
+
+    # edit test
+
+    return(problem3)
+
+
+
 # modification of 3, where the objects are closer together - we would still need to be able to detect them as single objects
 
 # modification of 3, where there are multiple of each object in the examples

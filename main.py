@@ -17,7 +17,7 @@ from dsl.transformation import (
 )
 from dsl.dsl import Constraints
 
-from dsl.test_problems import get_problem_3
+from dsl.test_problems import get_problem_1, get_problem_3, get_problem_4
 
 from kg_output import get_task_object_mappings
 
@@ -136,8 +136,8 @@ def run_object_level_prediction(task, dsl_fmt_task):
                         convert_grid_format(remove_bg(test_input_object)),
                         Constraints(
                             color=train_output_properties["color"],
-                            grid_width=train_input_object_img.shape[1],
-                            grid_height=train_input_object_img.shape[0],
+                            grid_width=test_input_object.shape[1], # @Natasha I just had to change this to the test input dimensions instead of the training :) Turns out, one of the object was most similar to one that was in a bigger grid
+                            grid_height=test_input_object.shape[0],
                         ),
                     ),
                     program=program,
@@ -145,6 +145,7 @@ def run_object_level_prediction(task, dsl_fmt_task):
             )
 
     if prediction_panes:
+        print(prediction_panes)
         return overlay_arrays(prediction_panes)
 
     return None
@@ -163,8 +164,10 @@ def run_grid_level_prediction(task):
 
 def run_program(test_input, program):
     test_output, constraints = test_input
-    for operation in program:
+    for operation in program: #@Natasha this applies the wrong program to the objects (should be exactly switched). After some digging, this seems to be not wrong indexing but a kg issue - the closest object is just not of the same color. Maybe we could just value color stronger in the similarity so that it always wins and we have one working testcase. Or I manipulate the problem until it works
         test_output = operation(constraints, test_output)
+        print(operation)
+        print(test_output)
     return add_bg(reconvert_grid_format(test_output,  grid_width = constraints.grid_width, grid_height = constraints.grid_height))
 
 
@@ -201,14 +204,14 @@ def predict_output(task):
     dsl_fmt_task = format_task(task)
     output = []
 
-    # if program := run_grid_level_prediction(dsl_fmt_task):
-    #     for test_input in dsl_fmt_task["test"]:
-    #         output_image = run_program(test_input, program)
-    #         output.append(output_image)
-    #     return output
-    if program := run_object_level_prediction(task, dsl_fmt_task):
-        return output  # TODO decide on this output
-    return None
+    output = run_object_level_prediction(task, dsl_fmt_task)
+
+    print(output)
+
+    if output.any():
+        return output
+    else:
+        return None
 
 
 # array flattener from kaggle to put the output in the correct format as required by the arckit evaluator
@@ -225,7 +228,9 @@ def submit_task(task, predictions):
     task_id = task.id
 
     # TODO transform predictions from np.arrays to list format
-    if not predictions:  # If no solution: return shark picture
+
+
+    if not predictions.any():  # If no solution: return shark picture
         fail_pred = [
             [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
             [0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
@@ -241,11 +246,25 @@ def submit_task(task, predictions):
 
         predictions = [fail_pred for _ in task.test]
 
+    # flatten prediction
+    flattened_pred = flatten_prediction(predictions.tolist())
+
+    # for i, pred in enumerate(predictions):
+    #         flat_pred = flatten_prediction(predictions[i])
+    #         writer.writerow([f"{task_id}_{i}", flat_pred + " " + flat_pred])
+
+
+    # since right now, we are only making one guess, we just repeat it twice to fill up our guesses (checking correctness does not take long). Further, we ignore tasks with two training inputs so we just output the prediction for the first twice.
     with open("submission.csv", "a") as submission:
         writer = csv.writer(submission, quoting=csv.QUOTE_NONE)
-        for i, pred in enumerate(predictions):
-            flat_pred = flatten_prediction(predictions[i])
-            writer.writerow([f"{task_id}_{i}", flat_pred + " " + flat_pred])
+
+        if len(task.test) == 2:
+            writer.writerow([f'{task_id}_0', flattened_pred + ' ' + flattened_pred])
+            writer.writerow([f'{task_id}_1', flattened_pred + ' ' + flattened_pred])
+        else:
+            print(len(task.test))
+            writer.writerow([f'{task_id}_0', flattened_pred + ' ' + flattened_pred])
+
 
 
 def training_run():
@@ -256,7 +275,7 @@ def training_run():
         writer.writerow(["output_id", "output"])
 
     for task in train_set:
-        task = get_problem_3()
+        task = get_problem_4()
         predictions = predict_output(task)
         submit_task(task, predictions)
         break
