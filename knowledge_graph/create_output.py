@@ -38,7 +38,7 @@ def create_isolated_object(grid_size, prop_dict):
 def create_input_output_grid_pairs(input_grid_size, output_grid_size, pairs_info, max_pairs=5):
     results = []
     
-    print(f"Processing {len(pairs_info)} pairs (before limiting to {max_pairs})")
+    # print(f"Processing {len(pairs_info)} pairs (before limiting to {max_pairs})")
 
     for idx, info in enumerate(pairs_info):
         if idx >= max_pairs:

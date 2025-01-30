@@ -51,28 +51,28 @@ def get_example_object_mappings(task, db_manager, example_id):
     # print(pairs_top_5)
 
 
-    #Now, we implement the one-to-one matches
+    # #Now, we implement the one-to-one matches
 
-    one_to_one_results = optimal_one_to_one_assignment_with_valid_dummies(
-        shared_properties,
-        similarity_threshold=0.2
-    )
+    # one_to_one_results = optimal_one_to_one_assignment_with_valid_dummies(
+    #     shared_properties,
+    #     similarity_threshold=0.2
+    # )
 
-    matched_pairs = [row for row in one_to_one_results if row['marker'] == 'matched']
+    # matched_pairs = [row for row in one_to_one_results if row['marker'] == 'matched']
 
-    matched_props = get_properties_for_matched_pairs(db_manager, matched_pairs, batch_size=100)
-    # print(f"\nOne-to-one matched object count: {len(matched_props)}")
+    # matched_props = get_properties_for_matched_pairs(db_manager, matched_pairs, batch_size=100)
+    # # print(f"\nOne-to-one matched object count: {len(matched_props)}")
 
-    # B4) Build up to 5 grid pairs for these matched objects
-    one_to_one_grids = create_input_output_grid_pairs(
-        input_grid_size=dim_input,
-        output_grid_size=dim_output,
-        pairs_info=matched_props,
-        max_pairs=5
-    )
+    # # B4) Build up to 5 grid pairs for these matched objects
+    # one_to_one_grids = create_input_output_grid_pairs(
+    #     input_grid_size=dim_input,
+    #     output_grid_size=dim_output,
+    #     pairs_info=matched_props,
+    #     max_pairs=5
+    # )
 
     # print('\nmappigs of one exmaple:\n', pairs_top_5)
-    return(one_to_one_grids)
+    return(pairs_top_5)
 
 
 def get_task_object_mappings(task):
