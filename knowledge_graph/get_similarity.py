@@ -378,7 +378,7 @@ def get_most_similar_to_test(db_manager):
     i = 1 
     all_similarity = []
     while i < 4: 
-        per_example = db_manager.shared_properties_across_input(i, 9)
+        per_example = db_manager.shared_properties_across_input(i, 999)
         all_similarity.extend(per_example)
         i = i+1  
     all_similarity.sort(key=lambda x: x["normalized_similarity"], reverse=True)

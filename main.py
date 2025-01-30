@@ -5,6 +5,8 @@ from dsl import DSL_COLOR_METHODS, DSL_GRID_MUTATION_METHODS
 from dsl.transformation import remove_bg, convert_grid_format
 from dsl.dsl import Constraints
 
+from dsl.test_problems import get_problem_3
+
 from kg_output import get_task_object_mappings
 
 from search.breadth_fist_search import BreadthFirstSearch
@@ -16,17 +18,46 @@ from knowledge_graph.get_similarity import get_most_similar_to_test
 
 def run_object_level_prediction(task, dsl_fmt_task):
     db_manager, object_mappings =  get_task_object_mappings(task)
+    object_mappings = { mapping["input_id"]: mapping
+        for mapping in object_mappings
+    }
 
-    object_mappings = [
-        (remove_bg(input_obj), remove_bg(output_obj))
-        for input_obj, output_obj in object_mappings
-    ]
+    # object_mappings = [
+    #     (remove_bg(input_obj), remove_bg(output_obj))
+    #     for input_obj, output_obj in object_mappings
+    # ]
     
     most_sim = get_most_similar_to_test(db_manager)
-
-    print(most_sim)
     
+    # Get number 1 most similar
+    obj = {}
+    for i, pair_dict in enumerate(most_sim):
+        test_output_obj_id = pair_dict['output_id']
+        sim_score = pair_dict['normalized_similarity']
+        if test_output_obj_id not in obj:
+            obj[test_output_obj_id] = (sim_score, i)
+        else:
+            current_best_sim_score, _ = obj[test_output_obj_id]
+            if current_best_sim_score < sim_score:
+                obj[test_output_obj_id] = (sim_score, i)
+    
+    top_1_similar = []
+    for _, index in obj.values():
+        top_1_similar.append(most_sim[index])
+    
+    for pair_dict in top_1_similar:
+        input_obj_id = pair_dict['input_id']
+        test_output_obj_id = pair_dict['output_id']
+        matching_props = pair_dict['matching_properties']
 
+        train_output_obj_id = object_mappings[input_obj_id]['output_id']
+        print(input_obj_id, train_output_obj_id)
+    #     input_obj = input_obj_id
+    #    output_obj = 
+    
+    #     bfs = BreadthFirstSearch(
+
+    #     )
     # TODO: finish logic
     return None
 
@@ -60,8 +91,12 @@ def format_task(task):
 
 
 def run_grid_level_program(test_input, program):
+    test_output = test_input
+    
+    for operation in program:
+        test_output = operation(constraints,test_output)
     # TODO: ask about what is the constraints object here
-    return
+    return test_output
 
 def predict_output(task):
     dsl_fmt_task = format_task(task)
@@ -117,7 +152,9 @@ def submit_task(task, predictions):
 def training_run():
     train_set, _ = arckit.load_data()
 
+    
     for task in train_set:
+        task = get_problem_3()
         predictions = predict_output(task)
         break
         submit_task(task, predictions)

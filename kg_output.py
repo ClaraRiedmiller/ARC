@@ -72,7 +72,7 @@ def get_example_object_mappings(task, db_manager, example_id):
     )
 
     # print('\nmappigs of one exmaple:\n', pairs_top_5)
-    return(matched_props)
+    return (matched_props)
 
 
 def get_task_object_mappings(task):
