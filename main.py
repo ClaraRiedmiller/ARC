@@ -159,12 +159,16 @@ def submit_task(task, predictions):
 
 def training_run():
     train_set, _ = arckit.load_data()
-
+    
+    with open("submission.csv", "w") as submission:
+        writer = csv.writer(submission, quoting=csv.QUOTE_NONE)
+        writer.writerow(["output_id", "output"])
     
     for task in train_set:
         task = get_problem_3()
         predictions = predict_output(task)
         submit_task(task, predictions)
+        break
     # TODO: evaluate with arc kit
 
 
@@ -182,9 +186,11 @@ def evaluation_run():
     score = eval_set.score_submission(
         "submission.csv",  # Submission with two columns output_id,output in Kaggle fomrat
         topn=2,  # How many predictions to consider (default: 3)
-        return_correct=False,  # Whether to return a list of which tasks were solved
+        return_correct=True,  # Whether to return a list of which tasks were solved
     )
+    
+
     print("Score:"+str(score))
 
 
-evaluation_run()
+training_run()
