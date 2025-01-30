@@ -273,7 +273,7 @@ class KnowledgeGraphBuilder:
 
             # TODO: Extend to add task.test to the knowledge graph so we can make predictions
         
-        test_example_id = 999  # Use a unique identifier to differentiate test cases
+        test_example_id = 9  # Use a unique identifier to differentiate test cases
 
         if task.test:
             test_input_grid, test_output_grid = task.test[0]  

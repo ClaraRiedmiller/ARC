@@ -36,7 +36,7 @@ def get_best_input_correspondence(task):
     # Step 2: Loop through all training input grids and compare with test input grid
     for train_grid_id in range(len(task.train)):  # Loop over training grids
         # Extract shared properties between training input `train_grid_id` and test input
-        shared_properties = db_manager.shared_properties_across_input(train_grid_id, 999)
+        shared_properties = db_manager.shared_properties_across_input(train_grid_id, 9)
 
         # Perform optimal one-to-one assignment
         one_to_one_results = optimal_one_to_one_assignment_with_valid_dummies(
