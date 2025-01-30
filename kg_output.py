@@ -89,7 +89,7 @@ def get_task_object_mappings(task):
         example_object_mappings = get_example_object_mappings(task=task, db_manager=db_manager, example_id=no)
         task_object_mappings.extend(example_object_mappings)
 
-    return(task_object_mappings)
+    return (db_manager, (task_object_mappings))
 
 
 

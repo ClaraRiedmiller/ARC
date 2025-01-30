@@ -11,15 +11,22 @@ from search.breadth_fist_search import BreadthFirstSearch
 from search.best_first_search import BestFirstSearch
 from search.program_search_problem import goal_test, heuristic, expand
 
-# from knowledge_graph.get_similarity import
+from knowledge_graph.get_similarity import get_most_similar_to_test
 
 
-def run_object_level_prediction(task):
+def run_object_level_prediction(task, dsl_fmt_task):
+    db_manager, object_mappings =  get_task_object_mappings(task)
+
     object_mappings = [
         (remove_bg(input_obj), remove_bg(output_obj))
-        for input_obj, output_obj in get_task_object_mappings(task)
+        for input_obj, output_obj in object_mappings
     ]
-    print(len(object_mappings))
+    
+    most_sim = get_most_similar_to_test(db_manager)
+
+    print(most_sim)
+    
+
     # TODO: finish logic
     return None
 
@@ -39,7 +46,7 @@ def format_task(task):
             (
                 convert_grid_format(remove_bg(input_img)),
                 convert_grid_format(remove_bg(output_img)),
-                Constraints(  # TODO: ask if this need to be over written for the other search
+                Constraints(
                     color=1,  # TODO: make random
                     grid_width=input_img.shape[1],
                     grid_height=input_img.shape[0],
@@ -47,25 +54,25 @@ def format_task(task):
             )
             for input_img, output_img in task.train
         ],
-        "test": [convert_grid_format(remove_bg(test)) for test in task.test],
+        "test": [convert_grid_format(remove_bg(t)) for test in task.test for t in test],
     }
     return fmt_task
 
 
-def run_gid_level_program(test_input, program):
+def run_grid_level_program(test_input, program):
     # TODO: ask about what is the constraints object here
     return
 
 def predict_output(task):
-    fmt_task = format_task(task)
+    dsl_fmt_task = format_task(task)
     output = []
 
-    if program := run_grid_level_prediction(fmt_task):
-        for test_input in task.test:
-            output_image = run_gid_level_program(test_input, program)
-            output.append(output_image)
-        return output
-    if program := run_object_level_prediction(fmt_task):
+    # if program := run_grid_level_prediction(dsl_fmt_task):
+    #     for test_input in task.test:
+    #         output_image = run_grid_level_program(test_input, program)
+    #         output.append(output_image)
+    #     return output
+    if program := run_object_level_prediction(task, dsl_fmt_task):
         return output  # TODO decide on this output
     return None
 
@@ -111,7 +118,7 @@ def training_run():
     train_set, _ = arckit.load_data()
 
     for task in train_set:
-        predictions = run_task(task)
+        predictions = predict_output(task)
         break
         submit_task(task, predictions)
     # TODO: evaluate with arc kit
