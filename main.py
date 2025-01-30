@@ -2,8 +2,19 @@ import arckit
 import csv
 import numpy as np
 
-from dsl import DSL_COLOR_METHODS, DSL_GRID_MUTATION_METHODS
-from dsl.transformation import remove_bg, convert_grid_format, add_bg, reconvert_grid_format
+from dsl import (
+    DSL_COLOR_METHODS,
+    DSL_GRID_MUTATION_METHODS,
+    DSL_OBJECT_SHAPE_MUTATION_METHODS,
+    DSL_OBJECT_MOVE_METHODS,
+    flip_xax
+)
+from dsl.transformation import (
+    remove_bg,
+    convert_grid_format,
+    add_bg,
+    reconvert_grid_format,
+)
 from dsl.dsl import Constraints
 
 from dsl.test_problems import get_problem_3
@@ -11,11 +22,26 @@ from dsl.test_problems import get_problem_3
 from kg_output import get_task_object_mappings
 
 from search.breadth_fist_search import BreadthFirstSearch
-from search.best_first_search import BestFirstSearch
-from search.program_search_problem import goal_test, heuristic, expand
-
+from search.program_search_problem import goal_test
 from knowledge_graph.get_similarity import get_most_similar_to_test
 from knowledge_graph.create_output import create_isolated_object
+
+
+def overlay_arrays(arrays):
+    """Overlay multiple NumPy arrays such that the most recent non-zero integer value is retained."""
+    if not arrays:
+        return None
+    
+    # Stack arrays along a new axis
+    stacked = np.stack(arrays)
+    
+    # Create a mask of nonzero values
+    mask = stacked != 0
+    
+    # Use np.where to get the last nonzero value, keeping zeros where no nonzero values exist
+    result = np.where(mask.any(axis=0), np.max(stacked * mask, axis=0), 0)
+    
+    return result
 
 
 def run_object_level_prediction(task, dsl_fmt_task):
@@ -70,18 +96,28 @@ def run_object_level_prediction(task, dsl_fmt_task):
         )
 
         # RUN SEARCH FOR PROGRAM
-        problem = (
-            convert_grid_format(remove_bg(train_input_object_img)),
-            convert_grid_format(remove_bg(train_output_object_img)),
-            Constraints(
-                color=train_output_properties["colour"],
-                grid_width=train_input_object_img.shape[1],
-                grid_height=train_input_object_img.shape[0],
-            ),
+        problem = [
+            (
+                convert_grid_format(remove_bg(train_input_object_img)),
+                convert_grid_format(remove_bg(train_output_object_img)),
+                Constraints(
+                    color=train_output_properties["color"],
+                    grid_width=train_input_object_img.shape[1],
+                    grid_height=train_input_object_img.shape[0],
+                ),
+            )
+        ]
+        operators = (
+            DSL_OBJECT_MOVE_METHODS
+            + DSL_OBJECT_SHAPE_MUTATION_METHODS
+            + DSL_COLOR_METHODS
         )
 
-        bfs = BreadthFirstSearch(problem=problem, goal_test=goal_test, operators=)
+        bfs = BreadthFirstSearch(
+            problem=problem, goal_test=goal_test, operators=operators, max_depth=5
+        )
         program = bfs.search()
+
         if program:
             # GET TEST
             test_input_obj_id = pair_dict["output_id"]
@@ -94,11 +130,23 @@ def run_object_level_prediction(task, dsl_fmt_task):
             )
 
             # APPLY PROGRAM
-            print(test_input_object)
+            prediction_panes.append(
+                run_program(
+                    test_input=(
+                        convert_grid_format(remove_bg(test_input_object)),
+                        Constraints(
+                            color=train_output_properties["color"],
+                            grid_width=train_input_object_img.shape[1],
+                            grid_height=train_input_object_img.shape[0],
+                        ),
+                    ),
+                    program=program,
+                )
+            )
 
-        if prediction_panes:
-            return 
-   
+    if prediction_panes:
+        return overlay_arrays(prediction_panes)
+
     return None
 
 
@@ -117,7 +165,7 @@ def run_program(test_input, program):
     test_output, constraints = test_input
     for operation in program:
         test_output = operation(constraints, test_output)
-    return add_bg(reconvert_grid_format(test_output))
+    return add_bg(reconvert_grid_format(test_output,  grid_width = constraints.grid_width, grid_height = constraints.grid_height))
 
 
 def format_task(task):
@@ -209,7 +257,6 @@ def training_run():
 
     for task in train_set:
         task = get_problem_3()
-        print(task.id)
         predictions = predict_output(task)
         submit_task(task, predictions)
         break
