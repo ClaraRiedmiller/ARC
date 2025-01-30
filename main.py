@@ -52,28 +52,21 @@ def format_task(task):
     return fmt_task
 
 
-def predict_program(task):
-    fmt_task = format_task(task)
-    if program := run_grid_level_prediction(fmt_task):
-        return program
-    if program := run_object_level_prediction(fmt_task):
-        return program  # TODO decide on this output
-    return None
-
-
-def run_program(test_input, program):
+def run_gid_level_program(test_input, program):
     # TODO: ask about what is the constraints object here
     return
 
+def predict_output(task):
+    fmt_task = format_task(task)
+    output = []
 
-def run_task(task):
-    program = predict_program(task)
-    if program:
-        output = []
+    if program := run_grid_level_prediction(fmt_task):
         for test_input in task.test:
-            output_image = run_program(test_input, program)
+            output_image = run_gid_level_program(test_input, program)
             output.append(output_image)
         return output
+    if program := run_object_level_prediction(fmt_task):
+        return output  # TODO decide on this output
     return None
 
 
