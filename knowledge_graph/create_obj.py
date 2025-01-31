@@ -5,17 +5,6 @@ from scipy.ndimage import label, binary_fill_holes
 from scipy.ndimage import binary_dilation
 
 def label_components(grid, example_id, mode="direct"):          # formerly called label_by_color
-    """
-    Labels connected pixels of the same color in grid as components.
-    Parameters:
-    grid (np.ndarray): A 2D numpy array representing the grid with different colors.
-    mode (str): The mode for structuring element. Must be one of 'direct', 'diagonal', or '8-way'.
-                Default is 'direct'.
-    Returns:
-    np.ndarray: A 2D numpy array with labeled components. Each label is of the form color_value * 1000 + component_id.
-    Raises:
-    ValueError: If the mode is not one of 'direct', 'diagonal', or '8-way'.
-    """
      # Convert mode to StructuringElementMode enum
     try:
         mode_enum = StructuringElementMode(mode)
