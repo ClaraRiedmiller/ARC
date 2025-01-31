@@ -7,7 +7,7 @@ from dsl.transformation import apply_transformation, convert_grid_format, remove
 from dsl.hodel_hardness import upper_bound_hardness
 from dsl.dsl_dictionary import get_dsl_dict
 from arckit_handler.arckit_handler import getGrid, get_problem
-from dsl.test_grids import grid1
+from dsl.test_grids import *
 
 
 # # apply the transformation move_left to an example grid. We could extend this to take a specific grid as an input as well
@@ -89,8 +89,8 @@ def test_object_level_dimensions():
 
 
     # for this, we make an example first:
-    grid = grid1
-    print(grid1)
+    grid = grid2
+    
 
     grid_name = 'test_object_transformation'
 
@@ -99,17 +99,9 @@ def test_object_level_dimensions():
     dsl_functions = get_dsl_dict()
         
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     # function = 'flip_object_around_own_xax'
-=======
-    function = 'flip_object_around_own_xax'
->>>>>>> Stashed changes
-=======
-    function = 'flip_object_around_own_xax'
->>>>>>> Stashed changes
 
-    apply_transformation(grid, grid_name, function)
+    # apply_transformation(grid, grid_name, function)
 
     
 
@@ -120,10 +112,10 @@ def test_object_level_dimensions():
     # dsl_functions = {key: value for key, value in dsl_functions.items() if key not in forbidden_functions}
     
 
-    # # apply all the dsl functions to our object
-    # for function, type in dsl_functions.items():
-    #     print('\n', function)
-    #     apply_transformation(grid, grid_name, function)
+    # apply all the dsl functions to our object
+    for function, type in dsl_functions.items():
+        print('\n', function)
+        apply_transformation(grid, grid_name, function)
 
 
 test_object_level_dimensions()
